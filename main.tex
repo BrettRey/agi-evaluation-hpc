@@ -1,0 +1,891 @@
+\documentclass[12pt]{article}
+\input{.house-style/preamble.tex}
+\hypersetup{pdftitle={From Checklists to Clusters: A Homeostatic Account of AGI Evaluation}}
+
+% pgfplots (not in house preamble)
+\usepackage{pgfplots}
+\pgfplotsset{compat=1.18}
+
+% Colorblind-friendly palette for figures
+\definecolor{myblue}{RGB}{0, 114, 178}
+\definecolor{myorange}{RGB}{213, 94, 0}
+\definecolor{mygray}{RGB}{128, 128, 128}
+\definecolor{mygreen}{RGB}{0, 158, 115}
+\definecolor{myred}{RGB}{204, 51, 102}
+
+% Math macros for indices
+\newcommand{\pcsi}{\mathrm{pCSI}}
+\newcommand{\dcsi}{\mathrm{dCSI}}
+\newcommand{\ecsi}{\mathrm{eCSI}}
+\newcommand{\csi}{\mathrm{CSI}}
+
+\title{From Checklists to Clusters:\\A Homeostatic Account of AGI Evaluation}
+\author{Brett Reynolds \orcidlink{0000-0003-0073-7195}\thanks{I used ChatGPT 5, Claude Sonnet 4.5, and Gemini Pro 2.5 extensively in drafting and revising the paper. I reviewed, edited, and approved all the material and take full responsibility for the final text and conclusions. \href{mailto:brett.reynolds@humber.ca}{brett.reynolds@humber.ca}}\\
+Humber Polytechnic \& University of Toronto}
+\date{}
+
+\begin{document}
+
+\maketitle
+
+\begin{abstract}
+Contemporary AGI evaluations report multidomain capability profiles, yet they typically assign symmetric weights and rely on snapshot scores. This creates two problems: (i)~equal weighting treats all domains as equally important when human intelligence research suggests otherwise, and (ii)~snapshot testing can't distinguish durable capabilities from brittle performances that collapse under delay or stress. I argue that general intelligence~-- in humans and potentially in machines~-- is better understood as a \textbf{homeostatic property cluster}: a set of abilities plus the mechanisms that keep those abilities co-present under perturbation. On this view, AGI evaluation should weight domains by their causal centrality (their contribution to cluster stability) and require evidence of persistence across sessions. I propose two battery-compatible extensions: a \textbf{centrality-prior score} that imports CHC-derived weights with transparent sensitivity analysis, and a \textbf{Cluster Stability Index family} that separates profile persistence, durable learning, and error correction. These additions preserve multidomain breadth while reducing brittleness and gaming. I close with testable predictions and black-box protocols labs can adopt without architectural access.
+\end{abstract}
+
+\section{The Brittleness Problem}\label{sec:brittleness}
+
+\textcite{hendrycks2025agi} present a comprehensive AGI evaluation framework that moves beyond single benchmarks toward rich multidomain profiles. The approach adapts Cattell--Horn--Carroll (CHC) theory~\parencite{carroll1993human,mcgrew2009chc,schneider2018chc} to test AI systems across ten domains: general knowledge, reading and writing, mathematics, reasoning, working memory, long-term memory storage and retrieval, visual processing, auditory processing, and processing speed. Each domain gets 10\% weight. Systems are tested once and scored.
+
+This is a major improvement over narrow leaderboards. But it still treats intelligence as a flat checklist. Two issues arise:
+
+\subsection{The Equal-Weighting Problem}\label{ssec:equal_weighting}
+
+Suppose an AI scores 90\% on processing speed but 0\% on long-term memory storage. Under equal weighting, that's 9 points toward a 100-point AGI score. But can a system with zero ability to retain new information across sessions really be called generally intelligent? The \enquote{memory at 0\%} case isn't hypothetical~-- it's where many current models sit, relying instead on massive context windows or external retrieval to fake persistence.
+
+Equal weights treat this as equivalent to scoring 90\% on knowledge and 0\% on speed. But these failures aren't symmetric. A slow system can still learn and reason over time. A system that can't consolidate anything might be fast and knowledgeable \textit{right now}, but it can't build on experience. It's missing something constitutive.
+
+\subsection{The Snapshot Problem}\label{ssec:snapshot}
+
+Suppose a model scores 70\% on reasoning at time $t=0$. You close the session, wait 24 hours, and retest on similar problems. The score drops to 30\%. Which number goes in the AGI evaluation?
+
+Current frameworks report $t=0$ performance. But if the capability doesn't persist across sessions~-- if it requires continuously feeding the model its own context or using scaffolds that don't transfer~-- then the 70\% was measuring something temporary. It looked like reasoning but behaved like caching.
+
+\subsection{Why This Matters}\label{ssec:why_it_matters}
+
+Brittle, cached, or contorted capabilities can inflate AGI scores without delivering general intelligence. Consider:
+
+\begin{itemize}
+\item A model that uses a 200K-token context to \enquote{remember} user preferences. Disable the context window and it forgets everything~-- no durable learning occurred.
+\item A model that scores well on retrieval tasks when RAG is enabled, but produces hallucinations at high rates when RAG is off. The retrieval score was measuring the database, not the model.
+\item A model that solves reasoning problems by pattern-matching to training data. Delay the test by 72 hours with no access to prior context, and performance collapses because nothing was retained.
+\end{itemize}
+These contortions~-- workarounds that provide temporary performance boosts without genuine capability~-- are invisible to snapshot testing with equal weights. Evaluation methods are needed that distinguish real capabilities from brittle approximations.
+
+\section{From CHC to Homeostatic Property Clusters}\label{sec:chc_to_hpc}
+
+\subsection{What CHC Gets Right}\label{ssec:chc_right}
+
+CHC theory organizes human cognitive abilities into a three-stratum hierarchy~\parencite{schneider2018chc}. At the bottom: dozens of narrow skills (e.g., associative memory, inductive reasoning). In the middle: $\sim$16 broad abilities (Fluid Reasoning, Working Memory, Long-term Storage and Retrieval). At the top: a general factor $g$ that loads differentially across abilities.
+
+The hierarchy isn't arbitrary. Factor analysis consistently shows that some abilities load more heavily on $g$ than others. Fluid reasoning typically has high $g$-loading; processing speed has lower loading. This suggests causal structure: some abilities are more central to general intelligence than others.
+
+CHC also documents positive manifold: abilities tend to co-occur. People strong in fluid reasoning tend to be strong in working memory. The correlations aren't perfect~-- profiles are jagged~-- but abilities aren't independent.
+
+\subsection{What CHC Doesn't Explain}\label{ssec:chc_wrong}
+
+CHC describes the factorial structure of intelligence but doesn't explain \textit{why} abilities cluster or \textit{what keeps them together}. Why should fluid reasoning and working memory correlate? Why does $g$ exist as a statistical regularity?
+
+One answer: intelligence isn't just a collection of abilities. It's a collection of abilities \textit{plus mechanisms that maintain co-occurrence}. When abilities threaten to come apart (e.g., working memory degradation from stress), homeostatic mechanisms compensate (e.g., strategic allocation of attention, reliance on long-term knowledge).
+
+This is the move from taxonomy to dynamics. Intelligence isn't a list of capacities; it's a stabilized cluster.
+
+\subsection{Homeostatic Property Clusters in Philosophy of Science}\label{ssec:hpc_philsci}
+
+A homeostatic property cluster (HPC)~\parencite{boyd1991,boyd1999,khalidi2013} is a set of properties that:
+\begin{enumerate}
+\item Tend to co-occur (the cluster)
+\item Are kept co-present by causal mechanisms (homeostasis)
+\item License inductive inferences, predictions, and explanations for a purpose (projectibility)
+\end{enumerate}
+The third clause is often underemphasized but crucial~\parencite{boyd1991}. An HPC isn't just a stable bundle of properties; it's a stable bundle that \emph{earns its keep} by supporting predictions. Biological species illustrate all three clauses. Members share morphological, genetic, and behavioral properties (co-occurrence). Reproduction, shared ancestry, and niche adaptation keep those properties co-present (homeostasis). And the resulting cluster licenses inferences: knowing an organism is a member of species $S$ lets you predict its diet, habitat, mating behavior, and response to perturbation (projectibility). Boundaries are fuzzy (ring species, hybrids) and realizations vary (mutations, phenotypic plasticity), but these are consequences of the cluster structure, not defining features.
+
+Human intelligence fits this pattern, though with an important complication: HPCs can be nested at multiple levels. Abilities like reasoning, memory, and perception cluster \emph{within} a person, and within-agent mechanisms~-- neural development, synaptic consolidation, executive control, metacognitive strategies~-- help keep those abilities co-present under perturbation. The \emph{population} also shows a stable clustering: shared developmental environments, schooling, and cultural tools shape the distribution and co-occurrence of abilities across people and over time.
+
+Crucially, the intelligence cluster is projectible: knowing that an agent is generally intelligent licenses predictions about how it will perform on novel tasks, how it will learn from experience, and how it will degrade under stress. Which predictions matter depends on the purpose of evaluation~-- a deployment decision requires different inferences than a research classification. This purpose-indexing is a distinctive feature of the HPC framework: projectibility is always projectibility \emph{for something}.
+
+In what follows I assess cluster membership for AI systems at the \emph{agent level}; population-level processes are treated as background conditions. This agent-level focus is deliberate. Mechanistic accounts of kinds~\parencite{craver2009} identify causal structure but don't grade membership or index inferences to evaluative purposes. HPC theory does both: it says which properties count, explains why they cluster, and specifies what the resulting category lets you predict. For AGI evaluation, that triple function is exactly what's needed.
+
+
+\subsection{Applying HPCs to AGI Evaluation}\label{ssec:hpc_agi}
+If intelligence is an HPC, then evaluating AGI requires testing three things:
+\begin{enumerate}
+\item \textbf{Abilities} (the cluster): Can the system reason, remember, perceive, etc.?
+\item \textbf{Stability mechanisms} (the homeostasis): Do those abilities persist when stressed? Can the system compensate when one ability is degraded?
+\item \textbf{Projectibility} (the inferential payoff): Does categorizing this system as \enquote{generally intelligent} license the predictions it's supposed to~-- about deployment robustness, learning trajectory, failure modes?
+\end{enumerate}
+
+Current AGI evaluation focuses on (1) and ignores (2) and (3). But (2) is what makes the cluster robust, and (3) is what makes the category useful. A system might have all the right abilities at $t=0$ but lack the mechanisms to maintain them under perturbation~-- that's a capability profile, not general intelligence. And even a system with stable abilities might not support the inferences the \enquote{generally intelligent} label is supposed to license~-- if knowing that a system passed an AGI evaluation doesn't help you predict how it will behave in deployment, the evaluation isn't doing its job.
+
+A crucial scope clarification: the unit of evaluation throughout is a single agent (model instance). External supports that operate at the population level in humans~-- shared developmental environments, schooling, cultural transmission~-- are treated here as environmental background. Their AI analogues (context windows, RAG systems, tool access) are assessed as compensatory versus contorted scaffolds in Section~\ref{sec:contortion_vs_compensation}, with the key question being whether they extend the agent's capabilities or merely substitute for missing ones.
+
+Three immediate implications arise:
+\begin{enumerate}
+    \item Not all abilities contribute equally to cluster integrity. Some nodes are upstream (e.g., long-term storage enables cumulative learning). Some are downstream (e.g., processing speed helps but isn't constitutive). Equal weighting ignores this structure.
+    \item Stability is constitutive of cluster membership. A system that scores 90\% on reasoning but can't maintain reasoning performance across delays or distribution shifts exhibits weak stability mechanisms. It has demonstrated one-shot pattern-matching rather than robust reasoning. Systems can show varying degrees of stability~-- membership is graded~-- but very low stability (near-zero consolidation, no profile persistence, no error correction) suggests the cluster is barely holding together.
+    \item Projectibility is the test of the category's value. The point of calling something \enquote{generally intelligent} isn't just to describe it; it's to license inferences. If a high AGI score doesn't predict deployment success, learning capacity, or graceful degradation, then the evaluation is measuring something, but not general intelligence in any useful sense.
+\end{enumerate}
+
+\subsection{Why HPC Rather Than Alternatives?}\label{ssec:hpc_vs_alternatives}
+
+Several philosophical frameworks handle clustered, mechanism-dependent categories. Why adopt HPC specifically for AGI evaluation?
+
+\textcite{craver2009} argues that mechanistic kinds~-- categories defined by shared causal mechanisms~-- do important work in neuroscience and biology. The approach identifies what causes what, and that matters. But mechanistic explanation alone doesn't grade membership (it classifies by presence or absence of a mechanism) and doesn't index inferences to purposes. A system can instantiate the right causal architecture and still fail to support the predictions the category is supposed to license. HPC adds both graded membership and purpose-indexed projectibility: the cluster exists because it supports inferences, and \emph{which} inferences matter depends on the evaluative context.
+
+\textcite{millikan1999} offers historical kinds as an alternative: categories unified by shared causal history rather than shared current mechanisms. This works well for biological lineages and cultural artifacts, where membership tracks reproductive or transmissive origin. But intelligence isn't a historical kind. It's maintained by synchronic mechanisms (neural consolidation, executive control, metacognitive monitoring), not by shared ancestry. Two systems can arrive at the intelligence cluster via entirely different developmental histories; what matters is whether the cluster holds together now and supports predictions going forward.
+
+\textcite{magnus2014} argues that natural kinds don't reduce to HPCs~-- that some genuine natural kinds lack homeostatic mechanisms, while some HPCs don't behave as natural kinds in other respects. This is a fair critique of HPC as a general theory of natural kinds. But the argument here is more modest: I'm not claiming that intelligence \emph{is} a natural kind in any metaphysically deep sense. I'm claiming that HPC structure is useful for \emph{evaluation} because it identifies what the category lets you predict and explains why those predictions are reliable. Whether intelligence meets further conditions for natural-kind status is a separate question that evaluation methodology needn't resolve.
+
+\textcite{ereshefsky2015} argue for pluralism about scientific kinds: HPCs are one model among several, and different domains may call for different frameworks. This pluralism is welcome. The case for HPC in AGI evaluation rests not on philosophical universality but on fit: AGI evaluation needs a framework that handles co-occurring abilities, explains why they cluster, grades membership, and specifies what the resulting category licenses you to predict. HPC does all four. Alternative frameworks handle subsets of these requirements but not the full package.
+
+Finally, \textcite{hernandezorallo2017} develops a measurement-theoretic approach to intelligence evaluation that asks: \enquote{What can this system do?} The HPC framework asks a different but compatible question: \enquote{What can you \emph{predict} about this system?} Measurement theory provides the psychometric tools for assessing individual abilities; HPC provides the inferential structure for understanding why those abilities cluster and what their co-occurrence licenses you to conclude. The two approaches are complementary: measurement theory without HPC risks treating abilities as independent, while HPC without measurement theory lacks operational teeth.
+
+\section{Causal Centrality: Why Some Abilities Matter More}\label{sec:causal_centrality}
+
+\subsection{Three Kinds of Centrality}\label{ssec:centrality_kinds}
+
+\enquote{Centrality} can mean different things. To avoid confusion, I distinguish:
+
+\begin{itemize}
+\item \textbf{Structural centrality ($s_i$)}: Component $i$ is upstream in a causal graph. Example: long-term storage enables cumulative abilities like domain knowledge and procedural skills. Storage is structurally central.
+
+\item \textbf{Impact centrality ($c_i$)}: Degrading component $i$ causes performance collapse across multiple other domains. Example: if fluid reasoning drops by 50\%, math, reading comprehension, and planning all suffer. Reasoning has high impact centrality.
+
+\item \textbf{Stabilizing centrality ($h_i$)}: Enhancing component $i$ improves stability indices (defined in Section~\ref{sec:cluster_stability}). Example: adding robust retrieval reduces hallucinations \textit{and} makes the system more reliable under noise. Retrieval has stabilizing centrality.
+\end{itemize}
+
+These distinctions matter because centrality types can come apart in surprising ways. Processing speed might be structurally downstream (it doesn't enable other abilities, so low $s_i$) but still have moderate impact centrality (losing speed degrades performance everywhere, so moderate $c_i$) without contributing much to stability (faster processing doesn't make capabilities more durable, so low $h_i$). Conversely, working memory might have high values across all three types~-- it's upstream structurally, its degradation harms multiple domains, and enhancing it improves both performance and stability.
+
+\subsection{From Centrality to Weights}\label{ssec:centrality_to_weights}
+
+If components differ in centrality, why weight them equally? The obvious alternative: weight by centrality.
+
+Here's the challenge. Fully estimating impact centrality $c_i$ and stabilizing centrality $h_i$ requires controlled experiments: degrade component $i$ and measure downstream effects, or enhance component $i$ and measure stability gains. For black-box systems, this is difficult. For systems still under development, it's premature. For humans, it's largely infeasible~-- we can't  ethically degrade working memory or disable storage to measure causal impacts.
+
+A better approach than equal weights is to use a \textbf{centrality prior}~-- a principled starting point based on existing evidence from human cognition research~-- and report the result with sensitivity analysis. The prior isn't a claim of ground truth. It's a \enquote{here's what I'd expect given human data and theoretical considerations, subject to revision as we gather AI-specific evidence}. Because we can't  run the ideal degradation experiments on humans, the prior has to rely on correlational CHC $g$-loadings (which reflect abilities that tend to co-vary with general intelligence) rather than experimentally-derived causal centrality measures. This is a limitation, but it's transparent and improvable as AI-specific perturbation data accumulates.
+
+This approach avoids bootstrapping. I don't use stability to define centrality and then use centrality to define stability. Instead, the centrality prior comes from independent evidence (CHC factor analysis and causal structure), while stability indices (Section~\ref{sec:cluster_stability}) provide an independent validation check.
+
+The centrality prior uses two sources of information:
+\begin{itemize}
+\item $\tilde{g}_i$: normalized empirical CHC $g$-loadings from human factor analysis
+\item $\tilde{s}_i$: normalized structural priors about causal dependencies between domains
+\end{itemize}
+
+I reserve $\tilde{h}_i$ (stabilizing centrality) for future experimental updates once perturbation studies on AI systems become available. This keeps the framework transparent: each weight can be traced back to either human data or explicit mechanistic assumptions.
+
+The tilded quantities represent normalized versions that sum to 1 across domains:
+\[
+\tilde{g}_i = \frac{g_i}{\sum_j g_j}, \qquad
+\tilde{s}_i = \frac{s_i}{\sum_j s_j}, \qquad
+\tilde{h}_i = \frac{h_i}{\sum_j h_j}
+\]
+This normalization ensures that when we combine them into weights, the result remains a proper probability distribution: $\sum_i w_i = 1$ provided the mixing parameters also sum to 1.
+
+\subsection{A CHC-Informed Prior}\label{ssec:chc_prior}
+
+CHC theory provides one concrete source of evidence: decades of factor-analytic work have established which abilities load more heavily on the general factor $g$ in human populations~\parencite{carroll1993human,mcgrew2009chc}. Abilities with high $g$-loadings are more central to general intelligence (in humans) than abilities with low loadings. This gives us $\tilde{g}_i$, a normalized version of these empirical loadings.
+
+This can be combined with structural priors $\tilde{s}_i$ based on the CHC hierarchy itself and mechanistic considerations about causal dependencies. For instance, storage and retrieval are clearly upstream~-- you can't have durable knowledge without the ability to consolidate and access information. Reasoning operates over stored content and benefits from efficient retrieval. Speed modulates efficiency but doesn't generate new capabilities on its own.
+
+With both sources in hand, I define the centrality-prior weights as:
+\begin{equation}\label{eq:prior_weights}
+w_i^{\text{prior}} = \lambda \, \tilde{g}_i + \mu \, \tilde{s}_i, \qquad \lambda + \mu = 1, \quad \lambda \in [0.6, 0.9]
+\end{equation}
+Here, $\lambda$ controls how much weight to give to empirical $g$-loadings versus structural priors. The range $[0.6, 0.9]$ is chosen to reflect high but not exclusive confidence in the empirical factor-analytic data: high $\lambda$ (e.g., 0.8) trusts the human CHC loadings heavily, while low $\lambda$ (e.g., 0.6) hedges by blending in more structural considerations. Values below 0.6 would give equal or greater weight to structural priors than to decades of factor analysis, which seems unjustified; values above 0.9 would ignore structural considerations almost entirely. By varying $\lambda$ across this range and reporting the resulting score intervals, we make the sensitivity to this choice explicit.
+
+\subsection{An Illustrative Prior (Defeasible)}\label{ssec:illustrative_prior}
+
+To make this concrete, here's one example prior chosen to reflect typical CHC $g$-loadings and structural bottlenecks \parencite{carroll1993human,schneider2018chc}. These percentages are illustrative~-- different research teams might make different defensible choices~-- but they provide a starting point:
+
+\begin{itemize}[itemsep=0pt]
+\item Reasoning (R / Gf): 14\%
+\item Comprehension--Knowledge (Gc, K): 13\%
+\item Working Memory (WM / Gwm): 12\%
+\item Mathematics (Gq): 13\%
+\item Reading/Writing (Grw): 12\%
+\item Visual Processing (V / Gv): 8\%
+\item Auditory Processing (A / Ga): 8\%
+\item Long-term Storage (MS; part of Glr): 7\%
+\item Long-term Retrieval (MR; part of Glr): 7\%
+\item Processing Speed (Gs, S): 6\%
+\end{itemize}
+Two notes on specific components:
+
+First, CHC's broad factor \textit{Long-term Storage and Retrieval} (Glr) encompasses both encoding and retrieval processes. I separate Storage (MS) and Retrieval (MR) for analytic clarity~-- this decomposition reflects mechanistic considerations about consolidation versus cue-dependent access rather than CHC's factor structure itself. The split allows us to distinguish between systems that can encode but not retrieve versus those that struggle with consolidation.
+
+Second, Comprehension-Knowledge (Gc) is weighted at 13\% in this prior, reflecting both its typical $g$-loading and its structural role as accumulated crystallized knowledge. However, Gc's appropriate weight is context-dependent: it varies by age, test battery design, and what aspects of crystallized intelligence are emphasized. Batteries heavy on culturally-specific facts might warrant lower weights to avoid penalizing systems trained on different corpora, whereas batteries emphasizing acquired reasoning strategies (closer to Gc-as-skill) warrant weights at or above this level. The centrality prior should be conditioned on the battery's content profile.
+
+This isn't gospel. It's a starting point that makes assumptions explicit. Labs should report \textit{both} the equal-weight score (the null model) and the centrality-prior score with sensitivity bounds showing how results change as $\lambda$ varies. If the two scores differ substantially, that's decision-relevant information about the system's capability profile. If they track closely, equal weighting was harmless and we haven't lost anything.
+
+\subsection{Updating with Data}\label{ssec:updating_with_data}
+
+As AI evaluation matures and perturbation experiments become feasible, we can move from priors to posteriors. When labs can run controlled studies~-- degrading component $i$ to measure impact on other domains, or enhancing component $i$ to measure stability gains~-- add a third term to the weight formula:
+\begin{equation}\label{eq:updated_weights}
+w_i = \alpha \, \tilde{g}_i + \beta \, \tilde{s}_i + \gamma \, \tilde{h}_i, \qquad \alpha + \beta + \gamma = 1
+\end{equation}
+
+Now $\tilde{h}_i$ encodes measured stability contributions from AI-specific experiments: does enhancing component $i$ raise $\dcsi$ or $\ecsi$ (defined in Section~\ref{sec:cluster_stability})? Does degrading it cause disproportionate downstream failures? This turns the centrality prior into a centrality posterior~-- empirically calibrated for AI systems rather than borrowed from human data.
+
+But even before those experiments, the prior serves a crucial function: it makes weighting transparent and defeasible rather than arbitrary. Equal weighting isn't neutral~-- it's a strong claim that all abilities matter equally. The centrality prior makes a different claim, one that's explicit about its evidence base and open to revision.
+
+\section{Cluster Stability: What Persistence Looks Like}\label{sec:cluster_stability}
+
+The centrality-prior addresses the equal-weighting problem from Section~\ref{ssec:equal_weighting}. Now we tackle the snapshot problem from Section~\ref{ssec:snapshot}: how do we measure whether capabilities persist rather than collapse under perturbation?
+
+\paragraph{Notation and Normalization.} Before diving into specific indices, a note on measurement. Throughout this section, domain scores $a_i$ are normalized to the interval $[0,1]$, and all stability indices ($\pcsi$, $\dcsi$, $\ecsi$) are reported on the same $[0,1]$ scale. This standardization ensures that stability ratios and correlations remain interpretable across batteries with different native scoring scales (e.g., one battery might use 0--100, another might use letter grades). The $[0,1]$ normalization is fixed once at baseline and applied consistently to all perturbations~-- I don't re-scale vectors per perturbation, which would obscure absolute performance changes.
+
+\subsection{Why a Family of Indices?}\label{ssec:family_of_indices}
+
+A single \enquote{robustness score} risks conflating distinct phenomena. Compare three scenarios:
+
+\begin{itemize}
+\item A model whose domain profile (the relative pattern of strengths and weaknesses across CHC categories) stays consistent even when testing conditions change
+\item A model that retains specific taught facts across multiple sessions without relying on external scaffolds
+\item A model that corrects its own errors when given opportunities for reflection and multiple attempts
+\end{itemize}
+All three involve stability, but they're qualitatively different stabilities. The first is about preserving capability \textit{shape}. The second is about consolidating specific \textit{content}. The third is about improving performance through \textit{iteration}. Collapsing them into a single number would hide important distinctions.
+
+To avoid this, I propose three complementary indices that measure different aspects of persistence:
+
+\begin{enumerate}
+\item \textbf{Profile Stability Index ($\pcsi$)}: Does the \textit{shape} of your capability profile persist when testing conditions are perturbed?
+\item \textbf{Durable Learning Index ($\dcsi$)}: Do taught items survive across sessions and delays without external support?
+\item \textbf{Error-Decay Index ($\ecsi$)}: Do self-correction loops reduce mistakes over repeated attempts?
+\end{enumerate}
+Each index captures something important about general intelligence. Systems need all three: a stable profile that doesn't shift randomly, the ability to retain what they learn, and mechanisms for self-improvement. Let's look at each in detail.
+
+\subsection{Profile Stability Index (pCSI)}\label{ssec:pcsi}
+
+\paragraph{Intuition.} Imagine a model scores reasonably well across domains at baseline: [K:80, RW:75, M:70, R:85, WM:72, MS:45, MR:50, V:68, A:60, S:90]. Now you perturb the testing conditions~-- introduce delays, remove scaffolds, shift distributions. Does the profile maintain its characteristic shape? Does reasoning stay stronger than memory? Does speed stay higher than storage?
+
+If the profile shape persists, the system has stable capabilities. If the profile collapses or reorganizes chaotically, the baseline scores were measuring something fragile.
+
+\paragraph{Measurement Protocol.} Start by running the baseline CHC battery to get domain scores $\mathbf{a}^0 = (a_1^0, \ldots, a_{10}^0)$. Then define a set of perturbations $P = \{P_1, \ldots, P_n\}$ and retest under each perturbation to get new score vectors $\mathbf{a}^{(j)}$ for $j = 1, \ldots, |P|$.
+
+For each perturbation, compute the Pearson correlation between baseline and perturbed profiles:
+\[
+r_j = \text{corr}(\mathbf{a}^0, \mathbf{a}^{(j)})
+\]
+This correlation measures how well the profile shape is preserved. High correlation means strengths and weaknesses maintained their relative positions. Low correlation means the profile reorganized.
+
+Here's the technical detail that matters: averaging correlations directly is statistically problematic because correlations aren't normally distributed. The standard solution is Fisher's $z$-transformation, which maps correlations to a scale where averaging is valid:
+\begin{equation}\label{eq:pcsi_fisher}
+\begin{aligned}
+\bar{z} &= \frac{1}{|P|} \sum_{j \in P} \operatorname{arctanh}(r_j),\\
+\bar{r} &= \tanh(\bar{z}).
+\end{aligned}
+\end{equation}
+Then map the average correlation to the $[0,1]$ interval:
+\[
+\pcsi = \frac{1 + \bar{r}}{2}
+\]
+
+I use this mapping because correlations range from $-1$ to $+1$, where $-1$ means perfect anti-correlation (profile completely inverted), $0$ means no relationship (random reorganization), and $+1$ means perfect preservation. Mapping to $[0,1]$ puts \enquote{complete collapse} at 0 and \enquote{perfect stability} at 1, which aligns with intuition about stability.
+
+\paragraph{Alternative Similarity Measures.} I use Pearson correlation as the default because it's sensitive to linear relationships in the profile shape. But for robustness, labs should also report Spearman rank correlation (which captures monotonic relationships without assuming linearity) and cosine similarity (which emphasizes direction in high-dimensional space). For any alternative similarity measure $m_j \in [-1,1]$, map it to $[0,1]$ via $(1+m_j)/2$ and average across perturbations. These alternatives serve as appendix checks~-- if all three measures agree, the profile stability is robust to measurement choice. If they diverge, that's interesting information about what kind of structure is (or isn't) preserved.
+
+\paragraph{Confidence Intervals.} Statistical uncertainty matters for governance decisions. For $\pcsi$ based on Fisher $z$-transformed correlations, we can compute confidence intervals using the standard error:
+\[
+\text{SE}(\bar{z}) = \frac{1}{\sqrt{(n-3)|P|}}
+\]
+where $n=10$ is the number of domains and $|P|$ is the number of perturbations. This SE formula assumes approximate independence of the $z_j$ values.
+
+But there's a complication: all the perturbed profiles $\mathbf{a}^{(j)}$ share the same baseline $\mathbf{a}^0$, which induces dependency. To address this, I also recommend reporting a percentile bootstrap confidence interval computed by resampling over the perturbation set $P$. If the parametric and bootstrap CIs agree, we have convergent evidence. If they diverge, the bootstrap is more trustworthy.
+
+\paragraph{Interpretation.} $\pcsi$ near 1 (say, $\ge 0.85$) means the profile shape is robust~-- whatever makes this system strong at reasoning and weak at storage persists across conditions. $\pcsi$ near 0.5 means the profile is halfway to random reorganization. $\pcsi$ below 0.3 suggests capabilities are highly brittle~-- the system looks fundamentally different under stress.
+
+\paragraph{The Level-Shift Problem.} Here's a crucial caveat. Because $\pcsi$ measures profile \textit{shape} via correlation, it doesn't capture absolute performance changes. A system whose scores uniformly drop 50\% across all domains (say, from [80, 75, 70, 85] to [40, 37.5, 35, 42.5]) retains perfect correlation and thus high $\pcsi$, even though capabilities degraded substantially. The relative pattern is preserved~-- reasoning is still the strongest domain~-- but everything got worse.
+
+This is actually a feature of separating shape from magnitude. But it means $\pcsi$ always has to be reported alongside a level-shift metric that captures absolute performance changes:
+
+\[
+\Delta_{\text{level}} = \frac{1}{|P|} \sum_{j \in P} \min\!\left(1, \frac{\operatorname{mean}(\mathbf{a}^{(j)})}{\operatorname{mean}(\mathbf{a}^0)}\right)
+\]
+
+This metric computes the ratio of average domain scores under perturbation to baseline average scores. The $\min(\cdot, 1)$ cap prevents perturbations that somehow improve performance from inflating the metric above 1, keeping it on the $[0,1]$ scale where 1 means \enquote{maintained baseline level} and 0 means \enquote{complete collapse}.
+
+For systems where centrality matters, also report a weighted version:
+\[
+\Delta_{\text{level}}^{(w)}
+= \frac{1}{|P|}\sum_{j\in P}
+  \min\!\left(1,\,
+  \frac{\sum_i w_i^{\text{prior}} a_i^{(j)}}
+       {\sum_i w_i^{\text{prior}} a_i^{0}}\right)
+\]
+This weights the level shift by the centrality-prior weights from Equation~\ref{eq:prior_weights}, making drops in central domains (like reasoning or storage) count more heavily than drops in peripheral domains (like speed).
+
+In practice, tables should report both: \enquote{$\pcsi = 0.86$; $\Delta_{\text{level}} = 0.61$ (unweighted), $\Delta_{\text{level}}^{(w)} = 0.58$ (weighted).} (These are illustrative values.) Both numbers matter. High $\pcsi$ with low $\Delta_{\text{level}}$ means \enquote{stable shape, but everything weakened}. Low $\pcsi$ with high $\Delta_{\text{level}}$ means \enquote{maintained magnitude, but reorganized chaotically}. High on both means true robustness.
+
+\paragraph{Perturbation Families.} What perturbations should we test? Three families seem most diagnostic:
+
+\begin{itemize}
+\item \textit{Temporal delays}: Test at baseline $t=0$, then retest after 24 hours, 72 hours, and 7 days using clean sessions with no context carryover. This probes whether capabilities persist when the system can't rely on cached activations or continuous context.
+
+\item \textit{Scaffold removal}: Systematically degrade or remove scaffolds the system relies on. Truncate context windows to 10\% of maximum length. Disable RAG systems. Swap out tools for less powerful alternatives. This reveals whether high baseline scores depend on external supports.
+
+\item \textit{Distribution shifts}: Rephrase questions using different vocabulary or syntax. Introduce cross-domain transfer tasks (e.g., apply mathematical reasoning to literary analysis). Apply standard robustness corruptions (noise, partial information). This tests whether capabilities generalize beyond training distributions.
+\end{itemize}
+
+To prevent gaming, draw a random subset of perturbations from each family on each evaluation run (lottery-style sampling). Publish the random seeds only \textit{after} evaluation is complete. This way, labs know what \textit{kinds} of perturbations to expect but can't optimize for specific test instances.
+
+\subsection{Durable Learning Index (dCSI)}\label{ssec:dcsi}
+
+\paragraph{Intuition.} Profile stability (Section~\ref{ssec:pcsi}) tells you whether the capability \textit{shape} persists. But it doesn't tell you whether the system can learn new content and retain it. Consider: a system might maintain perfect $\pcsi = 1$ while never consolidating any taught information~-- it just keeps regenerating the same profile from scratch each time.
+
+Durable learning tests something different: if I teach the model a new fact, procedure, or concept in session 1, does it still know that information in session 3 when there are no scaffolds to prop it up?
+
+\paragraph{Measurement Protocol.} Pre-register a set of teach-and-retest items $T$ before evaluation begins. These items should be:
+\begin{itemize}
+\item Balanced across domains (don't test only math or only language)
+\item Screened for baseline floor and ceiling effects (items the system already knows perfectly, or can't learn at all, provide no signal)
+\item Representative of the kinds of learning humans can do (facts, procedures, concepts)
+\end{itemize}
+Specifically, exclude items where baseline accuracy is below a threshold $\epsilon$ (typically 0.1 on a 0--1 scale) to avoid division-by-noise, and items where baseline accuracy exceeds 0.95 (near-ceiling) to avoid measuring what the system already knew rather than what it learned. Call the filtered set $T'$.
+
+For each item $t \in T'$, follow this protocol:
+\begin{enumerate}
+\item Session 0: Teach the item explicitly. Verify learning with immediate testing. Record score $\text{score}_{t,0}$.
+\item Sessions at delays $D = \{24\text{h}, 72\text{h}, 168\text{h}\}$: Fresh session, no tools, no context carryover. Test retention. Record scores $\text{score}_{t,\delta}$ for each delay $\delta \in D$.
+\end{enumerate}
+
+Compute retention as:
+\[
+\dcsi = \frac{1}{|T'|} \sum_{t \in T'} \frac{1}{|D|} \sum_{\delta \in D} \min\!\left(1, \frac{\text{score}_{t,\delta}}{\text{score}_{t,0}}\right)
+\]
+The inner fraction captures what proportion of the initially-learned material is retained at each delay. The $\min(\cdot, 1)$ cap treats any post-delay performance exceeding baseline as full retention rather than super-retention (which would inflate $\dcsi$ inappropriately). Averaging over delays gives a trajectory: did retention hold at 24h but collapse by 7 days? Averaging over items gives robustness: is retention consistent or item-dependent?
+
+\paragraph{Interpretation.} $\dcsi$ near 1 means taught items are retained at near-baseline accuracy across all delays~-- the system consolidated the information. $\dcsi$ near 0.5 means roughly half the learned content is forgotten. $\dcsi$ near 0 means the system retained essentially nothing, suggesting it lacks durable storage mechanisms.
+
+\paragraph{Calibration Against Human Performance.} Human test--retest reliability on similar tasks provides useful intuition pumps. Typical human retention on episodic memory tasks might be 85\% at 24 hours and 70\% at 7 days (exact values depend on content difficulty and rehearsal). These benchmarks aren't hard thresholds~-- AI memory might work differently~-- but they give reference points. A system with $\dcsi = 0.3$ is performing far below human-level consolidation. A system with $\dcsi = 0.8$ is approaching human-like retention.
+
+However, $\dcsi$ thresholds for governance purposes should remain illustrative pending empirical calibration across multiple model families. We need distributions before setting cutoffs. What matters initially is measuring $\dcsi$ consistently and transparently, building up the empirical record that will eventually support principled thresholds.
+
+\subsection{Error-Decay Index (eCSI)}\label{ssec:ecsi}
+
+\paragraph{Intuition.} The third aspect of stability is self-correction: can the system improve its performance through iteration when given feedback or opportunities to reflect?
+
+Human intelligence involves metacognitive loops. We make mistakes, notice them (sometimes), try again with adjusted strategies, and gradually reduce errors. This isn't just about having the capability; it's about being able to \textit{use feedback to get better}. A system that can't improve with iteration is missing a key stabilizing mechanism.
+
+\paragraph{Measurement Protocol.} Present the system with a challenging task and allow $K$ attempts (typically $K=5$). After each attempt except the last, provide minimal feedback. This could be:
+\begin{itemize}
+\item Explicit feedback: \enquote{incorrect, try again} or \enquote{partially correct, refine your answer}
+\item Implicit feedback: let the model review its own answer and compare it against the prompt
+\item Structured feedback: point out specific errors without giving solutions
+\end{itemize}
+
+Track error rates $e_1, \ldots, e_K$ across attempts. If the number of attempts varies across tasks, compute a task-level $\ecsi$ for each task and then average those task-level values with equal task weight (not attempt-weighted) to maintain comparability.
+
+Here's an important detail: compute $\ecsi$ only for tasks where the system initially errs. Require $e_1 \ge \tau$ where $\tau$ is typically 0.2. Why? Tasks where the system gets nearly everything right on the first attempt ($e_1 < 0.2$) provide minimal signal about learning from feedback~-- there's a ceiling effect. We care about whether iteration helps when things go wrong initially.
+
+For qualifying tasks, compute two quantities:
+\begin{align}
+B &= \frac{\sum_{k=2}^{K} (e_k - e_{k-1})_+}{\sum_{k=2}^{K} |e_k - e_{k-1}| + \varepsilon} \label{eq:backsliding}\\
+I &= \max\!\left(0, \frac{e_1 - e_K}{\max(e_1, \varepsilon)}\right) \label{eq:improvement}
+\end{align}
+
+Here's what these capture:
+\begin{itemize}
+\item $I$ (improvement): the net reduction in error rate from first to last attempt, normalized by the initial error rate. If you start at 80\% errors and end at 20\%, $I = (0.8 - 0.2)/0.8 = 0.75$. Perfect improvement gives $I=1$; no improvement gives $I=0$.
+\item $B$ (backsliding): the fraction of attempt-to-attempt transitions where errors \textit{increased} rather than decreased. If every step improves ($e_{k} < e_{k-1}$ always), then $B=0$. If half the steps make things worse, $B \approx 0.5$. 
+\item $(e_k - e_{k-1})_+$ denotes the positive part: $\max(0, e_k - e_{k-1})$, capturing only error increases.
+\item $\varepsilon$ is a small constant (typically $10^{-6}$) to prevent division by zero.
+\end{itemize}
+
+Then combine them:
+\[
+\ecsi = I \cdot (1 - \min(1, B))
+\]
+This product structure ensures that both monotonic improvement and overall error reduction are required for high $\ecsi$:
+\begin{itemize}
+\item A system with strictly decreasing errors ($B=0$) and full improvement ($I=1$) achieves $\ecsi = 1$.
+\item A system with no net improvement ($I=0$) gets $\ecsi = 0$, regardless of $B$.
+\item A system with substantial improvement ($I=0.8$) but frequent backsliding ($B=0.6$) receives $\ecsi = 0.8 \times 0.4 = 0.32$~-- the backsliding penalty matters.
+\end{itemize}
+
+\paragraph{Interpretation.} $\ecsi$ near 1 means self-correction works reliably~-- the system reduces errors systematically with each iteration and rarely backtracks. $\ecsi$ near 0.5 means iteration helps somewhat, but there's substantial noise or backsliding. $\ecsi$ near 0 means iteration doesn't help, or actively harms performance (which can happen if the system fixates on wrong approaches).
+
+\paragraph{Why This Matters.} Humans improve with practice and feedback. Systems that can't exhibit this behavior lack a crucial stabilizing loop. They can't recover from errors, adapt strategies, or refine answers. In deployment, this shows up as rigidity: the system gives one answer and sticks with it even when it's clearly wrong. High $\ecsi$ signals the opposite: flexibility and self-correction.
+
+\subsection{Combined Cluster Stability Index (CSI)}\label{ssec:csi}
+
+There are three indices measuring different aspects of stability. For governance purposes, it's useful to have a single summary that captures \enquote{overall cluster stability}. How should we combine $\pcsi$, $\dcsi$, and $\ecsi$?
+
+The homeostatic-property-cluster view doesn't require that every stabilizing mechanism be present at full strength; membership is graded and mechanisms can be partly substitutable. What it does suggest is low substitutability: weaknesses in one stabilizing link (profile persistence, durable learning, or error decay) can't be fully offset by strengths in the others. To reflect this complementarity, I aggregate multiplicatively using the geometric mean, which penalizes imbalances more than the arithmetic mean and is standard in multi-attribute utility when criteria are complementary~\parencite{KeeneyRaiffa1993}:
+\begin{equation}\label{eq:csi_geo}
+\csi = \left(\max(\varepsilon, \pcsi)\,\max(\varepsilon, \dcsi)\,\max(\varepsilon, \ecsi)\right)^{1/3}.
+\end{equation}
+
+This form penalizes weakness on any component more than arithmetic averaging would, while still allowing partial compensation. The same system as above ($\pcsi = 0.9$, $\ecsi = 0.9$, $\dcsi = 0.2$) now gets $\csi = (0.9 \times 0.9 \times 0.2)^{1/3} \approx 0.54$~-- much lower, reflecting the weak consolidation mechanism that can't be compensated by strengths elsewhere.
+
+The $\max(\varepsilon, \cdot)$ terms in Equation~\ref{eq:csi_geo} provide a soft floor (typically $\varepsilon = 10^{-6}$). This prevents measurement noise from driving any single component to exact zero and collapsing $\csi$ entirely due to the multiplicative structure. In practice, if a component is genuinely zero (no profile stability whatsoever, zero retention, no self-correction), the geometric mean will be near zero regardless. The floor matters only for cases where the component is \textit{measured} as zero due to sampling noise but might be slightly positive in the true population.
+
+\paragraph{Interpretation.} $\csi$ near 1 means the system exhibits all three forms of stability: profile shape persists, learning consolidates, iteration improves performance. $\csi$ near 0.5 means substantial weakness on at least one dimension. $\csi$ below 0.3 suggests pervasive instability~-- the cluster is barely holding together.
+
+\paragraph{Reporting Guidance.} For transparency, always report the component indices alongside $\csi$. A table entry might read:
+
+\begin{center}
+Model X: $\csi = 0.72$ ($\pcsi = 0.85$, $\dcsi = 0.71$, $\ecsi = 0.68$)
+\end{center}
+This shows \textit{how} the system achieves its overall stability: relatively strong profile persistence, moderate consolidation, slightly weaker self-correction. Different systems might reach similar $\csi$ values via different component profiles, and those differences matter for understanding capabilities and risks.
+
+\section{Contortion vs. Compensation}\label{sec:contortion_vs_compensation}
+
+The stability indices from Section~\ref{sec:cluster_stability} reveal a distinction that matters for both evaluation and governance: the difference between scaffolds that genuinely extend capabilities (compensation) and scaffolds that merely inflate snapshot scores (contortion).
+
+\subsection{The Distinction}\label{ssec:distinction}
+
+Not all scaffolds are equal. Compare two systems, both scoring 80\% on retrieval at baseline:
+
+\paragraph{System A: Contorted Retrieval.} Uses a 200K-token context window to cache retrieved facts. When you test retrieval at $t=0$ with the context available, it scores 80\%. Disable the context window and retest 24 hours later: retrieval drops to 20\%. The system wasn't actually retrieving from long-term storage~-- it was pattern-matching over cached text. The retrieval score was measuring the scaffold, not the capability.
+
+Performance trajectory under perturbation (full context $\to$ limited context $\to$ no context): 80\% $\to$ 45\% $\to$ 20\%. The profile stability $\pcsi$ collapses when the scaffold is removed. The durable learning $\dcsi$ is near zero~-- taught facts aren't consolidated, just cached temporarily.
+
+\paragraph{System B: Compensatory Retrieval.} Uses RAG to provide calibrated information that reduces hallucinations and improves accuracy. With RAG at baseline: 80\%. Degrade the RAG database (30\% of entries corrupted): 70\%. Disable RAG entirely: 65\%. The system performs better with the scaffold, but doesn't catastrophically fail without it. It has internalized retrieval strategies that transfer.
+
+Performance trajectory: 80\% $\to$ 70\% $\to$ 65\%. The profile shape is preserved ($\pcsi = 0.88$) even when the scaffold is degraded. Taught information is retained across sessions ($\dcsi = 0.74$). The RAG system is genuinely compensatory~-- it enhances an existing capability rather than substituting for a missing one.
+
+\subsection{Why It Matters}\label{ssec:why_it_matters_contortion}
+
+Contortions inflate AGI scores without delivering robust capabilities. The system looks smart in controlled evaluation conditions but fails in deployment when scaffolds break, contexts reset, or conditions drift. This creates two problems:
+
+First, \textbf{measurement validity}: if we're evaluating \enquote{general intelligence}, we should measure what the system itself can do, not what the system plus a tower of brittle scaffolds can do when everything aligns perfectly.
+
+Second, \textbf{deployment risk}: systems that rely on contortions fail unpredictably. The failures aren't graceful degradation~-- they're catastrophic collapses when a single scaffold breaks. Users experience these as inexplicable regressions: \enquote{It worked yesterday, why doesn't it work now?}
+
+Compensation, by contrast, genuinely extends capabilities in ways that persist. Humans use external tools constantly~-- notebooks for memory, calculators for arithmetic, search engines for fact-checking. These tools don't make us \enquote{fake smart}; they make us more capable. The difference: human tool use persists across sessions, transfers across contexts, and survives tool breakage (we can still function, just less efficiently).
+
+AI systems should meet the same standard. If RAG improves retrieval precision and reduces hallucinations \textit{and} the system maintains profile stability when the RAG database is noisy or partially disabled, it's compensatory. If disabling RAG causes catastrophic performance drops and profile collapse, it was a contortion.
+
+\subsection{Operational Test}\label{ssec:operational_test}
+
+Here's a concrete protocol for distinguishing compensation from contortion. Run capability tests under three conditions:
+
+\begin{enumerate}
+\item \textbf{Full scaffolds}: Baseline configuration with all tools, context windows, RAG systems, etc. enabled
+\item \textbf{Degraded scaffolds}: Partial impairment of scaffolds. For example:
+  \begin{itemize}
+  \item RAG database with 30\% of entries corrupted or missing
+  \item Context window limited to 20\% of maximum length
+  \item Tools swapped for less powerful alternatives
+  \end{itemize}
+\item \textbf{No scaffolds}: Clean session with minimal context, no retrieval augmentation, no external tools
+\end{enumerate}
+
+A compensatory scaffold produces:
+\begin{itemize}
+\item \textit{Graceful degradation}: Performance decreases from (1)$\to$(2)$\to$(3), but the drops are moderate (each step loses $<$20 percentage points)
+\item \textit{Preserved profile shape}: $\pcsi > 0.7$ across all three conditions~-- the relative pattern of strengths and weaknesses is maintained even as absolute levels decrease
+\item \textit{Maintained stability}: $\dcsi$ and $\ecsi$ stay within 20\% of baseline when scaffolds are degraded
+\end{itemize}
+
+A contorted scaffold produces:
+\begin{itemize}
+\item \textit{Catastrophic drops}: (1)$\to$(2) loses $>$30 percentage points, or (2)$\to$(3) causes near-total collapse
+\item \textit{Profile collapse}: $\pcsi < 0.5$ when scaffolds are removed~-- the system looks qualitatively different, suggesting the baseline profile was scaffold-dependent
+\item \textit{Zero consolidation}: $\dcsi$ near 0~-- nothing is retained without the scaffold propping up performance
+\end{itemize}
+
+The different trajectories are visualized in Figure~\ref{fig:contortion}, which shows how two systems starting at the same baseline (85\%) diverge dramatically under scaffold perturbation.
+
+\begin{figure}[tbp]
+\centering
+\begin{tikzpicture}
+\begin{axis}[
+    width=0.9\textwidth,
+    height=6.5cm,
+    ybar=5pt,
+    bar width=18pt,
+    ylabel={Average Performance (\%)},
+    xlabel={Scaffold Condition},
+    symbolic x coords={Full scaffolds, Degraded scaffolds, No scaffolds},
+    xtick=data,
+    ymin=0, ymax=100,
+    legend style={at={(0.98,0.98)}, anchor=north east, legend columns=1},
+    ymajorgrids=true,
+    grid style=dashed,
+]
+
+% Compensatory trajectory
+\addplot[fill=myblue, draw=myblue!50!black] coordinates {
+    (Full scaffolds, 85)
+    (Degraded scaffolds, 72)
+    (No scaffolds, 65)
+};
+
+% Contorted trajectory
+\addplot[fill=myorange, draw=myorange!50!black] coordinates {
+    (Full scaffolds, 85)
+    (Degraded scaffolds, 58)
+    (No scaffolds, 35)
+};
+
+\legend{Compensatory ($\pcsi = 0.82$), Contorted ($\pcsi = 0.43$)}
+
+\end{axis}
+\end{tikzpicture}
+\caption{Performance trajectories under scaffold degradation. Compensatory scaffolds enable graceful degradation with preserved profile shape (high $\pcsi$). Contorted scaffolds produce catastrophic collapse when removed (low $\pcsi$). Both systems start at 85\% with full scaffolds, but only the compensatory system maintains robust capabilities when scaffolds are degraded or removed. Illustrative data.}
+\label{fig:contortion}
+\end{figure}
+
+\paragraph{Governance Implication.} Systems should be scored under degraded or minimal scaffold conditions, not just at baseline with everything enabled. A system that achieves 90\% with contorted scaffolds but 45\% without them hasn't demonstrated 90\% capability~-- it's demonstrated 45\% capability plus 45 percentage points of scaffold-dependence. The centrality-prior score (Section~\ref{ssec:chc_prior}) and stability indices (Section~\ref{sec:cluster_stability}) should reflect the \textit{robust} baseline, not the inflated contorted baseline.
+
+\section{Operational Protocols}\label{sec:protocols}
+
+The theoretical framework from Sections~\ref{sec:chc_to_hpc}--\ref{sec:contortion_vs_compensation} needs operational teeth. This section provides concrete protocols labs can implement without architectural access to models~-- everything here works with black-box testing.
+
+\subsection{Scoring with Priors and Sensitivity}\label{ssec:scoring_priors}
+
+\paragraph{Minimal Implementation.} Every AGI evaluation report should include both baseline and sensitivity-analysis scores:
+
+\begin{enumerate}
+\item \textbf{Report the equal-weight score} (current standard): 
+\[
+S_{\text{equal}} = \sum_{i=1}^{10} 0.1 \cdot a_i
+\]
+This is the null model. It makes no centrality assumptions and treats all domains as equally important.
+
+\item \textbf{Report the centrality-prior score} with $\lambda$ varied over $[0.6, 0.9]$:
+\[
+S_{\text{prior}}(\lambda) = \sum_{i=1}^{10} w_i^{\text{prior}}(\lambda) \cdot a_i
+\]
+where $w_i^{\text{prior}}(\lambda)$ comes from Equation~\ref{eq:prior_weights}. Computing this at multiple $\lambda$ values shows how sensitive the score is to the balance between empirical $g$-loadings and structural priors.
+
+\item \textbf{Display both as a range} in the executive summary:
+\begin{center}
+\enquote{AGI Score: 58\% (equal weights) | 52--61\% (centrality-prior, $\lambda \in [0.6, 0.9]$)}
+\end{center}
+\end{enumerate}
+
+\paragraph{Why This Helps.} If the equal-weight and centrality-prior scores differ by $>$10 percentage points, that flags a jagged capability profile where centrality structure matters. The system might be strong on peripheral domains (speed, auditory processing) but weak on central domains (reasoning, storage), or vice versa. If the scores are within 5 points, equal weighting was essentially harmless and we haven't lost information.
+
+Either way, the weighting choice has been made transparent and decision-relevant. Governance bodies can see both numbers and make informed choices about which to use for thresholds. Researchers can compare systems on both metrics and understand \textit{why} they diverge.
+
+Figure~\ref{fig:sensitivity} illustrates this for a hypothetical model with a jagged profile: high centrality-weighted score because it excels on reasoning, storage, and retrieval (the high-$g$ domains), but moderate equal-weight score because it's weak on speed and auditory processing (peripheral domains that get equal weight in the null model).
+
+\begin{figure}[tbp]
+\centering
+\begin{tikzpicture}
+\begin{axis}[
+    width=0.85\textwidth,
+    height=6.5cm,
+    xlabel={$\lambda$ (weight on empirical $g$-loadings)},
+    ylabel={AGI Score (\%)},
+    xmin=0.5, xmax=1.0,
+    ymin=60, ymax=80,
+    grid=major,
+    grid style=dashed,
+    legend style={at={(0.02,0.98)}, anchor=north west},
+]
+
+% Centrality-prior trajectory for jagged profile
+\addplot[thick, myblue, mark=*, mark size=2.5pt] coordinates {
+    (0.6, 71.2)
+    (0.65, 72.1)
+    (0.7, 73.0)
+    (0.75, 73.8)
+    (0.8, 74.5)
+    (0.85, 75.1)
+    (0.9, 75.7)
+};
+
+% Equal-weight baseline
+\addplot[thick, dashed, myorange] coordinates {
+    (0.5, 68.0)
+    (1.0, 68.0)
+};
+
+\legend{Centrality-prior $S_{\text{prior}}(\lambda)$, Equal-weight baseline}
+
+\end{axis}
+\end{tikzpicture}
+\caption{Sensitivity of AGI score to weighting scheme for a model with jagged profile: high on central domains (R: 90\%, MS: 85\%, MR: 80\%), low on peripheral domains (S: 40\%, A: 35\%). The centrality-prior score ranges from 71--76\% as $\lambda$ varies, consistently exceeding the equal-weight score of 68\%. The sensitivity band quantifies uncertainty while showing that centrality weighting systematically rewards capability profiles aligned with structural importance. Illustrative data.}
+\label{fig:sensitivity}
+\end{figure}
+
+\subsection{Stability Battery}\label{ssec:stability_battery}
+
+Computing the stability indices from Section~\ref{sec:cluster_stability} requires a structured battery of tests run over time. Here's the operational protocol:
+
+\paragraph{Pre-Registration Phase.} Before any testing begins, publicly register:
+
+\begin{itemize}
+\item \textbf{Perturbation families}: Which delay schedules (24h, 72h, 7d), which scaffold manipulations (context limits, RAG corruption percentages), which distribution shifts (rephrase strategies, cross-domain transfers)
+\item \textbf{Teach-and-retest items for $\dcsi$}: A curated set of facts, procedures, and concepts balanced across CHC domains and screened for baseline ceiling/floor effects. Include randomization seeds for lottery-style selection.
+\item \textbf{Error-decay tasks for $\ecsi$}: Challenging problems where $K=5$ attempts are allowed, specifying feedback type (explicit, implicit, structured) and error-scoring rubrics
+\end{itemize}
+
+Publish these on a timestamped, immutable registry (e.g., OSF, arXiv). This prevents post-hoc optimization and makes the evaluation protocol transparent.
+
+\paragraph{Execution Phase.} Run the tests in this sequence:
+
+\begin{enumerate}
+\item \textbf{Baseline CHC battery}: Administer the full 10-domain battery to get $\mathbf{a}^0 = (a_1^0, \ldots, a_{10}^0)$
+
+\item \textbf{Apply perturbations}: From each pre-registered family, randomly sample specific instances using unpublished seeds (lottery-style). For example, from the delay family, sample one test at 24h, one at 72h, one at 7d. From the scaffold family, sample context truncation and RAG degradation. Run perturbed batteries to get $\mathbf{a}^{(j)}$ for each sampled perturbation $j$.
+
+\item \textbf{Schedule delayed retests}: For durable learning, teach items in session 0, then schedule retests at pre-registered delays with enforced clean sessions (no context carryover, no scaffold access, fixed prompts). Track $\text{score}_{t,\delta}$ for each item $t$ and delay $\delta$.
+
+\item \textbf{Run error-decay trials}: Present pre-registered tasks with $K=5$ attempts and minimal feedback. Log error rates $e_1, \ldots, e_K$ for each task.
+
+\item \textbf{Compute indices}: Calculate $\pcsi$, $\Delta_{\text{level}}$, $\Delta_{\text{level}}^{(w)}$ from the perturbed profiles. Calculate $\dcsi$ from retention data. Calculate $\ecsi$ from error-decay trajectories. Combine into $\csi$ using the geometric mean formula from Section~\ref{ssec:csi}.
+
+\item \textbf{Publish results with seeds}: Release a report containing all scores, indices with confidence intervals, and the random seeds used for perturbation sampling. This allows third parties to verify lottery fairness and reproduce results.
+\end{enumerate}
+
+\paragraph{Anti-Gaming Mechanism.} The lottery-style perturbation sampling is critical. By publishing the perturbation \textit{families} but not the specific instances or seeds until after evaluation, we prevent labs from:
+\begin{itemize}
+\item Training specifically on the test items (they don't know which items from the family will be sampled)
+\item Optimizing for particular delay schedules (they don't know whether 24h, 72h, or 7d will be selected)
+\item Hardcoding responses to specific perturbations (the instances are random)
+\end{itemize}
+
+Post-hoc publication of seeds allows verification: auditors can check that seeds were truly random and that sampling was unbiased. This transparency builds trust without sacrificing security during evaluation.
+
+\subsection{Updating Weights with Experiments (Optional)}\label{ssec:updating_weights}
+
+The centrality-prior weights from Section~\ref{ssec:chc_prior} are based on human CHC data and structural analysis. As AI evaluation matures and perturbation experiments accumulate, we can update these priors with AI-specific empirical data. This is optional~-- the prior-based approach is useful even without it~-- but experimentally-grounded posteriors are stronger.
+
+When controlled perturbations become feasible, run two types of experiments:
+
+\paragraph{Ablation Studies (Impact Centrality).} For each component $i$:
+\begin{enumerate}
+\item Design interventions that selectively degrade component $i$. Examples:
+  \begin{itemize}
+  \item For storage (MS): add noise to consolidation pathways, limit retention capacity
+  \item For reasoning (R): restrict inference depth, disable chain-of-thought
+  \item For speed (S): add latency, throttle processing bandwidth
+  \end{itemize}
+\item Measure downstream impact on other domains $j \ne i$. Does degrading storage harm retrieval and knowledge? Does degrading reasoning harm math and planning?
+\item Compute impact centrality $c_i$ as the average performance drop across other domains normalized by the size of the degradation to component $i$
+\end{enumerate}
+
+\paragraph{Enhancement Studies (Stabilizing Centrality).} For each component $i$:
+\begin{enumerate}
+\item Design interventions that enhance component $i$. Examples:
+  \begin{itemize}
+  \item For storage: add memory consolidation modules, increase retention capacity
+  \item For retrieval: improve search algorithms, reduce access latency
+  \item For reasoning: extend inference budgets, enable explicit planning
+  \end{itemize}
+\item Measure stability gains: does enhancing component $i$ raise $\csi$, particularly $\dcsi$ and $\ecsi$?
+\item Compute stabilizing centrality $h_i$ as the measured increase in cluster stability per unit enhancement of component $i$
+\end{enumerate}
+
+With both $c_i$ and $h_i$ estimates in hand, update the weight formula from Equation~\ref{eq:prior_weights} to the posterior form:
+\[
+w_i = \alpha \, \tilde{g}_i + \beta \, \tilde{s}_i + \gamma \, \tilde{h}_i, \qquad \alpha + \beta + \gamma = 1
+\]
+
+Choose mixing parameters $\alpha, \beta, \gamma$ by cross-validation: which weights best predict held-out deployment performance, user satisfaction ratings, or long-horizon task success? This turns the centrality framework from a theoretically-motivated prior into an empirically-calibrated model.
+
+The framework is useful \textit{before} these experiments~-- the prior makes assumptions explicit~-- and stronger \textit{after} them~-- the posterior incorporates AI-specific evidence. But don't wait for perfect data. The prior is usable now.
+
+\section{Predictions and Falsification}\label{sec:predictions}
+
+If the homeostatic-property-cluster account is correct, specific empirical patterns should emerge. Here are four testable predictions with concrete falsification conditions. Note that specific magnitudes (e.g., \enquote{$>$30 points}, \enquote{$\ge 0.2$}) are illustrative starting points; the \textit{structure} of the predictions is the key contribution, and thresholds should be adjusted as empirical distributions become available.
+
+\paragraph{P1: Reasoning Depends on Durable Learning.} Under 72-hour delay with clean sessions (no access to prior context), models with low durable learning ($\dcsi < 0.4$) will show significantly larger drops on novel multi-step reasoning tasks compared to models with high durable learning ($\dcsi \ge 0.7$), holding snapshot reasoning scores constant.
+
+\textit{Rationale}: Reasoning isn't pure computation detached from memory. Multi-step reasoning builds on retained intermediate results, learned strategies, and accumulated problem-solving patterns. A system that can't consolidate information across sessions can't build the substrate that supports sustained reasoning. If $\dcsi$ reflects genuine consolidation, it should predict reasoning resilience.
+
+\textit{Falsifier}: If high-snapshot-reasoning models with $\dcsi < 0.4$ maintain reasoning performance under 72h delays just as well as models with $\dcsi \ge 0.7$, then durable learning doesn't matter for reasoning robustness and the HPC account is wrong about their relationship.
+
+\paragraph{P2: Storage Improvements Transfer to Planning.} Any intervention that raises $\dcsi$ by $\ge 0.2$ will yield measurable gains in tool-use persistence and planning horizon that exceed gains in single-shot knowledge tasks or processing speed, controlling for total training tokens.
+
+\textit{Rationale}: Durable learning enables cumulative skill acquisition. Improvements in the ability to consolidate information should transfer specifically to tasks requiring sustained context and multi-step planning~-- tool use (remembering how tools work across sessions) and planning (building on intermediate results). These gains should be disproportionate compared to tasks that don't require consolidation.
+
+\textit{Falsifier}: If boosting $\dcsi$ improves single-shot knowledge and speed just as much as tool-use and planning, then consolidation isn't specifically upstream of cumulative capabilities. If boosting $\dcsi$ doesn't improve planning at all, the HPC story about causal structure is wrong.
+
+\paragraph{P3: RAG Can Be Compensatory or Contorted.} Disabling RAG causes $< 10$-point drops in retrieval (MR) scores when RAG is compensatory (system maintains $\dcsi/\ecsi \ge 0.6$ and $\pcsi \ge 0.7$ under RAG degradation) but $> 30$-point drops when RAG is contorted (system shows $\dcsi < 0.4$, $\ecsi < 0.4$, or $\pcsi < 0.5$ under RAG degradation). The compensatory case should also maintain $\pcsi$ under RAG database corruption; the contorted case should not.
+
+\textit{Rationale}: Compensatory scaffolds integrate with robust internal representations~-- the system has retrieval strategies that persist even when the scaffold is removed. Contorted scaffolds substitute for missing capabilities~-- remove the scaffold and performance collapses because there was no underlying capability. The stability indices should distinguish these cases.
+
+\textit{Falsifier}: If systems with low stability indices ($\dcsi$, $\ecsi$, $\pcsi$ all $< 0.5$) show only minor drops when RAG is disabled, then the stability indices aren't measuring dependence on scaffolds. If systems with high stability indices show catastrophic RAG-removal drops, then \enquote{compensation} is illusory.
+
+\paragraph{P4: Stability Predicts Deployment Success.} Systems with equal snapshot totals ($S_{\text{equal}}$ within 5 points) but cluster stability differing by $\ge 0.2$ will diverge in downstream deployment metrics within 6 months: the high-$\csi$ system will show better calibration, greater tool reuse, higher success rates on long-horizon tasks, and more consistent performance across diverse user queries.
+
+\textit{Rationale}: Stability should matter in the wild. Brittle high-scoring systems will fail when real-world conditions shift, contexts reset, or unusual queries arrive. Robust systems with lower snapshot scores but high $\csi$ will maintain performance across deployment scenarios. If $\csi$ captures something important about general intelligence, it should predict deployment behavior beyond what snapshot scores predict.
+
+\textit{Falsifier}: If systems with $\csi = 0.5$ and $\csi = 0.8$ perform identically in deployment (same user satisfaction, same task success rates, same robustness), then cluster stability doesn't matter outside the lab and the HPC framework adds no predictive value. If deployment performance correlates perfectly with snapshot scores and $\csi$ adds no incremental prediction, then snapshot testing was sufficient all along.
+
+\paragraph{Broader Falsification Strategy.} Beyond these specific predictions, the framework makes a general claim: centrality-weighted scores and stability indices should jointly outperform equal-weighted snapshot scores in predicting deployment success, user satisfaction, and long-term capability growth. If future research shows that (i) equal-weight and centrality-prior scores never diverge by more than 5 points across hundreds of tested systems, or (ii) $\csi$ fails to predict any deployment outcomes of interest, or (iii) high-snapshot systems consistently achieve high stability without specialized consolidation mechanisms, then the framework should be abandoned or substantially revised.
+
+\section{Governance Implications}\label{sec:governance}
+
+\subsection{Multi-Dimensional Triggers}\label{ssec:triggers}
+
+Instead of a single AGI score threshold (e.g., \enquote{systems above 85\% require safety review}), the framework suggests reporting a richer set of metrics that capture both breadth and stability. Specifically, every evaluation should include:
+
+\begin{itemize}
+\item Equal-weight score $S_{\text{equal}}$ (the null model)
+\item Centrality-prior score $S_{\text{prior}}(\lambda)$ with sensitivity band for $\lambda \in [0.6, 0.9]$
+\item Three component stability indices: $\pcsi$, $\dcsi$, $\ecsi$ (with confidence intervals)
+\item Combined cluster stability $\csi$ (geometric mean)
+\end{itemize}
+
+Governance tiers could then require \textit{both} capability breadth \textit{and} stability depth. Here's an illustrative three-tier structure (with the critical caveat that specific thresholds below are templates, not final cutoffs):
+
+\paragraph{Tier A: Enhanced Monitoring.} Systems meeting:
+\begin{itemize}
+\item Centrality-prior score $S_{\text{prior}} > 60\%$
+\item Cluster stability $\csi > 0.75$
+\end{itemize}
+Trigger: Quarterly capability assessments, transparency reports on training data and architectural choices.
+
+\paragraph{Tier B: Safety Review.} Systems meeting:
+\begin{itemize}
+\item Centrality-prior score $S_{\text{prior}} > 75\%$
+\item Cluster stability $\csi > 0.85$
+\item Durable learning $\dcsi > 0.7$ at 72h delay
+\end{itemize}
+Trigger: Independent safety audits, external red-teaming, public disclosure of evaluation results including all stability indices.
+
+\paragraph{Tier C: General-Purpose Designation.} Systems meeting:
+\begin{itemize}
+\item Centrality-prior score $S_{\text{prior}} > 90\%$
+\item Cluster stability $\csi > 0.9$
+\item All component indices ($\pcsi$, $\dcsi$, $\ecsi$) above human-calibrated thresholds
+\end{itemize}
+Trigger: Comprehensive governance framework including deployment restrictions, alignment testing, societal impact assessment.
+
+These thresholds are illustrative. Regulators should set tier boundaries empirically once $\csi$ and $S_{\text{prior}}$ distributions across model families are available. What matters initially is the \textit{structure}: multi-dimensional gates that require both breadth and stability, making it harder to achieve high governance-relevant scores through narrow optimization or brittle scaffolds.
+
+Figure~\ref{fig:governance} visualizes this governance space, showing how systems are classified based on their position in the capability-stability plane.
+
+\begin{figure}[tbp]
+\centering
+\begin{tikzpicture}
+  % local colors (avoid relying on preamble)
+  \definecolor{tierAfill}{RGB}{225,225,225}
+  \definecolor{tierBfill}{RGB}{205,205,205}
+  \definecolor{tierCfill}{RGB}{185,185,185}
+
+\begin{axis}[
+    width=0.9\textwidth,
+    height=8cm,
+    xlabel={Centrality-Prior Score (\%)},
+    ylabel={Cluster Stability Index (CSI)},
+    xmin=0, xmax=100,
+    ymin=0, ymax=1,
+    xtick={0,10,...,100},
+    ytick={0,0.2,...,1},
+    grid=both,
+    grid style={dashed, gray!50},
+    legend style={at={(0.02,0.98)}, anchor=north west, draw=none, fill=white, fill opacity=0.85},
+    legend cell align={left},
+]
+
+% --- tier regions (no borders to avoid heavy vertical lines) ---
+\addplot[draw=none, fill=tierAfill, fill opacity=0.35, forget plot]
+  coordinates {(60,0.75) (100,0.75) (100,1.00) (60,1.00)} \closedcycle;
+\addplot[draw=none, fill=tierBfill, fill opacity=0.45, forget plot]
+  coordinates {(75,0.85) (100,0.85) (100,1.00) (75,1.00)} \closedcycle;
+\addplot[draw=none, fill=tierCfill, fill opacity=0.55, forget plot]
+  coordinates {(90,0.90) (100,0.90) (100,1.00) (90,1.00)} \closedcycle;
+
+% thin threshold guides (subtle; not full-height bars)
+\addplot[thin, black!55, forget plot] coordinates {(60,0.75) (100,0.75)};
+\addplot[thin, black!55, forget plot] coordinates {(75,0.85) (100,0.85)};
+\addplot[thin, black!55, forget plot] coordinates {(90,0.90) (100,0.90)};
+\addplot[thin, black!40, forget plot] coordinates {(60,0.75) (60,1)};
+\addplot[thin, black!40, forget plot] coordinates {(75,0.85) (75,1)};
+\addplot[thin, black!40, forget plot] coordinates {(90,0.90) (90,1)};
+
+% tier labels (small pill boxes)
+\node[anchor=west, font=\small\bfseries, fill=white, fill opacity=0.9,
+      text opacity=1, inner sep=1pt, rounded corners=1pt]
+      at (axis cs:61,0.955) {Tier A};
+\node[anchor=west, font=\small\bfseries, fill=white, fill opacity=0.9,
+      text opacity=1, inner sep=1pt, rounded corners=1pt]
+      at (axis cs:76,0.955) {Tier B};
+\node[anchor=west, font=\small\bfseries, fill=white, fill opacity=0.9,
+      text opacity=1, inner sep=1pt, rounded corners=1pt]
+      at (axis cs:91,0.955) {Tier C};
+
+% example systems
+\addplot[only marks, mark=*,         mark size=3pt,  color=myred]  coordinates {(68,0.62)};
+\addplot[only marks, mark=square*,   mark size=3pt,  color=myblue] coordinates {(72,0.78)};
+\addplot[only marks, mark=triangle*, mark size=3.5pt,color=myblue] coordinates {(82,0.87)};
+\addplot[only marks, mark=diamond*,  mark size=3.5pt,color=mygray] coordinates {(55,0.91)};
+
+\legend{Below threshold, In Tier A, In Tier B, High CSI / Low score}
+\end{axis}
+\end{tikzpicture}
+
+\caption{Multi-dimensional governance space. Systems have to meet both capability breadth (centrality-prior score) and stability ($\csi$) thresholds for governance tiers. The nested regions show escalating requirements: Tier A requires moderate breadth and stability; Tier B requires both to be high; Tier C requires near-ceiling performance on both dimensions. High score alone is insufficient: a system at (55\%, 0.91) has excellent stability but lacks capability breadth and doesn't trigger enhanced governance. The conjunction requirement makes gaming harder and better captures general intelligence. Example systems shown as points; thresholds are illustrative templates subject to empirical calibration.}
+\label{fig:governance}
+\end{figure}
+
+\subsection{Why This Is Harder to Game}\label{ssec:gaming}
+
+Single-number thresholds create predictable optimization pressure. If the threshold is \enquote{85\% on equal-weighted CHC}, labs will:
+\begin{itemize}
+\item Train intensively on benchmark distributions until performance saturates
+\item Use massive scaffolds (context windows, RAG, tool access) to inflate scores at $t=0$
+\item Optimize for breadth over depth, getting 85\% everywhere rather than 95\% on central domains
+\end{itemize}
+
+These aren't necessarily bad strategies~-- breadth matters~-- but they can produce systems that score well without being robustly generally intelligent.
+
+Multi-dimensional thresholds with stability requirements make this kind of narrow optimization much harder:
+
+\begin{itemize}
+\item \textbf{You can't just train on test distributions}: Perturbations rotate via lottery sampling (Section~\ref{ssec:stability_battery}). You don't know which specific delays, scaffold degradations, or distribution shifts will be tested. Training for robustness requires building genuine capabilities, not memorizing test instances.
+
+You can't just add massive context windows: $\dcsi$ tests retention across clean sessions with no context carryover. If your \enquote{memory} is actually cached in a 200K-token context, $\dcsi$ will be near zero when contexts reset. High $\dcsi$ requires genuine consolidation mechanisms, not just cached context.
+
+\item \textbf{You can't just bolt on tools}: The compensation vs. contortion test (Section~\ref{ssec:operational_test}) checks whether scaffolds enable graceful degradation or cause catastrophic collapse. Contorted scaffolds will show up as low $\pcsi$ under perturbation. You need scaffolds that integrate with robust internal capabilities.
+
+\item \textbf{You can't ignore central domains}: Centrality-prior weighting (Section~\ref{ssec:chc_prior}) rewards systems that excel on reasoning, storage, and retrieval more than systems that excel on speed and auditory processing. Getting 95\% on speed won't compensate for 40\% on storage.
+\end{itemize}
+
+This doesn't eliminate gaming entirely~-- determined actors will always find optimization strategies~-- but it raises the bar substantially. A system that achieves high $S_{\text{prior}}$ and high $\csi$ has likely instantiated something closer to genuine general intelligence: broad capabilities weighted by causal importance, stabilized by mechanisms that persist under perturbation.
+
+\section{Limitations and Extensions}\label{sec:limitations}
+
+\subsection{Scope}\label{ssec:scope}
+
+This framework evaluates cognitive capabilities in the CHC tradition. It doesn't evaluate everything that might matter for AGI in the broadest sense. Three important scope limitations:
+
+\paragraph{Physical embodiment and sensorimotor skills.} A system could score 95\% on centrality-weighted CHC with $\csi = 0.9$ and still lack motor control, haptic feedback, or real-world navigation abilities. These matter for embodied agents and robotics, but they're outside the scope of cognitive evaluation. The framework measures what humans call \enquote{intellectual} capabilities; physical capabilities require separate assessment.
+
+\paragraph{Specialized expertise beyond educated adult level.} CHC batteries and AGI evaluations typically target capabilities at the level of well-educated human adults. A system at this level might still lack deep domain expertise~-- PhD-level mathematics, expert medical diagnosis, cutting-edge scientific research. Such expertise is relevant for superhuman AI but isn't required for \enquote{general} intelligence in the AGI sense. The framework measures generality, not superhumanness.
+
+\paragraph{Economic deployment and value.} A system could be generally intelligent by this framework yet economically useless (too expensive to run, too slow to deploy, wrong capabilities for current markets). Conversely, narrow AI for specific high-value tasks (protein folding, drug discovery) might have huge economic impact without approaching AGI. Economic metrics and deployment viability are orthogonal to cognitive generality.
+
+These limitations aren't flaws~-- they reflect scope choices. The framework aims to measure cognitive generality, not everything that might matter for AI systems in practice.
+
+\subsection{Calibration Needs}\label{ssec:calibration}
+
+The stability indices are structurally defined, but their absolute scales need empirical calibration before we can say what's \enquote{good} or \enquote{bad}:
+
+\paragraph{What's a good $\dcsi$?} Human test--retest data provides intuition pumps (typical retention might be 70--85\% at 7 days for episodic material), but AI memory might work differently. We need distributions across model families before setting governance cutoffs. Is $\dcsi = 0.6$ concerning or acceptable? The answer depends on what's achievable and what predicts deployment success.
+
+\paragraph{What's a good $\ecsi$?} Human self-correction studies show that people can reduce errors by 30--50\% with feedback across 3--5 attempts on moderately difficult tasks. But again, AI iteration might differ. Some systems might show $\ecsi = 0.9$ (excellent self-correction), others $\ecsi = 0.3$ (iteration barely helps). We need baselines before interpreting individual scores.
+
+\paragraph{What perturbations matter most?} The perturbation families in Section~\ref{ssec:stability_battery} are reasonable starting points based on existing robustness research, but data will refine them. Maybe 72h delays are too lenient (everything looks stable) or too harsh (nothing survives). Maybe RAG corruption at 30\% is the sweet spot, or maybe 50\% is more diagnostic. Empirical work should optimize perturbation difficulty.
+
+Labs should publish $\csi$ distributions, component index distributions, and perturbation-response curves across model families. This builds the empirical foundation for eventual governance thresholds and scientific understanding of what stability looks like in AI systems.
+
+\subsection{Extensions}\label{ssec:extensions}
+
+Several natural directions extend the framework:
+
+\paragraph{Architecture-specific perturbation suites.} Transformers, memory-augmented networks, and retrieval-augmented systems might need different perturbations to probe their stabilizing mechanisms. Future work could develop tailored batteries that target known architectural bottlenecks while maintaining cross-architecture comparability.
+
+\paragraph{Cross-species centrality.} Do non-human animals show similar $g$-loading patterns across cognitive domains? If centrality structure is conserved across biological intelligences, that strengthens the case for using CHC-derived priors. If it varies wildly, that suggests centrality might be culturally or evolutionarily contingent, requiring more cautious interpretation.
+
+\paragraph{Interaction effects and profiles.} Does high reasoning with low storage produce different stability patterns than low reasoning with high storage? Are some combinations especially stable or unstable? Cluster analysis of capability profiles alongside stability indices might reveal natural classes of AI systems with characteristic strengths and failure modes.
+
+\paragraph{Architectural predictors of stability.} Can we predict $\csi$ from architectural features? Does having explicit memory modules correlate with high $\dcsi$? Does attention mechanism design predict $\pcsi$? Building meta-models that map architectures to stability could accelerate evaluation and guide development.
+
+\section{Conclusion}\label{sec:conclusion}
+
+The shift from narrow benchmarks to multidomain capability profiles was a necessary advance in AGI evaluation. This framework completes that shift by adding two critical features that current approaches lack:
+
+\paragraph{1. Weighted Capabilities.} Not all cognitive domains contribute equally to general intelligence. Factor-analytic work on human cognition consistently shows differential $g$-loadings, and mechanistic analysis reveals causal dependencies~-- some abilities are structurally upstream, others downstream. Equal weighting ignores this structure. The centrality-prior approach (Section~\ref{ssec:chc_prior}) imports CHC-derived evidence about which abilities are most central, makes assumptions explicit through sensitivity analysis, and allows updates as AI-specific data accumulates. This turns an arbitrary choice (equal weights) into a defensible default (centrality-prior with transparent sensitivity).
+
+\paragraph{2. Stability Requirements.} General intelligence isn't just capability breadth at a single time point. It's breadth plus the mechanisms that keep capabilities robust under perturbation, enable consolidation of new information, and support self-correction through iteration. The Cluster Stability Index family (Section~\ref{sec:cluster_stability}) measures these three forms of persistence separately: profile shape stability ($\pcsi$), durable learning ($\dcsi$), and error decay ($\ecsi$). Combined via geometric mean, they distinguish systems with genuine robustness from systems with brittle, scaffold-dependent performance.
+
+Together, these additions preserve the valuable multidomain breadth of CHC-style evaluation while addressing its two main weaknesses: treating all domains as equally important, and relying on snapshot testing that can't detect brittleness. The result aligns measurement with the causal structure suggested by homeostatic property cluster theory: intelligence isn't a checklist of abilities, it's a stabilized cluster where abilities co-occur and mechanisms maintain that co-occurrence under stress.
+
+The operational protocols in Section~\ref{sec:protocols} make this framework immediately usable. Labs can adopt centrality-prior scoring and stability batteries without architectural access to models~-- everything works via black-box testing. The predictions in Section~\ref{sec:predictions} make the framework falsifiable: if centrality-weighted and equal-weighted scores never diverge, if stability indices don't predict deployment success, if durable learning doesn't matter for reasoning, then core claims are wrong and the framework should be revised.
+
+The empirical work remains. We need stability distributions across model families, calibration of perturbation difficulties, and validation that $\csi$ predicts what we care about. But the conceptual framework is clear and the operational path is concrete.
+
+Checklists measure breadth. Clusters measure breadth plus integrity. Both matter for AGI evaluation. The framework presented here shows how to test both rigorously, transparently, and defensibly.
+
+\newpage
+\printbibliography
+
+\end{document}
