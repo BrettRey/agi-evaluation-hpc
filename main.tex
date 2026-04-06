@@ -449,6 +449,8 @@ The $\max(\varepsilon, \cdot)$ terms in Equation~\ref{eq:csi_geo} provide a soft
 
 $\csi$ near 1 means the system exhibits all three forms of stability: profile shape persists, learning consolidates, iteration improves performance. $\csi$ near 0.5 means substantial weakness on at least one dimension. $\csi$ below 0.3 suggests pervasive instability~-- the cluster is barely holding together.
 
+Appendix~\ref{app:formal_metrics} reports a companion Lean formalization of the metric definitions. The formalization doesn't bear on the empirical adequacy of the priors, perturbations, or thresholds, but it does verify that the scoring rules are mathematically well-formed and bounded on their stated domains, while making the required domain assumptions explicit.
+
 For transparency, always report the component indices alongside $\csi$. A table entry might read:
 
 \begin{center}
@@ -920,6 +922,16 @@ The operational protocols in Section~\ref{sec:protocols} make this framework imm
 The empirical work remains. We need stability distributions across model families, calibration of perturbation difficulties, and validation that $\csi$ predicts what we care about. But the conceptual framework is clear and the operational path is concrete.
 
 Checklists measure breadth. Clusters measure breadth plus integrity. Both matter for AGI evaluation. The framework presented here shows how to test both rigorously, transparently, and defensibly.
+
+\appendix
+
+\section{Formal Sanity Check of the Metric Definitions}\label{app:formal_metrics}
+
+As a supplementary check on the mathematical coherence of the framework, I formalized the core scoring rules in Lean~4 and machine-checked a set of basic invariants. The aim is modest: not to prove that the framework is empirically correct, but to verify that the definitions introduced in Sections~\ref{sec:causal_centrality} and~\ref{sec:cluster_stability} are well-formed, that the main scores stay in the intended $[0,1]$ range under their stated assumptions, and that the hidden domain constraints are explicit rather than tacit.
+
+The formalization covers the centrality-prior weights, the Fisher-mapped profile-stability score, the unweighted and weighted level-shift metrics, the direct durable-learning score, the raw error-sequence definitions underlying $\ecsi$, and the combined geometric-mean $\csi$. In particular, it proves that normalized weight families remain normalized; that the Fisher construction maps admissible correlations to a score in $[0,1]$; that $\Delta_{\text{level}}$, $\Delta_{\text{level}}^{(w)}$, and $\dcsi$ lie in $[0,1]$ when their denominators are strictly positive; that the backsliding ratio, improvement term, and resulting $\ecsi$ lie in $[0,1]$ when error rates themselves lie in $[0,1]$ and $\varepsilon > 0$; and that the combined $\csi$ remains in $[0,1]$.
+
+This exercise clarifies several assumptions that are easy to leave implicit in prose. The Fisher-transformed version of $\pcsi$ requires correlations in the open interval $(-1,1)$ for $\operatorname{arctanh}$ to be defined without endpoint pathologies. The direct ratio forms for $\dcsi$ and the level-shift metrics require strictly positive baseline means or weighted baseline scores. And the error-decay construction requires error rates themselves to be normalized to $[0,1]$ together with a strictly positive smoothing constant $\varepsilon$. None of these assumptions is philosophically deep, but stating them explicitly improves the framework's precision and reproducibility.
 
 \newpage
 \printbibliography
