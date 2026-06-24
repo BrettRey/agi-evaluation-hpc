@@ -3,7 +3,7 @@
 ## Current State
 
 **Phase:** Major revision in progress (Minds & Machines prep)
-**Last updated:** 2026-03-12
+**Last updated:** 2026-04-06
 
 ### Genesis
 
@@ -27,11 +27,27 @@ Paper drafted October 2025 on Overleaf. Posted to arXiv as 2510.15236. Imported 
 
 ### Note: Arora et al. (2026) — sparse circuits and category internals
 
-Arora et al. (2026) "Language model circuits are sparse in the neuron basis" (arXiv:2601.22594): LM computations use sparse, neuron-aligned circuits. ~100 neurons control agreement. This complicates any "LMs don't really have categories" argument — the categories are localisable internally, though they may not map onto human taxonomies. Relevant to the cluster stability indices (§4): if internal representations are sparse and causally identifiable, the CSI family could potentially be grounded in circuit-level evidence, not just behavioural metrics.
+Arora et al. (2026) "Language model circuits are sparse in the neuron basis" (arXiv:2601.22594): LM computations use sparse, neuron-aligned circuits. Interventions on roughly 100 neurons change subject-verb agreement behaviour in the model. This complicates any "LMs don't really have categories" argument — the categories are localisable internally, though they may not map onto human taxonomies. Relevant to the cluster stability indices (§4): if internal representations are sparse and causally identifiable, the CSI family could potentially be grounded in circuit-level evidence, not just behavioural metrics.
+
+### 2026-04-06 Session Notes (morning)
+- **Completed: Steps 3, 4, 5 (§§3-5), 11, 12 (mechanical)**
+  - Step 3: Centrality reframed as purpose-indexed (§3.1). Three-field examples anchored in §2.4.
+  - Step 4: Storage 7%→9%, Auditory 8%→7%, Speed 6%→5%.
+  - Step 5: Stability indices reframed as convergent evidence for projectibility (§4 intro). Contortion reframed as locus-shift breaking projectibility (§5). Reviewed by subagents; incorporated feedback on circularity and purpose-indexing gap.
+  - Step 11: hernandezorallo2017 and asadi2026mirage added to references-local.bib.
+  - Step 12 (mechanical): Symbol table in §4, bib validation (0 missing), variable audit (fixed forward refs, missing entries, ε ambiguity).
+- **Style cleanup:** 48 \paragraph{} removed, correctio patterns killed, metacommentary frames deleted, "crucial/crucially" eliminated, "yet"→"but", consistency pass (category/kind/label).
+- **§2.5 rewritten with Rapoport's Rules.** Millikan (convergence), Magnus (metaphysical commitment), Hernández-Orallo (fair characterisation), Craver (HPC builds on mechanistic kinds).
+- **New content:** MIRAGE contortion example (§1.3), Vector Grounding cross-reference footnote (§5), field-relative projectibility examples (§2.4).
+- **Redundancy pass:** Three-field examples consolidated, repeated "equal weighting" arguments trimmed.
+- **GitHub repo:** BrettRey/agi-evaluation-hpc, CC BY 4.0.
+- Full build succeeds (27 pages), no undefined citations.
 
 ### What's Next
 
-- Continue revision Steps 3-12
+- **Steps 6-10 remain:** Address unit of analysis (§5), tighten predictions (§7), heavy governance trim (§8), rewrite abstract/conclusion (§9), reduce Hendrycks dependency (§1)
+- Step 8 (governance trim) needs Brett's judgment on how aggressive
+- Step 9 (abstract/conclusion) should come last
 - Verification pass (/check-style, /validate-bib, /proofread, /check-hpc)
 - Journal-specific formatting if needed
 - Submit

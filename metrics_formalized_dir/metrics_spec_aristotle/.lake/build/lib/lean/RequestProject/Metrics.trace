@@ -1,0 +1,30 @@
+{"synthetic": false,
+ "schemaVersion": "2025-09-10",
+ "outputs":
+ {"o": ["8095353a8c7f2271.olean"],
+  "i": "f2cf0504b5a32878.ilean",
+  "c": "bd571c609b73a6e3.c"},
+ "log":
+ [{"message":
+   ".> LEAN_PATH=/Users/brettreynolds/Documents/LLM-CLI-projects/papers/AGI_evaluation_HPC/metrics_formalized_dir/metrics_spec_aristotle/.lake/packages/Cli/.lake/build/lib/lean:/Users/brettreynolds/Documents/LLM-CLI-projects/papers/AGI_evaluation_HPC/metrics_formalized_dir/metrics_spec_aristotle/.lake/packages/batteries/.lake/build/lib/lean:/Users/brettreynolds/Documents/LLM-CLI-projects/papers/AGI_evaluation_HPC/metrics_formalized_dir/metrics_spec_aristotle/.lake/packages/Qq/.lake/build/lib/lean:/Users/brettreynolds/Documents/LLM-CLI-projects/papers/AGI_evaluation_HPC/metrics_formalized_dir/metrics_spec_aristotle/.lake/packages/aesop/.lake/build/lib/lean:/Users/brettreynolds/Documents/LLM-CLI-projects/papers/AGI_evaluation_HPC/metrics_formalized_dir/metrics_spec_aristotle/.lake/packages/proofwidgets/.lake/build/lib/lean:/Users/brettreynolds/Documents/LLM-CLI-projects/papers/AGI_evaluation_HPC/metrics_formalized_dir/metrics_spec_aristotle/.lake/packages/importGraph/.lake/build/lib/lean:/Users/brettreynolds/Documents/LLM-CLI-projects/papers/AGI_evaluation_HPC/metrics_formalized_dir/metrics_spec_aristotle/.lake/packages/LeanSearchClient/.lake/build/lib/lean:/Users/brettreynolds/Documents/LLM-CLI-projects/papers/AGI_evaluation_HPC/metrics_formalized_dir/metrics_spec_aristotle/.lake/packages/plausible/.lake/build/lib/lean:/Users/brettreynolds/Documents/LLM-CLI-projects/papers/AGI_evaluation_HPC/metrics_formalized_dir/metrics_spec_aristotle/.lake/packages/mathlib/.lake/build/lib/lean:/Users/brettreynolds/Documents/LLM-CLI-projects/papers/AGI_evaluation_HPC/metrics_formalized_dir/metrics_spec_aristotle/.lake/build/lib/lean /Users/brettreynolds/.elan/toolchains/leanprover--lean4---v4.28.0/bin/lean /Users/brettreynolds/Documents/LLM-CLI-projects/papers/AGI_evaluation_HPC/metrics_formalized_dir/metrics_spec_aristotle/RequestProject/Metrics.lean -o /Users/brettreynolds/Documents/LLM-CLI-projects/papers/AGI_evaluation_HPC/metrics_formalized_dir/metrics_spec_aristotle/.lake/build/lib/lean/RequestProject/Metrics.olean -i /Users/brettreynolds/Documents/LLM-CLI-projects/papers/AGI_evaluation_HPC/metrics_formalized_dir/metrics_spec_aristotle/.lake/build/lib/lean/RequestProject/Metrics.ilean -c /Users/brettreynolds/Documents/LLM-CLI-projects/papers/AGI_evaluation_HPC/metrics_formalized_dir/metrics_spec_aristotle/.lake/build/ir/RequestProject/Metrics.c --setup /Users/brettreynolds/Documents/LLM-CLI-projects/papers/AGI_evaluation_HPC/metrics_formalized_dir/metrics_spec_aristotle/.lake/build/ir/RequestProject/Metrics.setup.json --json",
+   "level": "trace"}],
+ "inputs":
+ [["RequestProject.Metrics:deps",
+   [["deps",
+     [["RequestProject/RequestProject:extraDep",
+       [["@RequestProject:extraDep", "00000000000006bb"]]],
+      ["imports",
+       [["Mathlib transitive imports (legacy)", "6d3278f5bc74a2fe"],
+        ["Mathlib:importAllArts", "8fc2a9ec06d95bdc"]]]]],
+    ["libs",
+     [["import dynlibs", "00000000000006bb"],
+      ["package external libraries", "00000000000006bb"],
+      ["module dynlibs", "00000000000006bb"],
+      ["module plugins", "00000000000006bb"]]]]],
+  ["Lean 4.28.0, commit 7e01a1bf5c70fc6167d49c345d3bf80596e9a79b",
+   "a96bc04a2e5e9630"],
+  ["/Users/brettreynolds/Documents/LLM-CLI-projects/papers/AGI_evaluation_HPC/metrics_formalized_dir/metrics_spec_aristotle/RequestProject/Metrics.lean",
+   "209cee4091aa58f3"],
+  ["options", "00000000000006bb"],
+  ["Module.leanArgs: #[]", "00000000000006bb"]],
+ "depHash": "f87df9cfa56721ed"}
