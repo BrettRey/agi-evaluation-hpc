@@ -1,5 +1,9 @@
 # AGI Evaluation Metrics: Core Second-Pass Formalization
 
+> **Historical artifact (superseded 2026-07-17).** This specification records
+> the retired CSI/centrality formalization. The canonical projectibility-first
+> definitions are in formalization/Formalization/Metrics.lean.
+
 This is a narrower follow-up formalization target. Focus on the metrics that should be easiest to specify directly from the paper without getting bogged down in special-function details.
 
 Use Lean 4 with Mathlib.

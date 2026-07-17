@@ -1,5 +1,5 @@
 # Makefile for LaTeX paper compilation
-# From Checklists to Clusters: A Homeostatic Account of AGI Evaluation
+# From Aggregate Scores to Projectible Profiles: Robustness in AGI Evaluation
 
 # Configuration
 LATEX = xelatex

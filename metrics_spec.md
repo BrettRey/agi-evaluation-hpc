@@ -1,5 +1,9 @@
 # AGI Evaluation Metrics: Formalization Target
 
+> **Historical artifact (superseded 2026-07-17).** This specification records
+> the retired CSI/centrality formalization. The canonical projectibility-first
+> definitions are in formalization/Formalization/Metrics.lean.
+
 Formalize the following real-valued scoring definitions in Lean 4 and prove the stated boundedness/normalization lemmas.
 
 ## 1. Unit interval predicate

@@ -1,58 +1,56 @@
-# STATUS.md -- AGI Evaluation (HPC)
+# STATUS.md -- AGI Evaluation
 
 ## Current State
 
-**Phase:** Major revision in progress (Minds & Machines prep)
-**Last updated:** 2026-04-06
+**Phase:** Projectibility-first rearchitecture implemented and verified (*Minds and Machines* preparation)
+**Last updated:** 2026-07-17
+**Working title:** *From Aggregate Scores to Projectible Profiles: Robustness in AGI Evaluation*
 
-### Genesis
+The October 2025 preprint, arXiv:2510.15236, is the historical starting point. The live revision no longer argues that general intelligence is a homeostatic property cluster or that black-box stability scores reveal mechanisms that maintain one. The March–April HPC-strengthening plan is preserved in `DECISIONS.md` but superseded by the decision of 2026-07-17.
 
-Paper drafted October 2025 on Overleaf. Posted to arXiv as 2510.15236. Imported to local workspace March 2026 for house style conversion and journal submission prep.
+## Current Thesis
 
-### What's Done
+An AGI evaluation earns its use only by improving a specified out-of-sample prediction or decision for a declared target outcome, population or model family, unit of analysis, intervention or distribution range, and time horizon. Robustness must be reported at profile, level, item, and harmful-tail granularities because stability at one level doesn't entail stability at another.
 
-- Full paper drafted and posted to arXiv (October 2025)
-- Imported from Overleaf to `papers/AGI_evaluation_HPC/`
-- House style conversion (March 2026)
-- Project infrastructure set up (Makefile, CLAUDE.md, symlinks)
+Zhang, Koyejo, and Yang's arXiv:2607.12963v2 is the central empirical case: nearly unchanged aggregate accuracy can conceal substantial two-sided item-level prediction flips and severe harmful-tail degradation. Von der Malsburg and Padó, together with Kuribayashi et al., supply convergent construction- and subprocess-level cases. Yetman marks the evidential boundary between behavioural performance and representation- or mechanism-based competence claims.
 
-### 2026-03-12 Session Notes (afternoon)
-- Began major revision based on simulated-review plan: strengthen HPC as genuinely constraining by making projectibility the third constitutive clause
-- **Completed (Steps 1-2 of 12):**
-  - §2.3 rewritten: HPC defined as (1) co-occurrence, (2) mechanisms, (3) projectibility. Fuzzy boundaries now a consequence. Boyd 1991 cited for projectibility argument. Agent-level focus promoted from footnote to body; Craver contrast added.
-  - §2.4 rewritten: requires three things (abilities, stability, projectibility), not two. Third implication on category value added.
-  - New §2.5 "Why HPC Rather Than Alternatives?" inserted (~450 words): Craver (2009), Millikan (1999), Magnus (2014), Ereshefsky & Reydon (2015), Hernández-Orallo (2017). Rapoport's Rules followed throughout.
-- Full build succeeds (27 pages). Only undefined citation: `hernandezorallo2017` (bib entry pending, Step 11).
-- **Remaining (Steps 3-12):** Reframe centrality as projective (§3), raise storage weight (§3.4), reframe stability indices as projectibility tests (§4), address unit of analysis (§5), tighten predictions (§7), heavy governance trim (§8), rewrite abstract/conclusion (§9), reduce Hendrycks dependency (§1), add bib entries, add symbol table, verification pass.
+## Approved Architecture
 
-### Note: Arora et al. (2026) — sparse circuits and category internals
+1. Open with projection targets and decision use, not clusters or securing mechanisms.
+2. Diagnose why aggregate scores are insufficient, using Zhang et al. as the central case.
+3. Replace combined CSI scoring with a multi-granular dashboard: profile-shape similarity, signed level change, item-level instability, harmful-tail degradation, and directional transitions.
+4. Report retention, updating, and scaffold dependence as separate behavioural tests; don't infer consolidation, corrective control, representation, or homeostasis without additional mechanistic evidence.
+5. Treat equal weights as a transparent baseline. Allow target-specific weights or aggregation only when held-out prediction or calibration validates them. CHC domains may organize reporting or supply a shrinkage hypothesis, but don't establish a machine ontology or default weighting.
+6. Trim governance to decision-specific loss, uncertainty, and tail constraints, then conclude with the projectibility-first design rule.
 
-Arora et al. (2026) "Language model circuits are sparse in the neuron basis" (arXiv:2601.22594): LM computations use sparse, neuron-aligned circuits. Interventions on roughly 100 neurons change subject-verb agreement behaviour in the model. This complicates any "LMs don't really have categories" argument — the categories are localisable internally, though they may not map onto human taxonomies. Relevant to the cluster stability indices (§4): if internal representations are sparse and causally identifiable, the CSI family could potentially be grounded in circuit-level evidence, not just behavioural metrics.
+## Measurement Decisions
 
-### 2026-04-06 Session Notes (morning)
-- **Completed: Steps 3, 4, 5 (§§3-5), 11, 12 (mechanical)**
-  - Step 3: Centrality reframed as purpose-indexed (§3.1). Three-field examples anchored in §2.4.
-  - Step 4: Storage 7%→9%, Auditory 8%→7%, Speed 6%→5%.
-  - Step 5: Stability indices reframed as convergent evidence for projectibility (§4 intro). Contortion reframed as locus-shift breaking projectibility (§5). Reviewed by subagents; incorporated feedback on circularity and purpose-indexing gap.
-  - Step 11: hernandezorallo2017 and asadi2026mirage added to references-local.bib.
-  - Step 12 (mechanical): Symbol table in §4, bib validation (0 missing), variable audit (fixed forward refs, missing entries, ε ambiguity).
-- **Style cleanup:** 48 \paragraph{} removed, correctio patterns killed, metacommentary frames deleted, "crucial/crucially" eliminated, "yet"→"but", consistency pass (category/kind/label).
-- **§2.5 rewritten with Rapoport's Rules.** Millikan (convergence), Magnus (metaphysical commitment), Hernández-Orallo (fair characterisation), Craver (HPC builds on mechanistic kinds).
-- **New content:** MIRAGE contortion example (§1.3), Vector Grounding cross-reference footnote (§5), field-relative projectibility examples (§2.4).
-- **Redundancy pass:** Three-field examples consolidated, repeated "equal weighting" arguments trimmed.
-- **GitHub repo:** BrettRey/agi-evaluation-hpc, CC BY 4.0.
-- Full build succeeds (27 pages), no undefined citations.
+- Use repeated trials per item and condition where feasible.
+- Estimate the positive null floor induced by absolute values and tail selection with a baseline-only bootstrap; report raw, floor, untruncated adjusted estimate, uncertainty, and sampling budget.
+- Select and estimate the harmful tail on disjoint samples. This avoids data reuse but doesn't identify an oracle latent tail.
+- Keep profile shape, signed change, item instability, and tail harm separate unless a common projection target validates aggregation.
+- Don't Fisher-pool heterogeneous designed perturbations by default; mark profile similarity undefined for zero-variance profiles.
+- Don't presume that a worst-tail item set transfers across models without validation; Zhang et al. find the affected items are largely model-specific.
+- Retire the CSI family name, geometric-mean CSI, fixed centrality table, and eCSI product. Keep endpoint gain and backsliding, if used, as separate behavioural diagnostics.
+- Define backsliding exactly as $U/V$ for positive total variation and as $0$ for a constant trajectory; don't use an epsilon-distorted ratio.
 
-### What's Next
+## Completed for the July Revision
 
-- **Steps 6-10 remain:** Address unit of analysis (§5), tighten predictions (§7), heavy governance trim (§8), rewrite abstract/conclusion (§9), reduce Hendrycks dependency (§1)
-- Step 8 (governance trim) needs Brett's judgment on how aggressive
-- Step 9 (abstract/conclusion) should come last
-- Verification pass (/check-style, /validate-bib, /proofread, /check-hpc)
-- Journal-specific formatting if needed
-- Submit
+- Located and assessed the two live July TODO hooks in `main.tex`.
+- Mapped later literature breadcrumbs: Reynolds and Weinberger on strict homeostasis, von der Malsburg and Padó, Kuribayashi et al., Yetman, Arora et al., Groeger et al., Simon et al., and the Many Minds note.
+- Audited the inherited metrics. The eCSI worked example is trajectory-inconsistent, its backsliding description is inaccurate, and the current Lean Fisher result proves a totalized range rather than empirical admissibility.
+- Drafted and approved `revision-plan-projectibility-zhang.md`.
+- Updated project instructions, the decision log, and local bibliography for the new direction.
+- Rewrote `main.tex` around declared projection targets, Zhang's cancellation result, and a multi-granular dashboard; recast retention, feedback, scaffold dependence, weighting, validation, governance, failure conditions, and conclusion.
+- Added Zhang, Yetman, and the published ACL record for Kuribayashi et al. to `references-local.bib`; all 14 cited keys resolve and Biber datamodel validation passes.
+- Replaced the canonical Lean metric module with compact definitions and range proofs for PSS, signed change, INS, WTD, retained mass, endpoint gain, and backsliding. `lake build` passes (8,028 jobs).
+- Marked the superseded root and Aristotle-generated CSI specifications as historical artifacts.
+- Built and visually checked the 13-page PDF. The final log has no undefined citations, undefined references, Biber warnings, or overfull boxes.
+- Ran the house-style, terminology, proofreading, source-grounding, bibliography, HPC/projectibility, and unearned-inference audits. Projectibility is structural throughout; no securing-tier or mechanism overclaim remains.
 
-### Literature: Many Minds podcast (Frank & Lupyan, 2026-03-26)
-- **Multiple realizability / Quine's topiary:** Frank introduces Quine's topiary metaphor — behavior clipped by the world, different branches inside. Cooperrider searches for the right term for "different routes to same outcome." HPC kinds are exactly this: multiply realizable clusters.
-- **Convergent representations:** Platonic Representation Hypothesis = different architectures converge. Relevant to your HPC evaluation framework (what counts as "having" an ability).
-- See `literature/many-minds-frank-lupyan-2026.md` for full notes + transcript.
+## Next Steps
+
+- Brett review of the completed rearchitecture and any desired expansion or compression before venue formatting.
+- Apply *Minds and Machines* author guidelines and prepare the submission package.
+- Decide whether to rename the GitHub repository, whose URL still contains the superseded `agi-evaluation-hpc` slug.
+- Update the arXiv version and public status surfaces when the revision is ready to post.
