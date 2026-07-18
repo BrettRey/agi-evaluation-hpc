@@ -1,0 +1,1334 @@
+{
+  "schema_version": 1,
+  "pinned_on": "2026-07-17",
+  "paper": {
+    "authors": "Zhang, Koyejo, and Yang",
+    "arxiv_id": "2607.12963",
+    "version": "v2",
+    "submitted": "2026-07-15",
+    "abstract_url": "https://arxiv.org/abs/2607.12963",
+    "source_url": "https://arxiv.org/src/2607.12963v2"
+  },
+  "code": {
+    "repository": "https://github.com/SALT-NLP/illusion-of-robustness.git",
+    "commit": "411ceecd714068d161ab5ff307015a7e0eba8fd6",
+    "license_observed": null,
+    "note": "No LICENSE file was visible at this commit; this companion reimplements only the released statistical procedures and attributes them explicitly."
+  },
+  "cells": [
+    {
+      "cell": "mmlu_pro.gpt55",
+      "benchmark": "mmlu_pro",
+      "benchmark_label": "MMLU-Pro",
+      "model": "gpt55",
+      "model_label": "gpt-5.5",
+      "baseline_repo": "SALT-NLP/mmlu-pro-context-baseline-gpt55",
+      "perturbed_repo": "SALT-NLP/mmlu-pro-ctx-screen-gpt55"
+    },
+    {
+      "cell": "mmlu_pro.gpt54",
+      "benchmark": "mmlu_pro",
+      "benchmark_label": "MMLU-Pro",
+      "model": "gpt54",
+      "model_label": "gpt-5.4",
+      "baseline_repo": "SALT-NLP/mmlu-pro-context-baseline-gpt54-10k",
+      "perturbed_repo": "SALT-NLP/mmlu-pro-ctx-screen-gpt54-10k"
+    },
+    {
+      "cell": "mmlu_pro.gpt41",
+      "benchmark": "mmlu_pro",
+      "benchmark_label": "MMLU-Pro",
+      "model": "gpt41",
+      "model_label": "gpt-4.1",
+      "baseline_repo": "SALT-NLP/mmlu-pro-context-baseline-gpt41",
+      "perturbed_repo": "SALT-NLP/mmlu-pro-ctx-screen-gpt41"
+    },
+    {
+      "cell": "mmlu_pro.deep",
+      "benchmark": "mmlu_pro",
+      "benchmark_label": "MMLU-Pro",
+      "model": "deep",
+      "model_label": "DeepSeek-V4-Pro",
+      "baseline_repo": "SALT-NLP/mmlu-pro-context-baseline-deep",
+      "perturbed_repo": "SALT-NLP/mmlu-pro-ctx-screen-deep"
+    },
+    {
+      "cell": "mmlu_pro.grok",
+      "benchmark": "mmlu_pro",
+      "benchmark_label": "MMLU-Pro",
+      "model": "grok",
+      "model_label": "Grok-4.20-NR",
+      "baseline_repo": "SALT-NLP/mmlu-pro-context-baseline-grok",
+      "perturbed_repo": "SALT-NLP/mmlu-pro-ctx-screen-grok"
+    },
+    {
+      "cell": "mmlu_pro.mistr",
+      "benchmark": "mmlu_pro",
+      "benchmark_label": "MMLU-Pro",
+      "model": "mistr",
+      "model_label": "Mistral-Large-3",
+      "baseline_repo": "SALT-NLP/mmlu-pro-context-baseline-mistr",
+      "perturbed_repo": "SALT-NLP/mmlu-pro-ctx-screen-mistr"
+    },
+    {
+      "cell": "mmlu_pro.gptos",
+      "benchmark": "mmlu_pro",
+      "benchmark_label": "MMLU-Pro",
+      "model": "gptos",
+      "model_label": "gpt-oss-120b",
+      "baseline_repo": "SALT-NLP/mmlu-pro-context-baseline-gptos",
+      "perturbed_repo": "SALT-NLP/mmlu-pro-ctx-screen-gptos"
+    },
+    {
+      "cell": "mmlu_pro.gemin",
+      "benchmark": "mmlu_pro",
+      "benchmark_label": "MMLU-Pro",
+      "model": "gemin",
+      "model_label": "gemini-3.1-fl",
+      "baseline_repo": "SALT-NLP/mmlu-pro-context-baseline-gemin",
+      "perturbed_repo": "SALT-NLP/mmlu-pro-ctx-screen-gemin"
+    },
+    {
+      "cell": "gpqa.gpt55",
+      "benchmark": "gpqa",
+      "benchmark_label": "GPQA",
+      "model": "gpt55",
+      "model_label": "gpt-5.5",
+      "baseline_repo": "SALT-NLP/gpqa_diamond-context-baseline-gpt55",
+      "perturbed_repo": "SALT-NLP/gpqa_diamond-ctx-screen-gpt55"
+    },
+    {
+      "cell": "gpqa.gpt54",
+      "benchmark": "gpqa",
+      "benchmark_label": "GPQA",
+      "model": "gpt54",
+      "model_label": "gpt-5.4",
+      "baseline_repo": "SALT-NLP/gpqa_diamond-context-baseline-gpt54",
+      "perturbed_repo": "SALT-NLP/gpqa_diamond-ctx-screen-gpt54"
+    },
+    {
+      "cell": "gpqa.gpt41",
+      "benchmark": "gpqa",
+      "benchmark_label": "GPQA",
+      "model": "gpt41",
+      "model_label": "gpt-4.1",
+      "baseline_repo": "SALT-NLP/gpqa_diamond-context-baseline-gpt41",
+      "perturbed_repo": "SALT-NLP/gpqa_diamond-ctx-screen-gpt41"
+    },
+    {
+      "cell": "gpqa.deep",
+      "benchmark": "gpqa",
+      "benchmark_label": "GPQA",
+      "model": "deep",
+      "model_label": "DeepSeek-V4-Pro",
+      "baseline_repo": "SALT-NLP/gpqa_diamond-context-baseline-deep",
+      "perturbed_repo": "SALT-NLP/gpqa_diamond-ctx-screen-deep"
+    },
+    {
+      "cell": "gpqa.grok",
+      "benchmark": "gpqa",
+      "benchmark_label": "GPQA",
+      "model": "grok",
+      "model_label": "Grok-4.20-NR",
+      "baseline_repo": "SALT-NLP/gpqa_diamond-context-baseline-grok",
+      "perturbed_repo": "SALT-NLP/gpqa_diamond-ctx-screen-grok"
+    },
+    {
+      "cell": "gpqa.mistr",
+      "benchmark": "gpqa",
+      "benchmark_label": "GPQA",
+      "model": "mistr",
+      "model_label": "Mistral-Large-3",
+      "baseline_repo": "SALT-NLP/gpqa_diamond-context-baseline-mistr",
+      "perturbed_repo": "SALT-NLP/gpqa_diamond-ctx-screen-mistr"
+    },
+    {
+      "cell": "gpqa.gptos",
+      "benchmark": "gpqa",
+      "benchmark_label": "GPQA",
+      "model": "gptos",
+      "model_label": "gpt-oss-120b",
+      "baseline_repo": "SALT-NLP/gpqa_diamond-context-baseline-gptos",
+      "perturbed_repo": "SALT-NLP/gpqa_diamond-ctx-screen-gptos"
+    },
+    {
+      "cell": "gpqa.gemin",
+      "benchmark": "gpqa",
+      "benchmark_label": "GPQA",
+      "model": "gemin",
+      "model_label": "gemini-3.1-fl",
+      "baseline_repo": "SALT-NLP/gpqa_diamond-context-baseline-gemin",
+      "perturbed_repo": "SALT-NLP/gpqa_diamond-ctx-screen-gemin"
+    },
+    {
+      "cell": "hle.gpt55",
+      "benchmark": "hle",
+      "benchmark_label": "HLE",
+      "model": "gpt55",
+      "model_label": "gpt-5.5",
+      "baseline_repo": "SALT-NLP/hle-context-baseline-gpt55",
+      "perturbed_repo": "SALT-NLP/hle-ctx-screen-gpt55"
+    },
+    {
+      "cell": "hle.gpt54",
+      "benchmark": "hle",
+      "benchmark_label": "HLE",
+      "model": "gpt54",
+      "model_label": "gpt-5.4",
+      "baseline_repo": "SALT-NLP/hle-context-baseline-gpt54",
+      "perturbed_repo": "SALT-NLP/hle-ctx-screen-gpt54"
+    },
+    {
+      "cell": "hle.gpt41",
+      "benchmark": "hle",
+      "benchmark_label": "HLE",
+      "model": "gpt41",
+      "model_label": "gpt-4.1",
+      "baseline_repo": "SALT-NLP/hle-context-baseline-gpt41",
+      "perturbed_repo": "SALT-NLP/hle-ctx-screen-gpt41"
+    },
+    {
+      "cell": "hle.deep",
+      "benchmark": "hle",
+      "benchmark_label": "HLE",
+      "model": "deep",
+      "model_label": "DeepSeek-V4-Pro",
+      "baseline_repo": "SALT-NLP/hle-context-baseline-deep",
+      "perturbed_repo": "SALT-NLP/hle-ctx-screen-deep"
+    },
+    {
+      "cell": "hle.grok",
+      "benchmark": "hle",
+      "benchmark_label": "HLE",
+      "model": "grok",
+      "model_label": "Grok-4.20-NR",
+      "baseline_repo": "SALT-NLP/hle-context-baseline-grok",
+      "perturbed_repo": "SALT-NLP/hle-ctx-screen-grok"
+    },
+    {
+      "cell": "hle.mistr",
+      "benchmark": "hle",
+      "benchmark_label": "HLE",
+      "model": "mistr",
+      "model_label": "Mistral-Large-3",
+      "baseline_repo": "SALT-NLP/hle-context-baseline-mistr",
+      "perturbed_repo": "SALT-NLP/hle-ctx-screen-mistr"
+    },
+    {
+      "cell": "hle.gptos",
+      "benchmark": "hle",
+      "benchmark_label": "HLE",
+      "model": "gptos",
+      "model_label": "gpt-oss-120b",
+      "baseline_repo": "SALT-NLP/hle-context-baseline-gptos",
+      "perturbed_repo": "SALT-NLP/hle-ctx-screen-gptos"
+    },
+    {
+      "cell": "hle.gemin",
+      "benchmark": "hle",
+      "benchmark_label": "HLE",
+      "model": "gemin",
+      "model_label": "gemini-3.1-fl",
+      "baseline_repo": "SALT-NLP/hle-context-baseline-gemin",
+      "perturbed_repo": "SALT-NLP/hle-ctx-screen-gemin"
+    },
+    {
+      "cell": "simpleqa.gpt55",
+      "benchmark": "simpleqa",
+      "benchmark_label": "SimpleQA",
+      "model": "gpt55",
+      "model_label": "gpt-5.5",
+      "baseline_repo": "SALT-NLP/simpleqa-verified-context-baseline-gpt55",
+      "perturbed_repo": "SALT-NLP/simpleqa-verified-ctx-screen-gpt55"
+    },
+    {
+      "cell": "simpleqa.gpt54",
+      "benchmark": "simpleqa",
+      "benchmark_label": "SimpleQA",
+      "model": "gpt54",
+      "model_label": "gpt-5.4",
+      "baseline_repo": "SALT-NLP/simpleqa-verified-context-baseline-gpt54",
+      "perturbed_repo": "SALT-NLP/simpleqa-verified-ctx-screen-gpt54"
+    },
+    {
+      "cell": "simpleqa.gpt41",
+      "benchmark": "simpleqa",
+      "benchmark_label": "SimpleQA",
+      "model": "gpt41",
+      "model_label": "gpt-4.1",
+      "baseline_repo": "SALT-NLP/simpleqa-verified-context-baseline-gpt41",
+      "perturbed_repo": "SALT-NLP/simpleqa-verified-ctx-screen-gpt41"
+    },
+    {
+      "cell": "simpleqa.deep",
+      "benchmark": "simpleqa",
+      "benchmark_label": "SimpleQA",
+      "model": "deep",
+      "model_label": "DeepSeek-V4-Pro",
+      "baseline_repo": "SALT-NLP/simpleqa-verified-context-baseline-deep",
+      "perturbed_repo": "SALT-NLP/simpleqa-verified-ctx-screen-deep"
+    },
+    {
+      "cell": "simpleqa.grok",
+      "benchmark": "simpleqa",
+      "benchmark_label": "SimpleQA",
+      "model": "grok",
+      "model_label": "Grok-4.20-NR",
+      "baseline_repo": "SALT-NLP/simpleqa-verified-context-baseline-grok",
+      "perturbed_repo": "SALT-NLP/simpleqa-verified-ctx-screen-grok"
+    },
+    {
+      "cell": "simpleqa.mistr",
+      "benchmark": "simpleqa",
+      "benchmark_label": "SimpleQA",
+      "model": "mistr",
+      "model_label": "Mistral-Large-3",
+      "baseline_repo": "SALT-NLP/simpleqa-verified-context-baseline-mistr",
+      "perturbed_repo": "SALT-NLP/simpleqa-verified-ctx-screen-mistr"
+    },
+    {
+      "cell": "simpleqa.gptos",
+      "benchmark": "simpleqa",
+      "benchmark_label": "SimpleQA",
+      "model": "gptos",
+      "model_label": "gpt-oss-120b",
+      "baseline_repo": "SALT-NLP/simpleqa-verified-context-baseline-gptos",
+      "perturbed_repo": "SALT-NLP/simpleqa-verified-ctx-screen-gptos"
+    },
+    {
+      "cell": "simpleqa.gemin",
+      "benchmark": "simpleqa",
+      "benchmark_label": "SimpleQA",
+      "model": "gemin",
+      "model_label": "gemini-3.1-fl",
+      "baseline_repo": "SALT-NLP/simpleqa-verified-context-baseline-gemin",
+      "perturbed_repo": "SALT-NLP/simpleqa-verified-ctx-screen-gemin"
+    }
+  ],
+  "datasets": {
+    "SALT-NLP/gpqa_diamond-context-baseline-deep": {
+      "repo": "SALT-NLP/gpqa_diamond-context-baseline-deep",
+      "revision": "9240efbaed0418427c874bbb5c569f31f653e9c6",
+      "private": false,
+      "gated": false,
+      "license": null,
+      "parquet": [
+        {
+          "path": "data/train-00000-of-00001.parquet",
+          "bytes": 1776962,
+          "git_oid": "be7e6e79f726ffb0cf83fcba1cae58037ce8414a",
+          "lfs_sha256": "983c5fb2944ac4c0f4d3cb43f984789426ef924b677206d1b9ce0af19e27199b",
+          "download_url": "https://huggingface.co/datasets/SALT-NLP/gpqa_diamond-context-baseline-deep/resolve/9240efbaed0418427c874bbb5c569f31f653e9c6/data/train-00000-of-00001.parquet?download=true"
+        }
+      ]
+    },
+    "SALT-NLP/gpqa_diamond-context-baseline-gemin": {
+      "repo": "SALT-NLP/gpqa_diamond-context-baseline-gemin",
+      "revision": "b4f3dd86756465e38c836efb2c4b119b7f6cc91e",
+      "private": false,
+      "gated": false,
+      "license": null,
+      "parquet": [
+        {
+          "path": "data/train-00000-of-00001.parquet",
+          "bytes": 2002497,
+          "git_oid": "02d9d6127c4f9206315a043f5800da3e6c7c6bd5",
+          "lfs_sha256": "73aba94dc29cf7f4613a092534c88e179f031ecdae0088f956fcfec3ee50c4b5",
+          "download_url": "https://huggingface.co/datasets/SALT-NLP/gpqa_diamond-context-baseline-gemin/resolve/b4f3dd86756465e38c836efb2c4b119b7f6cc91e/data/train-00000-of-00001.parquet?download=true"
+        }
+      ]
+    },
+    "SALT-NLP/gpqa_diamond-context-baseline-gpt41": {
+      "repo": "SALT-NLP/gpqa_diamond-context-baseline-gpt41",
+      "revision": "86d7e56de5c56c40805692321088c21d24b9d407",
+      "private": false,
+      "gated": false,
+      "license": null,
+      "parquet": [
+        {
+          "path": "data/train-00000-of-00001.parquet",
+          "bytes": 2769406,
+          "git_oid": "6194f81da4dba71674745543088a95788895a7d2",
+          "lfs_sha256": "4302eabc730b5945f70f5a4b25ff1cfad8d69c3b98ff2c007b22476d561c4c0f",
+          "download_url": "https://huggingface.co/datasets/SALT-NLP/gpqa_diamond-context-baseline-gpt41/resolve/86d7e56de5c56c40805692321088c21d24b9d407/data/train-00000-of-00001.parquet?download=true"
+        }
+      ]
+    },
+    "SALT-NLP/gpqa_diamond-context-baseline-gpt54": {
+      "repo": "SALT-NLP/gpqa_diamond-context-baseline-gpt54",
+      "revision": "c80dc9e3fbb76a193b0393e6b572d6323072067a",
+      "private": false,
+      "gated": false,
+      "license": null,
+      "parquet": [
+        {
+          "path": "data/train-00000-of-00001.parquet",
+          "bytes": 902571,
+          "git_oid": "3338930b34548b8e9d534aa46796429b8df05b83",
+          "lfs_sha256": "589066d6ccf37e4f7cb8a8363ebf8d5060f8f5deb5d3a7ba7c207f7ea5bdd8c2",
+          "download_url": "https://huggingface.co/datasets/SALT-NLP/gpqa_diamond-context-baseline-gpt54/resolve/c80dc9e3fbb76a193b0393e6b572d6323072067a/data/train-00000-of-00001.parquet?download=true"
+        }
+      ]
+    },
+    "SALT-NLP/gpqa_diamond-context-baseline-gpt55": {
+      "repo": "SALT-NLP/gpqa_diamond-context-baseline-gpt55",
+      "revision": "d2ce0eec0a62f486780f76ca4702524a5b45d5dd",
+      "private": false,
+      "gated": false,
+      "license": null,
+      "parquet": [
+        {
+          "path": "data/train-00000-of-00001.parquet",
+          "bytes": 704070,
+          "git_oid": "323c4bb6196e2f5c8c59511a2905024a2a3a9564",
+          "lfs_sha256": "4c98c53c666c00adf0354d47305f833a7690b005f39ca9650effb9b25d5fd218",
+          "download_url": "https://huggingface.co/datasets/SALT-NLP/gpqa_diamond-context-baseline-gpt55/resolve/d2ce0eec0a62f486780f76ca4702524a5b45d5dd/data/train-00000-of-00001.parquet?download=true"
+        }
+      ]
+    },
+    "SALT-NLP/gpqa_diamond-context-baseline-gptos": {
+      "repo": "SALT-NLP/gpqa_diamond-context-baseline-gptos",
+      "revision": "8cecabc636e6152d095d3175de6d4f9f39fc4884",
+      "private": false,
+      "gated": false,
+      "license": null,
+      "parquet": [
+        {
+          "path": "data/train-00000-of-00001.parquet",
+          "bytes": 3159941,
+          "git_oid": "637a5328d4dce62e9451895565044f0a93eb7fba",
+          "lfs_sha256": "59118b339a5563ad2161f0f8b78aa19b30f6010bbfbfad10f490147707be2a41",
+          "download_url": "https://huggingface.co/datasets/SALT-NLP/gpqa_diamond-context-baseline-gptos/resolve/8cecabc636e6152d095d3175de6d4f9f39fc4884/data/train-00000-of-00001.parquet?download=true"
+        }
+      ]
+    },
+    "SALT-NLP/gpqa_diamond-context-baseline-grok": {
+      "repo": "SALT-NLP/gpqa_diamond-context-baseline-grok",
+      "revision": "8f2d6af9502589eac755f3dc7e27893b64f891c6",
+      "private": false,
+      "gated": false,
+      "license": null,
+      "parquet": [
+        {
+          "path": "data/train-00000-of-00001.parquet",
+          "bytes": 1933372,
+          "git_oid": "4d034d529904c4bd5acb0af201f793d65574719f",
+          "lfs_sha256": "c701f3d0c6d194da08aebbc8d290f0cffb48604b3e66e936315c5745575f12d7",
+          "download_url": "https://huggingface.co/datasets/SALT-NLP/gpqa_diamond-context-baseline-grok/resolve/8f2d6af9502589eac755f3dc7e27893b64f891c6/data/train-00000-of-00001.parquet?download=true"
+        }
+      ]
+    },
+    "SALT-NLP/gpqa_diamond-context-baseline-mistr": {
+      "repo": "SALT-NLP/gpqa_diamond-context-baseline-mistr",
+      "revision": "6b270b2dcc75c1b1c938e3dad9cf6f640c035262",
+      "private": false,
+      "gated": false,
+      "license": null,
+      "parquet": [
+        {
+          "path": "data/train-00000-of-00001.parquet",
+          "bytes": 2005657,
+          "git_oid": "b95796be9b447105f07b3e4397df0913fa1ae35f",
+          "lfs_sha256": "06616bba302874f44aa95076424c57ed9397eeab6bec27b2886781ea306e4fea",
+          "download_url": "https://huggingface.co/datasets/SALT-NLP/gpqa_diamond-context-baseline-mistr/resolve/6b270b2dcc75c1b1c938e3dad9cf6f640c035262/data/train-00000-of-00001.parquet?download=true"
+        }
+      ]
+    },
+    "SALT-NLP/gpqa_diamond-ctx-screen-deep": {
+      "repo": "SALT-NLP/gpqa_diamond-ctx-screen-deep",
+      "revision": "b230a4206b6087cb2fe395f3e6cef514f63987c2",
+      "private": false,
+      "gated": false,
+      "license": null,
+      "parquet": [
+        {
+          "path": "data/train-00000-of-00001.parquet",
+          "bytes": 1883031,
+          "git_oid": "f019a683df963d54a09cd71f8c2d98b649d34fd3",
+          "lfs_sha256": "652eff9bc24892fe7034f39c13d9d357366560daf670f26f1a9a02ad6930d87b",
+          "download_url": "https://huggingface.co/datasets/SALT-NLP/gpqa_diamond-ctx-screen-deep/resolve/b230a4206b6087cb2fe395f3e6cef514f63987c2/data/train-00000-of-00001.parquet?download=true"
+        }
+      ]
+    },
+    "SALT-NLP/gpqa_diamond-ctx-screen-gemin": {
+      "repo": "SALT-NLP/gpqa_diamond-ctx-screen-gemin",
+      "revision": "a2a5755fb092f14f55ef283537f2df7e4d8405cb",
+      "private": false,
+      "gated": false,
+      "license": null,
+      "parquet": [
+        {
+          "path": "data/train-00000-of-00001.parquet",
+          "bytes": 2240098,
+          "git_oid": "78d340ae7319b9a4f3004aeb159da29988877671",
+          "lfs_sha256": "cd303374b1eb9336130f9ebad33fc2f6bafab179edd7e7e23b271aa0506ce824",
+          "download_url": "https://huggingface.co/datasets/SALT-NLP/gpqa_diamond-ctx-screen-gemin/resolve/a2a5755fb092f14f55ef283537f2df7e4d8405cb/data/train-00000-of-00001.parquet?download=true"
+        }
+      ]
+    },
+    "SALT-NLP/gpqa_diamond-ctx-screen-gpt41": {
+      "repo": "SALT-NLP/gpqa_diamond-ctx-screen-gpt41",
+      "revision": "0d63307fce3ad653caa8fc07d8714a84d0f98524",
+      "private": false,
+      "gated": false,
+      "license": null,
+      "parquet": [
+        {
+          "path": "data/train-00000-of-00001.parquet",
+          "bytes": 3175307,
+          "git_oid": "1bad0667968c35bd713411004a50d0b80e3b6eff",
+          "lfs_sha256": "b2680ea0b946247a299a41f2650bd5c0f2bd5b519eab704045af1dfcab143274",
+          "download_url": "https://huggingface.co/datasets/SALT-NLP/gpqa_diamond-ctx-screen-gpt41/resolve/0d63307fce3ad653caa8fc07d8714a84d0f98524/data/train-00000-of-00001.parquet?download=true"
+        }
+      ]
+    },
+    "SALT-NLP/gpqa_diamond-ctx-screen-gpt54": {
+      "repo": "SALT-NLP/gpqa_diamond-ctx-screen-gpt54",
+      "revision": "7ae537566ece00e43a85dd7fdcc6519dc938f81d",
+      "private": false,
+      "gated": false,
+      "license": null,
+      "parquet": [
+        {
+          "path": "data/train-00000-of-00001.parquet",
+          "bytes": 1077704,
+          "git_oid": "4fe3dd364b84f56c7c1eab0b5230a0aff0cba350",
+          "lfs_sha256": "729b3ad535380ef5a51265576ad8e694e059262481789386ade023d8fb0d5d5d",
+          "download_url": "https://huggingface.co/datasets/SALT-NLP/gpqa_diamond-ctx-screen-gpt54/resolve/7ae537566ece00e43a85dd7fdcc6519dc938f81d/data/train-00000-of-00001.parquet?download=true"
+        }
+      ]
+    },
+    "SALT-NLP/gpqa_diamond-ctx-screen-gpt55": {
+      "repo": "SALT-NLP/gpqa_diamond-ctx-screen-gpt55",
+      "revision": "454b94d55b0f7d218ae7d8f11dbb0dcf91a26038",
+      "private": false,
+      "gated": false,
+      "license": null,
+      "parquet": [
+        {
+          "path": "data/train-00000-of-00001.parquet",
+          "bytes": 922091,
+          "git_oid": "938a542ebc7d561b5aa70f01cb27da94ced9bae1",
+          "lfs_sha256": "ccaa558ee41da580fd3432635b5cfde6bd33eefc553898dd695ed92679815002",
+          "download_url": "https://huggingface.co/datasets/SALT-NLP/gpqa_diamond-ctx-screen-gpt55/resolve/454b94d55b0f7d218ae7d8f11dbb0dcf91a26038/data/train-00000-of-00001.parquet?download=true"
+        }
+      ]
+    },
+    "SALT-NLP/gpqa_diamond-ctx-screen-gptos": {
+      "repo": "SALT-NLP/gpqa_diamond-ctx-screen-gptos",
+      "revision": "b343b56a979cd78ad0c09e6848e2ad985573db01",
+      "private": false,
+      "gated": false,
+      "license": null,
+      "parquet": [
+        {
+          "path": "data/train-00000-of-00001.parquet",
+          "bytes": 3316960,
+          "git_oid": "014ebb1adf4468022486437b70ba3f3c49f349b6",
+          "lfs_sha256": "7d671c2f5400407751c7bb912ceb2a538815292b5c1e473ad0365e3a6431661a",
+          "download_url": "https://huggingface.co/datasets/SALT-NLP/gpqa_diamond-ctx-screen-gptos/resolve/b343b56a979cd78ad0c09e6848e2ad985573db01/data/train-00000-of-00001.parquet?download=true"
+        }
+      ]
+    },
+    "SALT-NLP/gpqa_diamond-ctx-screen-grok": {
+      "repo": "SALT-NLP/gpqa_diamond-ctx-screen-grok",
+      "revision": "cd5530d01d49dee94675e6be8b5590f12f1be41a",
+      "private": false,
+      "gated": false,
+      "license": null,
+      "parquet": [
+        {
+          "path": "data/train-00000-of-00001.parquet",
+          "bytes": 2093822,
+          "git_oid": "dc3278776cb3cf3db34bf0209d9b474d5f23c1b5",
+          "lfs_sha256": "0ac95d2c766168ec8a463a31cefeaf7b16661f8c9e2b6b6ff1fd91af70261701",
+          "download_url": "https://huggingface.co/datasets/SALT-NLP/gpqa_diamond-ctx-screen-grok/resolve/cd5530d01d49dee94675e6be8b5590f12f1be41a/data/train-00000-of-00001.parquet?download=true"
+        }
+      ]
+    },
+    "SALT-NLP/gpqa_diamond-ctx-screen-mistr": {
+      "repo": "SALT-NLP/gpqa_diamond-ctx-screen-mistr",
+      "revision": "d7fd4157edd3b73cb5ad8d188c336958793f93f9",
+      "private": false,
+      "gated": false,
+      "license": null,
+      "parquet": [
+        {
+          "path": "data/train-00000-of-00001.parquet",
+          "bytes": 2743516,
+          "git_oid": "7a8f9d3478c657e5e577c22120e5ad49efb279e4",
+          "lfs_sha256": "870932f0eeba3766a7a0fae419782268cbaf7c9659cca2880db954dc07cd987f",
+          "download_url": "https://huggingface.co/datasets/SALT-NLP/gpqa_diamond-ctx-screen-mistr/resolve/d7fd4157edd3b73cb5ad8d188c336958793f93f9/data/train-00000-of-00001.parquet?download=true"
+        }
+      ]
+    },
+    "SALT-NLP/hle-context-baseline-deep": {
+      "repo": "SALT-NLP/hle-context-baseline-deep",
+      "revision": "6a7dc598a7ed847a69c63c2678688cee661dd007",
+      "private": false,
+      "gated": false,
+      "license": null,
+      "parquet": [
+        {
+          "path": "data/train-00000-of-00001.parquet",
+          "bytes": 9379399,
+          "git_oid": "ae576af28c5e1217a1d128bfa595c70564899c39",
+          "lfs_sha256": "600e35994c398a54ef8c3648cca2099b917180e345dbdb42ca7ac6e5052cdf13",
+          "download_url": "https://huggingface.co/datasets/SALT-NLP/hle-context-baseline-deep/resolve/6a7dc598a7ed847a69c63c2678688cee661dd007/data/train-00000-of-00001.parquet?download=true"
+        }
+      ]
+    },
+    "SALT-NLP/hle-context-baseline-gemin": {
+      "repo": "SALT-NLP/hle-context-baseline-gemin",
+      "revision": "dfdc15ae4080ae8d5b1484972cff4cf40124dca9",
+      "private": false,
+      "gated": false,
+      "license": null,
+      "parquet": [
+        {
+          "path": "data/train-00000-of-00001.parquet",
+          "bytes": 8861804,
+          "git_oid": "8345b065e50b28c37adef95584bd50d717eccedf",
+          "lfs_sha256": "9cf6379dbfbbae183a68b05f63e870a3e23db0dff2e1fd10c14424007aa94202",
+          "download_url": "https://huggingface.co/datasets/SALT-NLP/hle-context-baseline-gemin/resolve/dfdc15ae4080ae8d5b1484972cff4cf40124dca9/data/train-00000-of-00001.parquet?download=true"
+        }
+      ]
+    },
+    "SALT-NLP/hle-context-baseline-gpt41": {
+      "repo": "SALT-NLP/hle-context-baseline-gpt41",
+      "revision": "46548b4d140d01ae7eb78f7efafccf0acd1e44c1",
+      "private": false,
+      "gated": false,
+      "license": null,
+      "parquet": [
+        {
+          "path": "data/train-00000-of-00001.parquet",
+          "bytes": 15968170,
+          "git_oid": "b661c83bcf124cecca54e4249181f8762140307c",
+          "lfs_sha256": "c9ee99de80d4633eb096c5456d189d9506d442e06b0bb4ebd06d83b30f9cd187",
+          "download_url": "https://huggingface.co/datasets/SALT-NLP/hle-context-baseline-gpt41/resolve/46548b4d140d01ae7eb78f7efafccf0acd1e44c1/data/train-00000-of-00001.parquet?download=true"
+        }
+      ]
+    },
+    "SALT-NLP/hle-context-baseline-gpt54": {
+      "repo": "SALT-NLP/hle-context-baseline-gpt54",
+      "revision": "a577878b903efbf66fe08365c0edc2d858c81679",
+      "private": false,
+      "gated": false,
+      "license": null,
+      "parquet": [
+        {
+          "path": "data/train-00000-of-00001.parquet",
+          "bytes": 4792109,
+          "git_oid": "42cd0da10b18d6b3957259a7ab7544fae38030fb",
+          "lfs_sha256": "9be5a64c75e865da56c99d12968e62b5873a2fcd7471cfb1475eb5c6fa03e1d0",
+          "download_url": "https://huggingface.co/datasets/SALT-NLP/hle-context-baseline-gpt54/resolve/a577878b903efbf66fe08365c0edc2d858c81679/data/train-00000-of-00001.parquet?download=true"
+        }
+      ]
+    },
+    "SALT-NLP/hle-context-baseline-gpt55": {
+      "repo": "SALT-NLP/hle-context-baseline-gpt55",
+      "revision": "db05b91738b829b026dc5915bb242a2802207909",
+      "private": false,
+      "gated": false,
+      "license": null,
+      "parquet": [
+        {
+          "path": "data/train-00000-of-00001.parquet",
+          "bytes": 3769642,
+          "git_oid": "156dcf65b984f78792b7066be387bb6642a4e529",
+          "lfs_sha256": "7bd509dc09bfbef3fb37a75111897baf9b82d8a20f3d2dfa79bd50148973bb41",
+          "download_url": "https://huggingface.co/datasets/SALT-NLP/hle-context-baseline-gpt55/resolve/db05b91738b829b026dc5915bb242a2802207909/data/train-00000-of-00001.parquet?download=true"
+        }
+      ]
+    },
+    "SALT-NLP/hle-context-baseline-gptos": {
+      "repo": "SALT-NLP/hle-context-baseline-gptos",
+      "revision": "f0ca9ea056656a17e953ebb3a6cfb17e0042ea9b",
+      "private": false,
+      "gated": false,
+      "license": null,
+      "parquet": [
+        {
+          "path": "data/train-00000-of-00001.parquet",
+          "bytes": 13033005,
+          "git_oid": "c6b7c2a2a4855c28095515aa27612c84ea1e1811",
+          "lfs_sha256": "61058227a269c1111db6f302b4a4829c8bdad19529da0e36577d393588893f11",
+          "download_url": "https://huggingface.co/datasets/SALT-NLP/hle-context-baseline-gptos/resolve/f0ca9ea056656a17e953ebb3a6cfb17e0042ea9b/data/train-00000-of-00001.parquet?download=true"
+        }
+      ]
+    },
+    "SALT-NLP/hle-context-baseline-grok": {
+      "repo": "SALT-NLP/hle-context-baseline-grok",
+      "revision": "4388c70550b788e0c02483f68e9b4dd63ed6e218",
+      "private": false,
+      "gated": false,
+      "license": null,
+      "parquet": [
+        {
+          "path": "data/train-00000-of-00001.parquet",
+          "bytes": 13858056,
+          "git_oid": "0984c1ff62437f26595efdd02083197ccbf19cc1",
+          "lfs_sha256": "e273b5cb2a2d669bded0cce91ef274fe0d1d030935d51d510615dac892ae16b8",
+          "download_url": "https://huggingface.co/datasets/SALT-NLP/hle-context-baseline-grok/resolve/4388c70550b788e0c02483f68e9b4dd63ed6e218/data/train-00000-of-00001.parquet?download=true"
+        }
+      ]
+    },
+    "SALT-NLP/hle-context-baseline-mistr": {
+      "repo": "SALT-NLP/hle-context-baseline-mistr",
+      "revision": "df100bdfd672056318dddcfb459b3fc8901fd5fc",
+      "private": false,
+      "gated": false,
+      "license": null,
+      "parquet": [
+        {
+          "path": "data/train-00000-of-00001.parquet",
+          "bytes": 15220097,
+          "git_oid": "8138c8cd3828c83e75e0699f45522330331e4462",
+          "lfs_sha256": "78b33a6c2a327777e637569c9170613a5fce5ef0993a8edec70fe2f30491672b",
+          "download_url": "https://huggingface.co/datasets/SALT-NLP/hle-context-baseline-mistr/resolve/df100bdfd672056318dddcfb459b3fc8901fd5fc/data/train-00000-of-00001.parquet?download=true"
+        }
+      ]
+    },
+    "SALT-NLP/hle-ctx-screen-deep": {
+      "repo": "SALT-NLP/hle-ctx-screen-deep",
+      "revision": "a39bf0558273faaef464d5d331f9383defc3c2e0",
+      "private": false,
+      "gated": false,
+      "license": null,
+      "parquet": [
+        {
+          "path": "data/train-00000-of-00001.parquet",
+          "bytes": 8893561,
+          "git_oid": "3edfd4ca24215c3b7431dbb5e137fd92ce8da3b1",
+          "lfs_sha256": "6e244ba1e801353781be2f8f283a8fbb3c2962afa572904e298f7e3db3bfa164",
+          "download_url": "https://huggingface.co/datasets/SALT-NLP/hle-ctx-screen-deep/resolve/a39bf0558273faaef464d5d331f9383defc3c2e0/data/train-00000-of-00001.parquet?download=true"
+        }
+      ]
+    },
+    "SALT-NLP/hle-ctx-screen-gemin": {
+      "repo": "SALT-NLP/hle-ctx-screen-gemin",
+      "revision": "94bb67a1f0186952df0363fbb0093474f5c611f7",
+      "private": false,
+      "gated": false,
+      "license": null,
+      "parquet": [
+        {
+          "path": "data/train-00000-of-00001.parquet",
+          "bytes": 9132372,
+          "git_oid": "9071759c2e24c9f701f7b30657bd17f248ffcad5",
+          "lfs_sha256": "433359da465055c033be266ac48ee5104952f3e0d8279422fc16c174042173f2",
+          "download_url": "https://huggingface.co/datasets/SALT-NLP/hle-ctx-screen-gemin/resolve/94bb67a1f0186952df0363fbb0093474f5c611f7/data/train-00000-of-00001.parquet?download=true"
+        }
+      ]
+    },
+    "SALT-NLP/hle-ctx-screen-gpt41": {
+      "repo": "SALT-NLP/hle-ctx-screen-gpt41",
+      "revision": "f3530d02eb9f526526ab78cfb8d0474eb09f42ef",
+      "private": false,
+      "gated": false,
+      "license": null,
+      "parquet": [
+        {
+          "path": "data/train-00000-of-00001.parquet",
+          "bytes": 17076440,
+          "git_oid": "a46d9ed73c7e4642d329c0cf319bedb077d62eca",
+          "lfs_sha256": "e166b95cb7b827c16070a855015c26af2e97288e12e988e9eb075ed7c9bdcd7d",
+          "download_url": "https://huggingface.co/datasets/SALT-NLP/hle-ctx-screen-gpt41/resolve/f3530d02eb9f526526ab78cfb8d0474eb09f42ef/data/train-00000-of-00001.parquet?download=true"
+        }
+      ]
+    },
+    "SALT-NLP/hle-ctx-screen-gpt54": {
+      "repo": "SALT-NLP/hle-ctx-screen-gpt54",
+      "revision": "fdba27c78db045c051b7496dbcd205eae34e1ccb",
+      "private": false,
+      "gated": false,
+      "license": null,
+      "parquet": [
+        {
+          "path": "data/train-00000-of-00001.parquet",
+          "bytes": 5159767,
+          "git_oid": "0a0127a4143ac381823ac298a2d61462e097f8a7",
+          "lfs_sha256": "2c003d95dbe96b53d127f7ed055969c70af2778fae651ed49b432b41870f8461",
+          "download_url": "https://huggingface.co/datasets/SALT-NLP/hle-ctx-screen-gpt54/resolve/fdba27c78db045c051b7496dbcd205eae34e1ccb/data/train-00000-of-00001.parquet?download=true"
+        }
+      ]
+    },
+    "SALT-NLP/hle-ctx-screen-gpt55": {
+      "repo": "SALT-NLP/hle-ctx-screen-gpt55",
+      "revision": "0d772b4e1b73a5b6c8a255cb2ad983b9b8f028bf",
+      "private": false,
+      "gated": false,
+      "license": null,
+      "parquet": [
+        {
+          "path": "data/train-00000-of-00001.parquet",
+          "bytes": 4399304,
+          "git_oid": "2d5e86e91a53ce46b6b114c68013796cdfe0632a",
+          "lfs_sha256": "d651daa3a1b02e2c9156197f7ac02df2a776c1f194f02a1c594f95d7ebdda59c",
+          "download_url": "https://huggingface.co/datasets/SALT-NLP/hle-ctx-screen-gpt55/resolve/0d772b4e1b73a5b6c8a255cb2ad983b9b8f028bf/data/train-00000-of-00001.parquet?download=true"
+        }
+      ]
+    },
+    "SALT-NLP/hle-ctx-screen-gptos": {
+      "repo": "SALT-NLP/hle-ctx-screen-gptos",
+      "revision": "1742bcf1eb8dcd4426623e68935750270a79d3ac",
+      "private": false,
+      "gated": false,
+      "license": null,
+      "parquet": [
+        {
+          "path": "data/train-00000-of-00001.parquet",
+          "bytes": 12670546,
+          "git_oid": "7a29ee2269a812671c81089ceb1a43c24423f817",
+          "lfs_sha256": "e13d72bcbfb55637d3d3234ec33f380d6578ba95d28d4acab6a4e4465fcbad47",
+          "download_url": "https://huggingface.co/datasets/SALT-NLP/hle-ctx-screen-gptos/resolve/1742bcf1eb8dcd4426623e68935750270a79d3ac/data/train-00000-of-00001.parquet?download=true"
+        }
+      ]
+    },
+    "SALT-NLP/hle-ctx-screen-grok": {
+      "repo": "SALT-NLP/hle-ctx-screen-grok",
+      "revision": "194aa57b316b50fb22f51e75f9b9688814fa871f",
+      "private": false,
+      "gated": false,
+      "license": null,
+      "parquet": [
+        {
+          "path": "data/train-00000-of-00001.parquet",
+          "bytes": 13609615,
+          "git_oid": "b543b05da8e6d94dc7f58156c42d0575e8088665",
+          "lfs_sha256": "c9908c7f2d753aa5a7c80abdbbc8ee54a8f0ea8bcb8602a151b1003fa60ab9a4",
+          "download_url": "https://huggingface.co/datasets/SALT-NLP/hle-ctx-screen-grok/resolve/194aa57b316b50fb22f51e75f9b9688814fa871f/data/train-00000-of-00001.parquet?download=true"
+        }
+      ]
+    },
+    "SALT-NLP/hle-ctx-screen-mistr": {
+      "repo": "SALT-NLP/hle-ctx-screen-mistr",
+      "revision": "9dcd30e937f43aca44011baf341d2cd50759b700",
+      "private": false,
+      "gated": false,
+      "license": null,
+      "parquet": [
+        {
+          "path": "data/train-00000-of-00001.parquet",
+          "bytes": 15619222,
+          "git_oid": "c73fc9108deb476152005a28ce940f446d50e6ec",
+          "lfs_sha256": "da65a6564e4605683da64496e1e16e6abb4b89d993953196d5cc4f55b6cee1d6",
+          "download_url": "https://huggingface.co/datasets/SALT-NLP/hle-ctx-screen-mistr/resolve/9dcd30e937f43aca44011baf341d2cd50759b700/data/train-00000-of-00001.parquet?download=true"
+        }
+      ]
+    },
+    "SALT-NLP/mmlu-pro-context-baseline-deep": {
+      "repo": "SALT-NLP/mmlu-pro-context-baseline-deep",
+      "revision": "ab4fa0c8798eb33a6ba6764dab1ce664f688ef77",
+      "private": false,
+      "gated": false,
+      "license": null,
+      "parquet": [
+        {
+          "path": "data/train-00000-of-00001.parquet",
+          "bytes": 2477492,
+          "git_oid": "c7155ecdc48182cb2505b58f4b43849d53cbf77e",
+          "lfs_sha256": "6d20004b95c9750ab5c544e0dee7046c5350c352977d9b3cf4cedf6bdf3e3098",
+          "download_url": "https://huggingface.co/datasets/SALT-NLP/mmlu-pro-context-baseline-deep/resolve/ab4fa0c8798eb33a6ba6764dab1ce664f688ef77/data/train-00000-of-00001.parquet?download=true"
+        }
+      ]
+    },
+    "SALT-NLP/mmlu-pro-context-baseline-gemin": {
+      "repo": "SALT-NLP/mmlu-pro-context-baseline-gemin",
+      "revision": "4da0baa21042f9533b756299903b9e5ffa3ecefb",
+      "private": false,
+      "gated": false,
+      "license": null,
+      "parquet": [
+        {
+          "path": "data/train-00000-of-00001.parquet",
+          "bytes": 3098605,
+          "git_oid": "6ce90682a15071663f6f2d72bebf41ddf84cbb1c",
+          "lfs_sha256": "44cd146ae6b4b4924adfa6f23a7cbc781ebd8f829618d42d5eb8f25ac32a412d",
+          "download_url": "https://huggingface.co/datasets/SALT-NLP/mmlu-pro-context-baseline-gemin/resolve/4da0baa21042f9533b756299903b9e5ffa3ecefb/data/train-00000-of-00001.parquet?download=true"
+        }
+      ]
+    },
+    "SALT-NLP/mmlu-pro-context-baseline-gpt41": {
+      "repo": "SALT-NLP/mmlu-pro-context-baseline-gpt41",
+      "revision": "b64ed1b99f67298257856052b6f70dc565273389",
+      "private": false,
+      "gated": false,
+      "license": null,
+      "parquet": [
+        {
+          "path": "data/train-00000-of-00001.parquet",
+          "bytes": 3873356,
+          "git_oid": "5e7f4ced36e92437fb492bf82f74ad3017877c4b",
+          "lfs_sha256": "853a34a176d8cdfea3470150f7b5afa8895175669768c73014f587bb615794fb",
+          "download_url": "https://huggingface.co/datasets/SALT-NLP/mmlu-pro-context-baseline-gpt41/resolve/b64ed1b99f67298257856052b6f70dc565273389/data/train-00000-of-00001.parquet?download=true"
+        }
+      ]
+    },
+    "SALT-NLP/mmlu-pro-context-baseline-gpt54-10k": {
+      "repo": "SALT-NLP/mmlu-pro-context-baseline-gpt54-10k",
+      "revision": "c74b2079de23fc96327b265926f435d73317c637",
+      "private": false,
+      "gated": false,
+      "license": null,
+      "parquet": [
+        {
+          "path": "data/train-00000-of-00001.parquet",
+          "bytes": 1403818,
+          "git_oid": "2850b12876b786bd756f77b23bf03bbe48e5d208",
+          "lfs_sha256": "70b726f038c24fb54e5c9b9f8cfb92f73e5cccbe34a499cf2fb59bedf2786dbc",
+          "download_url": "https://huggingface.co/datasets/SALT-NLP/mmlu-pro-context-baseline-gpt54-10k/resolve/c74b2079de23fc96327b265926f435d73317c637/data/train-00000-of-00001.parquet?download=true"
+        }
+      ]
+    },
+    "SALT-NLP/mmlu-pro-context-baseline-gpt55": {
+      "repo": "SALT-NLP/mmlu-pro-context-baseline-gpt55",
+      "revision": "4aa7a7e7acdb654d73c17b4bedf7db68120df82f",
+      "private": false,
+      "gated": false,
+      "license": null,
+      "parquet": [
+        {
+          "path": "data/train-00000-of-00001.parquet",
+          "bytes": 1186177,
+          "git_oid": "5c3105cf7c132a1abe8d0d4b4bbc62bd713ef748",
+          "lfs_sha256": "04b1a03ee0cc6390c5e2cd6b273c144a2de2b301f86472f5cf832bc1cdc32c44",
+          "download_url": "https://huggingface.co/datasets/SALT-NLP/mmlu-pro-context-baseline-gpt55/resolve/4aa7a7e7acdb654d73c17b4bedf7db68120df82f/data/train-00000-of-00001.parquet?download=true"
+        }
+      ]
+    },
+    "SALT-NLP/mmlu-pro-context-baseline-gptos": {
+      "repo": "SALT-NLP/mmlu-pro-context-baseline-gptos",
+      "revision": "efe0c8b807f44b7259d12325de1f2e009d62c787",
+      "private": false,
+      "gated": false,
+      "license": null,
+      "parquet": [
+        {
+          "path": "data/train-00000-of-00001.parquet",
+          "bytes": 4045269,
+          "git_oid": "e12db40b4d5bb847029a98575b46a4849ed12ebb",
+          "lfs_sha256": "ea7c27a54a89875bb8e8f88a295040b0031d050e3f45573bc38489f2faee5f4a",
+          "download_url": "https://huggingface.co/datasets/SALT-NLP/mmlu-pro-context-baseline-gptos/resolve/efe0c8b807f44b7259d12325de1f2e009d62c787/data/train-00000-of-00001.parquet?download=true"
+        }
+      ]
+    },
+    "SALT-NLP/mmlu-pro-context-baseline-grok": {
+      "repo": "SALT-NLP/mmlu-pro-context-baseline-grok",
+      "revision": "a47392654cbae06be6aff52979a9eded6de1c68e",
+      "private": false,
+      "gated": false,
+      "license": null,
+      "parquet": [
+        {
+          "path": "data/train-00000-of-00001.parquet",
+          "bytes": 3198482,
+          "git_oid": "fd5c2562298a2a1d6a0d7603233f9e309f56d3d4",
+          "lfs_sha256": "f0998dd155f40285ab1b378ace814107e77f395c248975f2e4450cac4a32a005",
+          "download_url": "https://huggingface.co/datasets/SALT-NLP/mmlu-pro-context-baseline-grok/resolve/a47392654cbae06be6aff52979a9eded6de1c68e/data/train-00000-of-00001.parquet?download=true"
+        }
+      ]
+    },
+    "SALT-NLP/mmlu-pro-context-baseline-mistr": {
+      "repo": "SALT-NLP/mmlu-pro-context-baseline-mistr",
+      "revision": "769c045650c18e2e09d0dcae556b876edc19eaf9",
+      "private": false,
+      "gated": false,
+      "license": null,
+      "parquet": [
+        {
+          "path": "data/train-00000-of-00001.parquet",
+          "bytes": 3591559,
+          "git_oid": "4b07c416335b9beacf7a841fee3fb9d669d113c7",
+          "lfs_sha256": "2decee5e359b99e67e28a03c7ef8cd85e21be9e232a5da0ad1f7ae659db99a61",
+          "download_url": "https://huggingface.co/datasets/SALT-NLP/mmlu-pro-context-baseline-mistr/resolve/769c045650c18e2e09d0dcae556b876edc19eaf9/data/train-00000-of-00001.parquet?download=true"
+        }
+      ]
+    },
+    "SALT-NLP/mmlu-pro-ctx-screen-deep": {
+      "repo": "SALT-NLP/mmlu-pro-ctx-screen-deep",
+      "revision": "fbd7795ee978bf9344c3fe758daabcc0bad3075a",
+      "private": false,
+      "gated": false,
+      "license": null,
+      "parquet": [
+        {
+          "path": "data/train-00000-of-00001.parquet",
+          "bytes": 3075061,
+          "git_oid": "e5ea0d44e4aa16b1e0c353dd5423b292fa7ca791",
+          "lfs_sha256": "2759b848519f1dce71b10d2b38c4342f576b34ce68a76e8d369cfbbbeeebf8db",
+          "download_url": "https://huggingface.co/datasets/SALT-NLP/mmlu-pro-ctx-screen-deep/resolve/fbd7795ee978bf9344c3fe758daabcc0bad3075a/data/train-00000-of-00001.parquet?download=true"
+        }
+      ]
+    },
+    "SALT-NLP/mmlu-pro-ctx-screen-gemin": {
+      "repo": "SALT-NLP/mmlu-pro-ctx-screen-gemin",
+      "revision": "1aabdac2ccd577df7b3967f679cae5ed6e4f42c8",
+      "private": false,
+      "gated": false,
+      "license": null,
+      "parquet": [
+        {
+          "path": "data/train-00000-of-00001.parquet",
+          "bytes": 3803989,
+          "git_oid": "d5e0dfdd8a767f640fb74dc24bd4dd3b18b2c8aa",
+          "lfs_sha256": "b22943cd1f51be0ca63a011186524f15b1c5da6f806a06b0e3b91a8a2d1e16c1",
+          "download_url": "https://huggingface.co/datasets/SALT-NLP/mmlu-pro-ctx-screen-gemin/resolve/1aabdac2ccd577df7b3967f679cae5ed6e4f42c8/data/train-00000-of-00001.parquet?download=true"
+        }
+      ]
+    },
+    "SALT-NLP/mmlu-pro-ctx-screen-gpt41": {
+      "repo": "SALT-NLP/mmlu-pro-ctx-screen-gpt41",
+      "revision": "e71c9c758e9a59860a294e14cbd4924cddfa50c4",
+      "private": false,
+      "gated": false,
+      "license": null,
+      "parquet": [
+        {
+          "path": "data/train-00000-of-00001.parquet",
+          "bytes": 4979830,
+          "git_oid": "2966bf10568f524821dc90222bac374e82ddfe65",
+          "lfs_sha256": "e843b0a6c9471ffb8374a77fa0cd071dd26cf8682a00aa841e7053310cd5f669",
+          "download_url": "https://huggingface.co/datasets/SALT-NLP/mmlu-pro-ctx-screen-gpt41/resolve/e71c9c758e9a59860a294e14cbd4924cddfa50c4/data/train-00000-of-00001.parquet?download=true"
+        }
+      ]
+    },
+    "SALT-NLP/mmlu-pro-ctx-screen-gpt54-10k": {
+      "repo": "SALT-NLP/mmlu-pro-ctx-screen-gpt54-10k",
+      "revision": "b95aa07028e31f81936f3710fe2fdc8791fd6cce",
+      "private": false,
+      "gated": false,
+      "license": null,
+      "parquet": [
+        {
+          "path": "data/train-00000-of-00001.parquet",
+          "bytes": 2041846,
+          "git_oid": "3f16e09a923dad1df2f6f7094c80ab5ca360db0f",
+          "lfs_sha256": "fad12b730bdbc89c6976c623ed565ed06b77a54a0bcb1c2e74457b481dff5b0c",
+          "download_url": "https://huggingface.co/datasets/SALT-NLP/mmlu-pro-ctx-screen-gpt54-10k/resolve/b95aa07028e31f81936f3710fe2fdc8791fd6cce/data/train-00000-of-00001.parquet?download=true"
+        }
+      ]
+    },
+    "SALT-NLP/mmlu-pro-ctx-screen-gpt55": {
+      "repo": "SALT-NLP/mmlu-pro-ctx-screen-gpt55",
+      "revision": "4c078cfad7faf89f0b8daa690cc862ee0e3183bb",
+      "private": false,
+      "gated": false,
+      "license": null,
+      "parquet": [
+        {
+          "path": "data/train-00000-of-00001.parquet",
+          "bytes": 1856251,
+          "git_oid": "f0cc1b290bc2313157538397410463b8ef6fb322",
+          "lfs_sha256": "8e28e1f102eda8abd88088696a511a28846efa09ee1b68968f0bbd658d62a46a",
+          "download_url": "https://huggingface.co/datasets/SALT-NLP/mmlu-pro-ctx-screen-gpt55/resolve/4c078cfad7faf89f0b8daa690cc862ee0e3183bb/data/train-00000-of-00001.parquet?download=true"
+        }
+      ]
+    },
+    "SALT-NLP/mmlu-pro-ctx-screen-gptos": {
+      "repo": "SALT-NLP/mmlu-pro-ctx-screen-gptos",
+      "revision": "11591f17776937f9216aa0f9374d24868d371b31",
+      "private": false,
+      "gated": false,
+      "license": null,
+      "parquet": [
+        {
+          "path": "data/train-00000-of-00001.parquet",
+          "bytes": 4533377,
+          "git_oid": "0192ca190da1c8f1ce51723674c549e4cd6bd082",
+          "lfs_sha256": "758ebc01b6fd3d095c8f680d9476582def57fa5c06791087072941f6caa8160e",
+          "download_url": "https://huggingface.co/datasets/SALT-NLP/mmlu-pro-ctx-screen-gptos/resolve/11591f17776937f9216aa0f9374d24868d371b31/data/train-00000-of-00001.parquet?download=true"
+        }
+      ]
+    },
+    "SALT-NLP/mmlu-pro-ctx-screen-grok": {
+      "repo": "SALT-NLP/mmlu-pro-ctx-screen-grok",
+      "revision": "d4ba28dac3f156c9a4f8ad11fe45bbeccba6ce06",
+      "private": false,
+      "gated": false,
+      "license": null,
+      "parquet": [
+        {
+          "path": "data/train-00000-of-00001.parquet",
+          "bytes": 3837809,
+          "git_oid": "5f6ac5fa8f7c55ba1c6501411583a6f6fc1b2006",
+          "lfs_sha256": "c6194293dbf730dae1b9d91c89812c35dc61eb655648e3269f4809c476925dcd",
+          "download_url": "https://huggingface.co/datasets/SALT-NLP/mmlu-pro-ctx-screen-grok/resolve/d4ba28dac3f156c9a4f8ad11fe45bbeccba6ce06/data/train-00000-of-00001.parquet?download=true"
+        }
+      ]
+    },
+    "SALT-NLP/mmlu-pro-ctx-screen-mistr": {
+      "repo": "SALT-NLP/mmlu-pro-ctx-screen-mistr",
+      "revision": "c394e12808a6ace524b17e0e6384dd7c9d3a3495",
+      "private": false,
+      "gated": false,
+      "license": null,
+      "parquet": [
+        {
+          "path": "data/train-00000-of-00001.parquet",
+          "bytes": 4963893,
+          "git_oid": "378c43aa80f04430139d5cc997aa12f7f0765f28",
+          "lfs_sha256": "7783cce53790d7baffb6c8868e1ea94515880f24d1693daed91bb7ada6dfdab8",
+          "download_url": "https://huggingface.co/datasets/SALT-NLP/mmlu-pro-ctx-screen-mistr/resolve/c394e12808a6ace524b17e0e6384dd7c9d3a3495/data/train-00000-of-00001.parquet?download=true"
+        }
+      ]
+    },
+    "SALT-NLP/simpleqa-verified-context-baseline-deep": {
+      "repo": "SALT-NLP/simpleqa-verified-context-baseline-deep",
+      "revision": "bcf1759148c184f1feeb7aead0f16e5bb61bd3cc",
+      "private": false,
+      "gated": false,
+      "license": null,
+      "parquet": [
+        {
+          "path": "data/train-00000-of-00001.parquet",
+          "bytes": 1856566,
+          "git_oid": "e71bf8cf279693f3205b5170ec9d0747c4db8ea3",
+          "lfs_sha256": "29de2cff8a59a7046951d0ccd4c6f3f252a2541bce02add938bae72d607a8fc7",
+          "download_url": "https://huggingface.co/datasets/SALT-NLP/simpleqa-verified-context-baseline-deep/resolve/bcf1759148c184f1feeb7aead0f16e5bb61bd3cc/data/train-00000-of-00001.parquet?download=true"
+        }
+      ]
+    },
+    "SALT-NLP/simpleqa-verified-context-baseline-gemin": {
+      "repo": "SALT-NLP/simpleqa-verified-context-baseline-gemin",
+      "revision": "65ef7449c8cd474616b3b43cdbb17ef2de955093",
+      "private": false,
+      "gated": false,
+      "license": null,
+      "parquet": [
+        {
+          "path": "data/train-00000-of-00001.parquet",
+          "bytes": 2254672,
+          "git_oid": "e6e0b0ce42c91f82f811e910a69fc8095abd7906",
+          "lfs_sha256": "16a0b512cb4d45bd2228bbbe91b55188931f54c3a56491207c3c2e52bb6efa66",
+          "download_url": "https://huggingface.co/datasets/SALT-NLP/simpleqa-verified-context-baseline-gemin/resolve/65ef7449c8cd474616b3b43cdbb17ef2de955093/data/train-00000-of-00001.parquet?download=true"
+        }
+      ]
+    },
+    "SALT-NLP/simpleqa-verified-context-baseline-gpt41": {
+      "repo": "SALT-NLP/simpleqa-verified-context-baseline-gpt41",
+      "revision": "e4d08b9e5c9411f702f0cecbda675878d1939945",
+      "private": false,
+      "gated": false,
+      "license": null,
+      "parquet": [
+        {
+          "path": "data/train-00000-of-00001.parquet",
+          "bytes": 1877548,
+          "git_oid": "9c5285f24eafb87c09f2778eddbbbe4022fb0bf5",
+          "lfs_sha256": "9ef18f7b311fd62d67c183e14ae00c76e58e209c07ef9b686c63420a9ba35f27",
+          "download_url": "https://huggingface.co/datasets/SALT-NLP/simpleqa-verified-context-baseline-gpt41/resolve/e4d08b9e5c9411f702f0cecbda675878d1939945/data/train-00000-of-00001.parquet?download=true"
+        }
+      ]
+    },
+    "SALT-NLP/simpleqa-verified-context-baseline-gpt54": {
+      "repo": "SALT-NLP/simpleqa-verified-context-baseline-gpt54",
+      "revision": "0eb95c0565b321b71e020aedc4ba52f62e78a0c5",
+      "private": false,
+      "gated": false,
+      "license": null,
+      "parquet": [
+        {
+          "path": "data/train-00000-of-00001.parquet",
+          "bytes": 1041386,
+          "git_oid": "98253765c2343062a5511f8e51841f00be40c558",
+          "lfs_sha256": "670e94c8f064bda0c903e75dc446e22800a9122c010bbaa10fddbc3c7cae23c6",
+          "download_url": "https://huggingface.co/datasets/SALT-NLP/simpleqa-verified-context-baseline-gpt54/resolve/0eb95c0565b321b71e020aedc4ba52f62e78a0c5/data/train-00000-of-00001.parquet?download=true"
+        }
+      ]
+    },
+    "SALT-NLP/simpleqa-verified-context-baseline-gpt55": {
+      "repo": "SALT-NLP/simpleqa-verified-context-baseline-gpt55",
+      "revision": "973b0f91edcd4a304dbdd970809e2414e97035b2",
+      "private": false,
+      "gated": false,
+      "license": null,
+      "parquet": [
+        {
+          "path": "data/train-00000-of-00001.parquet",
+          "bytes": 971469,
+          "git_oid": "ce3cec9baf06988fb09e24baf7538f551e8319e3",
+          "lfs_sha256": "ddaa343143f3927348ab0a3419e47ba5440c124fe759e85de346c015e275cbe5",
+          "download_url": "https://huggingface.co/datasets/SALT-NLP/simpleqa-verified-context-baseline-gpt55/resolve/973b0f91edcd4a304dbdd970809e2414e97035b2/data/train-00000-of-00001.parquet?download=true"
+        }
+      ]
+    },
+    "SALT-NLP/simpleqa-verified-context-baseline-gptos": {
+      "repo": "SALT-NLP/simpleqa-verified-context-baseline-gptos",
+      "revision": "b30388d94ec29884d0961b4eab7ec5ea9147688f",
+      "private": false,
+      "gated": false,
+      "license": null,
+      "parquet": [
+        {
+          "path": "data/train-00000-of-00001.parquet",
+          "bytes": 4389693,
+          "git_oid": "47640b76c5da97a6c6c38e20e01de8e3191024e1",
+          "lfs_sha256": "ec341295acbe6b9cd7031025d0ef5187d0d88b7c54d0e028ba67c78d5530fe66",
+          "download_url": "https://huggingface.co/datasets/SALT-NLP/simpleqa-verified-context-baseline-gptos/resolve/b30388d94ec29884d0961b4eab7ec5ea9147688f/data/train-00000-of-00001.parquet?download=true"
+        }
+      ]
+    },
+    "SALT-NLP/simpleqa-verified-context-baseline-grok": {
+      "repo": "SALT-NLP/simpleqa-verified-context-baseline-grok",
+      "revision": "29ee18d152159b41f3ad82ca7a46a622a059ae57",
+      "private": false,
+      "gated": false,
+      "license": null,
+      "parquet": [
+        {
+          "path": "data/train-00000-of-00001.parquet",
+          "bytes": 1678874,
+          "git_oid": "19e2bf2a6dac4a6d071362ad5af16461c931b1d5",
+          "lfs_sha256": "55c7be6087b8205ee67b6940ac832a813aae344e75d416fb9113d54cf5c79d50",
+          "download_url": "https://huggingface.co/datasets/SALT-NLP/simpleqa-verified-context-baseline-grok/resolve/29ee18d152159b41f3ad82ca7a46a622a059ae57/data/train-00000-of-00001.parquet?download=true"
+        }
+      ]
+    },
+    "SALT-NLP/simpleqa-verified-context-baseline-mistr": {
+      "repo": "SALT-NLP/simpleqa-verified-context-baseline-mistr",
+      "revision": "20ed21099efc6a2312ab4ceec140556d8c79b64d",
+      "private": false,
+      "gated": false,
+      "license": null,
+      "parquet": [
+        {
+          "path": "data/train-00000-of-00001.parquet",
+          "bytes": 2021791,
+          "git_oid": "d5bf1516287688f9156eee146d60a12320336487",
+          "lfs_sha256": "28175e6f12b1dda335c6837c2f7674067cf221ce832d7cd0795c7ef333fe2275",
+          "download_url": "https://huggingface.co/datasets/SALT-NLP/simpleqa-verified-context-baseline-mistr/resolve/20ed21099efc6a2312ab4ceec140556d8c79b64d/data/train-00000-of-00001.parquet?download=true"
+        }
+      ]
+    },
+    "SALT-NLP/simpleqa-verified-ctx-screen-deep": {
+      "repo": "SALT-NLP/simpleqa-verified-ctx-screen-deep",
+      "revision": "8fa02a71ddbaad52f6e851e2b4938541741525e9",
+      "private": false,
+      "gated": false,
+      "license": null,
+      "parquet": [
+        {
+          "path": "data/train-00000-of-00001.parquet",
+          "bytes": 3061167,
+          "git_oid": "bd9550893df83d4bc326ac5d4a5799ddda6685ff",
+          "lfs_sha256": "0de90874196958baaffb4d1e8227083b985e7e3c099486d7eb7c4759b649f032",
+          "download_url": "https://huggingface.co/datasets/SALT-NLP/simpleqa-verified-ctx-screen-deep/resolve/8fa02a71ddbaad52f6e851e2b4938541741525e9/data/train-00000-of-00001.parquet?download=true"
+        }
+      ]
+    },
+    "SALT-NLP/simpleqa-verified-ctx-screen-gemin": {
+      "repo": "SALT-NLP/simpleqa-verified-ctx-screen-gemin",
+      "revision": "a64bbdc9c32d67617075e2c52e81aa31eea9a6b7",
+      "private": false,
+      "gated": false,
+      "license": null,
+      "parquet": [
+        {
+          "path": "data/train-00000-of-00001.parquet",
+          "bytes": 2871085,
+          "git_oid": "cc42d1e9048f37b243fc21fc35142a2c2f230dc4",
+          "lfs_sha256": "d0806ddeca48a4ffa8a6228d90ef223c62406a4a9aaac71578f268e539e5ab5a",
+          "download_url": "https://huggingface.co/datasets/SALT-NLP/simpleqa-verified-ctx-screen-gemin/resolve/a64bbdc9c32d67617075e2c52e81aa31eea9a6b7/data/train-00000-of-00001.parquet?download=true"
+        }
+      ]
+    },
+    "SALT-NLP/simpleqa-verified-ctx-screen-gpt41": {
+      "repo": "SALT-NLP/simpleqa-verified-ctx-screen-gpt41",
+      "revision": "7684bf03b4a5d16c8623f23a5b88f0658f6bb9ea",
+      "private": false,
+      "gated": false,
+      "license": null,
+      "parquet": [
+        {
+          "path": "data/train-00000-of-00001.parquet",
+          "bytes": 2945459,
+          "git_oid": "2046dfaa5090daa086730dd75a84c616eca229de",
+          "lfs_sha256": "8c04bf83bea8e134e1b4ce65708e8c36e2464f1399bd28bae598126f421e3506",
+          "download_url": "https://huggingface.co/datasets/SALT-NLP/simpleqa-verified-ctx-screen-gpt41/resolve/7684bf03b4a5d16c8623f23a5b88f0658f6bb9ea/data/train-00000-of-00001.parquet?download=true"
+        }
+      ]
+    },
+    "SALT-NLP/simpleqa-verified-ctx-screen-gpt54": {
+      "repo": "SALT-NLP/simpleqa-verified-ctx-screen-gpt54",
+      "revision": "eee77d70436458b3cd8b41295cdefcf58a94422e",
+      "private": false,
+      "gated": false,
+      "license": null,
+      "parquet": [
+        {
+          "path": "data/train-00000-of-00001.parquet",
+          "bytes": 1653553,
+          "git_oid": "281c752036618e79136f2575eb1b53296293df89",
+          "lfs_sha256": "b778ef306137db35d1b0626eb7310c04d3aac847a73a8071084b797eca799948",
+          "download_url": "https://huggingface.co/datasets/SALT-NLP/simpleqa-verified-ctx-screen-gpt54/resolve/eee77d70436458b3cd8b41295cdefcf58a94422e/data/train-00000-of-00001.parquet?download=true"
+        }
+      ]
+    },
+    "SALT-NLP/simpleqa-verified-ctx-screen-gpt55": {
+      "repo": "SALT-NLP/simpleqa-verified-ctx-screen-gpt55",
+      "revision": "e3f48a7941c68ae5455f7219077f66e81696c777",
+      "private": false,
+      "gated": false,
+      "license": null,
+      "parquet": [
+        {
+          "path": "data/train-00000-of-00001.parquet",
+          "bytes": 1608272,
+          "git_oid": "ec21cf223bcfe7f38eee1bd8fc5be6cdd9cb46b2",
+          "lfs_sha256": "2f016a75432d73dca44827e3b95f4978343bea7b644e383be4a6e1859eb109d3",
+          "download_url": "https://huggingface.co/datasets/SALT-NLP/simpleqa-verified-ctx-screen-gpt55/resolve/e3f48a7941c68ae5455f7219077f66e81696c777/data/train-00000-of-00001.parquet?download=true"
+        }
+      ]
+    },
+    "SALT-NLP/simpleqa-verified-ctx-screen-gptos": {
+      "repo": "SALT-NLP/simpleqa-verified-ctx-screen-gptos",
+      "revision": "fe01b38952998d27b5c1a6bf1d4dcf2a83f1bccc",
+      "private": false,
+      "gated": false,
+      "license": null,
+      "parquet": [
+        {
+          "path": "data/train-00000-of-00001.parquet",
+          "bytes": 4076342,
+          "git_oid": "84f3551a81e3e056bce1ca45484a9a5e49c7a5c8",
+          "lfs_sha256": "8b79da95ae51439f23dc3873997bbda4871a2301750e32d23b08b067ea6ea891",
+          "download_url": "https://huggingface.co/datasets/SALT-NLP/simpleqa-verified-ctx-screen-gptos/resolve/fe01b38952998d27b5c1a6bf1d4dcf2a83f1bccc/data/train-00000-of-00001.parquet?download=true"
+        }
+      ]
+    },
+    "SALT-NLP/simpleqa-verified-ctx-screen-grok": {
+      "repo": "SALT-NLP/simpleqa-verified-ctx-screen-grok",
+      "revision": "043ae0a95016eb0106c84bb76ad5a6cf1dde61db",
+      "private": false,
+      "gated": false,
+      "license": null,
+      "parquet": [
+        {
+          "path": "data/train-00000-of-00001.parquet",
+          "bytes": 2698249,
+          "git_oid": "69e08cec69cea185c38b82fe87eb0c1078fb1d72",
+          "lfs_sha256": "6a59d9484546155817e1dfe4fffb62bb0fb5d61f39a97196bf58971e3a4d8338",
+          "download_url": "https://huggingface.co/datasets/SALT-NLP/simpleqa-verified-ctx-screen-grok/resolve/043ae0a95016eb0106c84bb76ad5a6cf1dde61db/data/train-00000-of-00001.parquet?download=true"
+        }
+      ]
+    },
+    "SALT-NLP/simpleqa-verified-ctx-screen-mistr": {
+      "repo": "SALT-NLP/simpleqa-verified-ctx-screen-mistr",
+      "revision": "7ccf6dbab1f06e64716567e6f501828694539fb6",
+      "private": false,
+      "gated": false,
+      "license": null,
+      "parquet": [
+        {
+          "path": "data/train-00000-of-00001.parquet",
+          "bytes": 2910108,
+          "git_oid": "d43c9271508e9732fddac780ef8fb7f812762165",
+          "lfs_sha256": "a80e35f4b8722d682ab5f945a4822a6336102fdfc4977a4e86af4d1381c619a8",
+          "download_url": "https://huggingface.co/datasets/SALT-NLP/simpleqa-verified-ctx-screen-mistr/resolve/7ccf6dbab1f06e64716567e6f501828694539fb6/data/train-00000-of-00001.parquet?download=true"
+        }
+      ]
+    }
+  }
+}

@@ -1,17 +1,33 @@
-# Lean companion: algebraic estimands
+# Lean companion: v3 algebraic estimands
 
-This package formalizes the elementary scoring definitions retained by the
-projectibility-first revision of the paper:
+This package formalizes the elementary definitions and raw-estimand results
+retained in `metrics_spec_v3.md`:
 
-- profile-shape similarity (PSS) as the affine map of an admissible
-  correlation from `[-1, 1]` to `[0, 1]`;
-- mean signed score change;
-- mean absolute score change (INS);
-- mean signed change on an externally selected tail and its negation as
-  worst-tail degradation (WTD);
-- itemwise retained mass at a specified delay;
-- feedback endpoint gain; and
-- the share of path variation due to backsliding.
+- signed level change $L$ and mean absolute paired change (INS);
+- positive- and negative-change component decompositions;
+- signed worst-tail degradation (WTD) on an externally supplied lower tail;
+- target-specific worst-tail loss (WTL) on an externally supplied high-loss
+  tail;
+- retained above-pretest gain with a positive denominator or positive
+  preregistered average-gain threshold; and
+- cumulative error decrease $D$, cumulative error increase $U$, endpoint gain
+  $G$, and total variation $V$ for feedback trajectories.
+
+The central checked results include:
+
+$$
+|L|\le \mathrm{INS},\qquad
+L=F^+-F^-,\qquad
+\mathrm{INS}=F^++F^-,
+$$
+
+and
+
+$$
+G=D-U,\qquad V=D+U,\qquad |G|\le V.
+$$
+
+PSS and the discontinuous backsliding ratio $B$ are no longer defined.
 
 Run the checks from this directory with:
 
@@ -19,20 +35,17 @@ Run the checks from this directory with:
 lake build
 ```
 
-## Scope of the proofs
+## Deliberate boundary
 
-The theorems establish algebraic range properties under explicit assumptions,
-such as item scores lying in `[0, 1]` or a positive retained-mass denominator.
-The exact backsliding share is defined to be zero when total transition
-variation is zero. These results do **not** prove that:
+Tail membership is an external selector. The Lean module proves WTD and WTL
+bounds for the selected finite set, but does not formalize sorting, quantiles,
+noisy tail recovery, pseudo-null correction, split-sample selection, or
+cross-fitting. In particular, it does not prove the sorted-tail inequalities
+from the empirical specification. Those require assumptions about the selector
+that are clearer and more useful in the statistical implementation than in
+this compact algebraic companion.
 
-- a correlation estimate is statistically reliable;
-- an intervention, item sample, or tail-selection procedure is appropriate;
-- a measurement profile projects to a new population, task, or deployment;
-- weights have predictive or construct validity; or
-- behavioural stability identifies a controller, representation, or other
-  mechanism.
-
-Those are empirical and design questions. The formalization deliberately does
-not restore the retired CSI composite, Fisher pooling across heterogeneous
-interventions, or an HPC-derived weighting formula.
+The proofs establish no claim about sampling adequacy, estimator reliability,
+holdout validity, transport, calibration, construct validity, causal
+attribution, decision value, or mechanism. Pseudo-null-adjusted estimates are
+deliberately allowed to fall outside the raw-estimand ranges.

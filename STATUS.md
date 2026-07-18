@@ -2,55 +2,60 @@
 
 ## Current State
 
-**Phase:** Projectibility-first rearchitecture implemented and verified (*Minds and Machines* preparation)
-**Last updated:** 2026-07-17
-**Working title:** *From Aggregate Scores to Projectible Profiles: Robustness in AGI Evaluation*
+**Phase:** Post-review major revision implemented and verified (*Minds and Machines* preparation)
 
-The October 2025 preprint, arXiv:2510.15236, is the historical starting point. The live revision no longer argues that general intelligence is a homeostatic property cluster or that black-box stability scores reveal mechanisms that maintain one. The March–April HPC-strengthening plan is preserved in `DECISIONS.md` but superseded by the decision of 2026-07-17.
+**Last updated:** 2026-07-17
+
+**Working title:** *From Aggregate Scores to Warranted Inference in AGI Evaluation*
+
+The October 2025 preprint, arXiv:2510.15236, is the historical starting point. The live revision is a target-indexed measurement framework, not an HPC-kind argument or a proposal for a universal robustness score.
 
 ## Current Thesis
 
-An AGI evaluation earns its use only by improving a specified out-of-sample prediction or decision for a declared target outcome, population or model family, unit of analysis, intervention or distribution range, and time horizon. Robustness must be reported at profile, level, item, and harmful-tail granularities because stability at one level doesn't entail stability at another.
+A finite evaluation first declares its projection target and scope, then preserves distinctions that aggregation compresses, and finally tests the intended inference against evidence matched to that scope. The projection declaration names the interpretation, system population, task and item population, bearer, intervention range, horizon, and matching evidential test. Decision use additionally declares loss, utility, or constraints.
 
-Zhang, Koyejo, and Yang's arXiv:2607.12963v2 is the central empirical case: nearly unchanged aggregate accuracy can conceal substantial two-sided item-level prediction flips and severe harmful-tail degradation. Von der Malsburg and Padó, together with Kuribayashi et al., supply convergent construction- and subprocess-level cases. Yetman marks the evidential boundary between behavioural performance and representation- or mechanism-based competence claims.
+Projectibility is one epistemic question within a broader Messickian validity argument: whether evidence supports a specified inference beyond the observations used to construct the score. A decision is not itself an epistemic projection; it depends on projectible estimates plus a declared decision criterion.
 
-## Approved Architecture
+## Current Architecture
 
-1. Open with projection targets and decision use, not clusters or securing mechanisms.
-2. Diagnose why aggregate scores are insufficient, using Zhang et al. as the central case.
-3. Replace combined CSI scoring with a multi-granular dashboard: profile-shape similarity, signed level change, item-level instability, harmful-tail degradation, and directional transitions.
-4. Report retention, updating, and scaffold dependence as separate behavioural tests; don't infer consolidation, corrective control, representation, or homeostasis without additional mechanistic evidence.
-5. Treat equal weights as a transparent baseline. Allow target-specific weights or aggregation only when held-out prediction or calibration validates them. CHC domains may organize reporting or supply a shrinkage hypothesis, but don't establish a machine ontology or default weighting.
-6. Trim governance to decision-specific loss, uncertainty, and tail constraints, then conclude with the projectibility-first design rule.
+1. Motivate the problem with Zhang, Koyejo, and Yang's item-level cancellation result and state the three-move thesis on page 1: declare, preserve resolution, and test.
+2. Separate item, context, system, temporal, causal, and decision relations rather than treating all of them as generic generalization.
+3. Record the crossed or nested data facets and distinguish fixed-set description, stochastic-response estimation, and population inference.
+4. Preserve Pearson profile correlation, signed level, item instability, directional components, worst-tail degradation, and absolute target loss as separate outputs.
+5. Demonstrate those distinctions through a locked reanalysis of all 32 released Zhang cells and known-truth simulations.
+6. Match the validation row and outer holdout to the intended projection; distinguish interpretable scores from predictive or decision models.
+7. Treat retention, feedback response, and component dependence as separate applications with pretests and matched controls.
+8. Close with an operational workflow and explicit limits rather than generic capability tiers.
 
 ## Measurement Decisions
 
-- Use repeated trials per item and condition where feasible.
-- Estimate the positive null floor induced by absolute values and tail selection with a baseline-only bootstrap; report raw, floor, untruncated adjusted estimate, uncertainty, and sampling budget.
-- Select and estimate the harmful tail on disjoint samples. This avoids data reuse but doesn't identify an oracle latent tail.
-- Keep profile shape, signed change, item instability, and tail harm separate unless a common projection target validates aggregation.
-- Don't Fisher-pool heterogeneous designed perturbations by default; mark profile similarity undefined for zero-variance profiles.
-- Don't presume that a worst-tail item set transfers across models without validation; Zhang et al. find the affected items are largely model-specific.
-- Retire the CSI family name, geometric-mean CSI, fixed centrality table, and eCSI product. Keep endpoint gain and backsliding, if used, as separate behavioural diagnostics.
-- Define backsliding exactly as $U/V$ for positive total variation and as $0$ for a constant trajectory; don't use an epsilon-distorted ratio.
+- Report Pearson \(r\) directly; the former unit-interval PSS transform is retired.
+- WTD is signed worst-tail degradation, an expected-shortfall-like change statistic. It is not an absolute harm measure.
+- WTL is a separate absolute, target-specific worst-tail loss. Report baseline and perturbed levels.
+- If item inclusion probabilities differ, use design weights and define tail mass over the target population.
+- Show raw, pseudo-null expectations, and untruncated adjusted estimates. Pseudo-null correction is not an unbiased-recovery guarantee.
+- Cross-fit noisy tail selection and estimation, while naming the noisy-selected-set estimand separately from the oracle latent tail.
+- Use a pre-instruction assessment and a visible minimum immediate-gain denominator for retention.
+- Report feedback endpoint gain and cumulative increases/decreases. The backsliding share \(B\) is algebraically redundant and retired.
+- Require a matched no-feedback control before attributing improvement to feedback.
 
-## Completed for the July Revision
+## Completed for the Post-Review Revision
 
-- Located and assessed the two live July TODO hooks in `main.tex`.
-- Mapped later literature breadcrumbs: Reynolds and Weinberger on strict homeostasis, von der Malsburg and Padó, Kuribayashi et al., Yetman, Arora et al., Groeger et al., Simon et al., and the Many Minds note.
-- Audited the inherited metrics. The eCSI worked example is trajectory-inconsistent, its backsliding description is inaccurate, and the current Lean Fisher result proves a totalized range rather than empirical admissibility.
-- Drafted and approved `revision-plan-projectibility-zhang.md`.
-- Updated project instructions, the decision log, and local bibliography for the new direction.
-- Rewrote `main.tex` around declared projection targets, Zhang's cancellation result, and a multi-granular dashboard; recast retention, feedback, scaffold dependence, weighting, validation, governance, failure conditions, and conclusion.
-- Added Zhang, Yetman, and the published ACL record for Kuribayashi et al. to `references-local.bib`; all 14 cited keys resolve and Biber datamodel validation passes.
-- Replaced the canonical Lean metric module with compact definitions and range proofs for PSS, signed change, INS, WTD, retained mass, endpoint gain, and backsliding. `lake build` passes (8,028 jobs).
-- Marked the superseded root and Aristotle-generated CSI specifications as historical artifacts.
-- Built and visually checked the 13-page PDF. The final log has no undefined citations, undefined references, Biber warnings, or overfull boxes.
-- Ran the house-style, terminology, proofreading, source-grounding, bibliography, HPC/projectibility, and unearned-inference audits. Projectibility is structural throughout; no securing-tier or mechanism overclaim remains.
+- Wrote and approved revision-plan-post-review-2026-07-17.md and the canonical metrics_spec_v3.md.
+- Reframed projectibility within validity; added task/item population, decision loss, facet-specific holdouts, generalizability theory, causal transport, measurement invariance, and expected-shortfall context.
+- Added absolute WTL, renamed WTD, retired PSS and \(B\), repaired retention and feedback protocols, and made score-versus-model constraints explicit.
+- Added a reproducible empirical package under analysis/: arXiv v2, the source commit, and 64 Parquet revisions/hashes are pinned; cached source data are excluded from version control.
+- Reproduced all 32 released cells within rounding-level discrepancies and added null, sparse-collapse, stable-poor, and ten-domain profile-correlation simulations.
+- Passed 14/14 empirical tests and verified 64/64 locked file hashes (294,033,162 bytes).
+- Updated the Lean companion with raw bounds, \(|L|\leq\mathrm{INS}\), directional-component identities, feedback identities, WTL, and retained above-pretest gain. lake build passes (8,028 jobs).
+- Updated recent references and validated all cited keys. Biber datamodel validation passes.
+- Reordered the paper so descriptions and their worked demonstration precede the validation stage. The final 16-page PDF has no undefined citations, undefined references, Biber warnings, or overfull boxes.
+- Completed cold rhetoric, measurement, projectibility/HPC, proofread, house-style, bibliography, and visual audits. Remaining linter flags are verified math-subscript or spelling false positives; the terminology gloss is explicit in the abstract and Section 2.
+- Completed a Lakoffian metaphor pass. The paper now consistently treats aggregation as compression, granular description as preserved resolution, inference as projection to a declared target and scope, evidence as warrant, and decisions as uses under declared loss. Misleading floor, scaffold, flow, and gain-mass language has been replaced.
 
 ## Next Steps
 
-- Brett review of the completed rearchitecture and any desired expansion or compression before venue formatting.
+- Brett review of the completed revision and any desired compression before venue formatting.
 - Apply *Minds and Machines* author guidelines and prepare the submission package.
-- Decide whether to rename the GitHub repository, whose URL still contains the superseded `agi-evaluation-hpc` slug.
+- Decide whether to rename the GitHub repository, whose URL still contains the historical agi-evaluation-hpc slug.
 - Update the arXiv version and public status surfaces when the revision is ready to post.

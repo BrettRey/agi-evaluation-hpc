@@ -1,0 +1,35 @@
+{
+  "profile": "standard",
+  "seed": 20260717,
+  "config": {
+    "n_items": 300,
+    "mc_reps": 36,
+    "null_boot": 48,
+    "split_reps": 48,
+    "trial_counts": [
+      2,
+      5,
+      10,
+      20,
+      50
+    ],
+    "tail_qs": [
+      0.05,
+      0.1,
+      0.2
+    ]
+  },
+  "scenario_notes": {
+    "null_effect": "No latent condition effect; positive raw INS/WTD is sampling and selection noise.",
+    "diffuse": "Every item suffers the same 8-point degradation.",
+    "symmetric_churn": "Equal 15-point gains and losses cancel in the mean while INS remains positive.",
+    "sparse_collapse": "Ten percent of items collapse by 55 points; the rest are unchanged.",
+    "floor": "Low baseline accuracy compresses possible degradation and makes stability ambiguous.",
+    "ceiling": "Nominally balanced gains/losses are asymmetrically compressed at the ceiling."
+  },
+  "interpretation": {
+    "baseline_floor": "Raw minus the estimated baseline-only pseudo-null expectation; untruncated.",
+    "split_tail": "Unbiased for the noisy-selected set, not necessarily the oracle latent tail.",
+    "absolute_tail": "Perturbed-condition loss, separate from condition-to-condition WTD."
+  }
+}

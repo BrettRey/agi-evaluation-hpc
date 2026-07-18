@@ -9,12 +9,12 @@ set_option autoImplicit false
 namespace Formalization
 
 /-!
-# Algebraic estimands for projectibility-first evaluation
+# Algebraic estimands for target-indexed evaluation
 
-This module formalizes only elementary definitions and range properties.  In
-particular, the theorems below do not establish that an empirical estimate is
-reliable, that a chosen projection target is valid, or that behavioural
-stability identifies a mechanism.
+This module formalizes the compact algebraic core of `metrics_spec_v3.md`.
+It proves raw-estimand identities and bounds only. Tail membership remains an
+external selector, and no theorem addresses sampling, noise correction,
+holdout validity, transport, construct validity, or mechanism.
 -/
 
 def inUnitInterval (x : ℝ) : Prop := 0 ≤ x ∧ x ≤ 1
@@ -47,18 +47,55 @@ theorem avg_inSignedUnitInterval {ι : Type*} [Fintype ι] [Nonempty ι]
     inSignedUnitInterval (avg f) := by
   exact avg_mem_interval hf
 
-/-! ## Profile-shape similarity -/
+theorem avg_add {ι : Type*} [Fintype ι] [Nonempty ι] (f g : ι → ℝ) :
+    avg (fun i => f i + g i) = avg f + avg g := by
+  unfold avg
+  rw [Finset.sum_add_distrib]
+  ring
 
-/-- Map an admissible correlation from `[-1,1]` to `[0,1]`. -/
-def profileShapeSimilarity (r : ℝ) : ℝ := (1 + r) / 2
+theorem avg_sub {ι : Type*} [Fintype ι] [Nonempty ι] (f g : ι → ℝ) :
+    avg (fun i => f i - g i) = avg f - avg g := by
+  unfold avg
+  rw [Finset.sum_sub_distrib]
+  ring
 
-theorem profileShapeSimilarity_inUnitInterval {r : ℝ}
-    (hr : inSignedUnitInterval r) :
-    inUnitInterval (profileShapeSimilarity r) := by
-  unfold profileShapeSimilarity inUnitInterval inSignedUnitInterval at *
-  constructor <;> linarith
+theorem abs_avg_le_avg_abs {ι : Type*} [Fintype ι] [Nonempty ι]
+    (f : ι → ℝ) : |avg f| ≤ avg (fun i => |f i|) := by
+  have hcard : 0 < (Fintype.card ι : ℝ) := by
+    exact_mod_cast Fintype.card_pos
+  unfold avg
+  rw [abs_div, abs_of_nonneg hcard.le]
+  exact div_le_div_of_nonneg_right
+    (by simpa using Finset.abs_sum_le_sum_abs f Finset.univ) hcard.le
 
-/-! ## Signed and absolute change -/
+/-! ## Positive parts, signed change, INS, and directional components -/
+
+def positivePart (x : ℝ) : ℝ := max 0 x
+
+theorem positivePart_nonneg (x : ℝ) : 0 ≤ positivePart x := by
+  exact le_max_left 0 x
+
+theorem positivePart_sub_positivePart_neg (x : ℝ) :
+    positivePart x - positivePart (-x) = x := by
+  by_cases hx : 0 ≤ x
+  · simp [positivePart, max_eq_right hx, max_eq_left (neg_nonpos.mpr hx)]
+  · have hx' : x ≤ 0 := le_of_not_ge hx
+    simp [positivePart, max_eq_left hx', max_eq_right (neg_nonneg.mpr hx')]
+
+theorem positivePart_add_positivePart_neg (x : ℝ) :
+    positivePart x + positivePart (-x) = |x| := by
+  by_cases hx : 0 ≤ x
+  · simp [positivePart, max_eq_right hx, max_eq_left (neg_nonpos.mpr hx),
+      abs_of_nonneg hx]
+  · have hx' : x ≤ 0 := le_of_not_ge hx
+    simp [positivePart, max_eq_left hx', max_eq_right (neg_nonneg.mpr hx'),
+      abs_of_nonpos hx']
+
+theorem positivePart_inUnitInterval {x : ℝ} (hx : inSignedUnitInterval x) :
+    inUnitInterval (positivePart x) := by
+  constructor
+  · exact positivePart_nonneg x
+  · exact max_le zero_le_one hx.2
 
 def scoreDelta {ι : Type*} (baseline perturbed : ι → ℝ) (i : ι) : ℝ :=
   perturbed i - baseline i
@@ -68,12 +105,20 @@ def signedChange {ι : Type*} [Fintype ι] [Nonempty ι]
     (baseline perturbed : ι → ℝ) : ℝ :=
   avg (scoreDelta baseline perturbed)
 
-/-- Mean absolute item change, called INS in the paper. -/
+/-- Mean absolute paired item change, called INS in the specification. -/
 def meanAbsoluteChange {ι : Type*} [Fintype ι] [Nonempty ι]
     (baseline perturbed : ι → ℝ) : ℝ :=
   avg (fun i => |scoreDelta baseline perturbed i|)
 
 abbrev ins := @meanAbsoluteChange
+
+def positiveFlow {ι : Type*} [Fintype ι] [Nonempty ι]
+    (baseline perturbed : ι → ℝ) : ℝ :=
+  avg (fun i => positivePart (scoreDelta baseline perturbed i))
+
+def negativeFlow {ι : Type*} [Fintype ι] [Nonempty ι]
+    (baseline perturbed : ι → ℝ) : ℝ :=
+  avg (fun i => positivePart (-scoreDelta baseline perturbed i))
 
 theorem scoreDelta_inSignedUnitInterval {ι : Type*} {baseline perturbed : ι → ℝ}
     (hbaseline : ∀ i, inUnitInterval (baseline i))
@@ -103,10 +148,41 @@ theorem meanAbsoluteChange_inUnitInterval {ι : Type*} [Fintype ι] [Nonempty ι
   · rw [abs_le]
     exact scoreDelta_inSignedUnitInterval hbaseline hperturbed i
 
+theorem abs_signedChange_le_meanAbsoluteChange
+    {ι : Type*} [Fintype ι] [Nonempty ι]
+    (baseline perturbed : ι → ℝ) :
+    |signedChange baseline perturbed| ≤ meanAbsoluteChange baseline perturbed := by
+  exact abs_avg_le_avg_abs (scoreDelta baseline perturbed)
+
+theorem signedChange_eq_positiveFlow_sub_negativeFlow
+    {ι : Type*} [Fintype ι] [Nonempty ι]
+    (baseline perturbed : ι → ℝ) :
+    signedChange baseline perturbed =
+      positiveFlow baseline perturbed - negativeFlow baseline perturbed := by
+  unfold signedChange positiveFlow negativeFlow
+  rw [← avg_sub]
+  apply congrArg avg
+  funext i
+  exact (positivePart_sub_positivePart_neg
+    (scoreDelta baseline perturbed i)).symm
+
+theorem meanAbsoluteChange_eq_positiveFlow_add_negativeFlow
+    {ι : Type*} [Fintype ι] [Nonempty ι]
+    (baseline perturbed : ι → ℝ) :
+    meanAbsoluteChange baseline perturbed =
+      positiveFlow baseline perturbed + negativeFlow baseline perturbed := by
+  unfold meanAbsoluteChange positiveFlow negativeFlow
+  rw [← avg_add]
+  apply congrArg avg
+  funext i
+  exact (positivePart_add_positivePart_neg
+    (scoreDelta baseline perturbed i)).symm
+
+/-! ## Externally selected tails -/
+
 /--
-Mean signed change on an externally selected tail.  The selector is an input:
-this definition does not formalize, or validate, the procedure used to choose
-the tail.
+Mean signed change on an externally selected tail. The selector is an input;
+this definition does not formalize sorting, noisy selection, or cross-fitting.
 -/
 def selectedTailMeanChange {ι τ : Type*} [Fintype τ] [Nonempty τ]
     (select : τ → ι) (baseline perturbed : ι → ℝ) : ℝ :=
@@ -122,13 +198,12 @@ theorem selectedTailMeanChange_inSignedUnitInterval
   intro j
   exact scoreDelta_inSignedUnitInterval hbaseline hperturbed (select j)
 
-/--
-Worst-tail degradation (WTD) for an externally selected tail.  Negating the
-tail's mean signed change makes score losses positive.
--/
+/-- Signed WTD for an externally selected lower tail. -/
 def worstTailDegradation {ι τ : Type*} [Fintype τ] [Nonempty τ]
     (select : τ → ι) (baseline perturbed : ι → ℝ) : ℝ :=
   -selectedTailMeanChange select baseline perturbed
+
+abbrev wtd := @worstTailDegradation
 
 theorem worstTailDegradation_inSignedUnitInterval
     {ι τ : Type*} [Fintype τ] [Nonempty τ]
@@ -141,82 +216,144 @@ theorem worstTailDegradation_inSignedUnitInterval
   unfold worstTailDegradation inSignedUnitInterval
   constructor <;> linarith [htail.1, htail.2]
 
-/-! ## Delayed retention -/
+/-- Target-specific WTL for an externally selected high-loss tail. -/
+def worstTailLoss {ι τ : Type*} [Fintype τ] [Nonempty τ]
+    (select : τ → ι) (loss : ι → ℝ) : ℝ :=
+  avg (fun j => loss (select j))
 
-/--
-Retained mass at one specified delay.  Scores are compared item by item before
-summing, so no per-item division by a zero baseline is required.
--/
-def retainedMass {ι : Type*} [Fintype ι]
-    (baseline delayed : ι → ℝ) : ℝ :=
-  (∑ i, min (baseline i) (delayed i)) / ∑ i, baseline i
+abbrev wtl := @worstTailLoss
 
-theorem retainedMass_inUnitInterval {ι : Type*} [Fintype ι]
-    {baseline delayed : ι → ℝ}
-    (hbaseline : ∀ i, 0 ≤ baseline i)
-    (hdelayed : ∀ i, 0 ≤ delayed i)
-    (hdenom : 0 < ∑ i, baseline i) :
-    inUnitInterval (retainedMass baseline delayed) := by
-  unfold retainedMass inUnitInterval
+theorem worstTailLoss_inUnitInterval
+    {ι τ : Type*} [Fintype τ] [Nonempty τ]
+    {select : τ → ι} {loss : ι → ℝ}
+    (hloss : ∀ i, inUnitInterval (loss i)) :
+    inUnitInterval (worstTailLoss select loss) := by
+  exact avg_inUnitInterval fun j => hloss (select j)
+
+/-! ## Retention of above-pretest gain -/
+
+def abovePretestGain {ι : Type*} (pre later : ι → ℝ) (i : ι) : ℝ :=
+  positivePart (scoreDelta pre later i)
+
+theorem abovePretestGain_inUnitInterval {ι : Type*} {pre later : ι → ℝ}
+    (hpre : ∀ i, inUnitInterval (pre i))
+    (hlater : ∀ i, inUnitInterval (later i)) (i : ι) :
+    inUnitInterval (abovePretestGain pre later i) := by
+  exact positivePart_inUnitInterval
+    (scoreDelta_inSignedUnitInterval hpre hlater i)
+
+def retainedGain {ι : Type*} [Fintype ι]
+    (pre immediate delayed : ι → ℝ) : ℝ :=
+  (∑ i, min (abovePretestGain pre immediate i)
+      (abovePretestGain pre delayed i)) /
+    ∑ i, abovePretestGain pre immediate i
+
+theorem retainedGain_inUnitInterval {ι : Type*} [Fintype ι]
+    {pre immediate delayed : ι → ℝ}
+    (hdenom : 0 < ∑ i, abovePretestGain pre immediate i) :
+    inUnitInterval (retainedGain pre immediate delayed) := by
+  unfold retainedGain inUnitInterval
   constructor
   · exact div_nonneg
-      (Finset.sum_nonneg fun i _ => le_min (hbaseline i) (hdelayed i))
+      (Finset.sum_nonneg fun i _ =>
+        le_min (positivePart_nonneg _) (positivePart_nonneg _))
       hdenom.le
   · exact div_le_one_of_le₀
-      (Finset.sum_le_sum fun i _ => min_le_left (baseline i) (delayed i))
+      (Finset.sum_le_sum fun i _ => min_le_left
+        (abovePretestGain pre immediate i) (abovePretestGain pre delayed i))
       hdenom.le
+
+theorem retainedGain_inUnitInterval_of_avg_threshold
+    {ι : Type*} [Fintype ι] [Nonempty ι]
+    {pre immediate delayed : ι → ℝ} {γ : ℝ}
+    (hγ : 0 < γ)
+    (hthreshold : γ ≤ avg (abovePretestGain pre immediate)) :
+    inUnitInterval (retainedGain pre immediate delayed) := by
+  have havgpos : 0 < avg (abovePretestGain pre immediate) :=
+    lt_of_lt_of_le hγ hthreshold
+  have hcard : 0 < (Fintype.card ι : ℝ) := by
+    exact_mod_cast Fintype.card_pos
+  unfold avg at havgpos
+  have hdenom : 0 < ∑ i, abovePretestGain pre immediate i := by
+    rcases (div_pos_iff.mp havgpos) with h | h
+    · exact h.1
+    · exact False.elim ((not_lt_of_ge hcard.le) h.2)
+  exact retainedGain_inUnitInterval hdenom
 
 /-! ## Feedback trajectories -/
 
-/-- Reduction in error between the initial and final feedback rounds. -/
-def endpointGain (initialError finalError : ℝ) : ℝ :=
-  initialError - finalError
+def transitionDiff (errors : ℕ → ℝ) (k : ℕ) : ℝ :=
+  errors (k + 1) - errors k
 
-theorem endpointGain_inSignedUnitInterval {initialError finalError : ℝ}
-    (hinitial : inUnitInterval initialError)
-    (hfinal : inUnitInterval finalError) :
-    inSignedUnitInterval (endpointGain initialError finalError) := by
+def cumulativeErrorDecrease (errors : ℕ → ℝ) (steps : ℕ) : ℝ :=
+  ∑ k ∈ Finset.range steps, positivePart (-transitionDiff errors k)
+
+def cumulativeErrorIncrease (errors : ℕ → ℝ) (steps : ℕ) : ℝ :=
+  ∑ k ∈ Finset.range steps, positivePart (transitionDiff errors k)
+
+def endpointGain (errors : ℕ → ℝ) (steps : ℕ) : ℝ :=
+  errors 0 - errors steps
+
+def totalVariation (errors : ℕ → ℝ) (steps : ℕ) : ℝ :=
+  ∑ k ∈ Finset.range steps, |transitionDiff errors k|
+
+theorem cumulativeErrorDecrease_nonneg (errors : ℕ → ℝ) (steps : ℕ) :
+    0 ≤ cumulativeErrorDecrease errors steps := by
+  exact Finset.sum_nonneg fun k _ => positivePart_nonneg _
+
+theorem cumulativeErrorIncrease_nonneg (errors : ℕ → ℝ) (steps : ℕ) :
+    0 ≤ cumulativeErrorIncrease errors steps := by
+  exact Finset.sum_nonneg fun k _ => positivePart_nonneg _
+
+theorem sum_transitionDiff (errors : ℕ → ℝ) (steps : ℕ) :
+    (∑ k ∈ Finset.range steps, transitionDiff errors k) =
+      errors steps - errors 0 := by
+  simpa [transitionDiff] using Finset.sum_range_sub errors steps
+
+theorem cumulativeErrorDecrease_sub_increase
+    (errors : ℕ → ℝ) (steps : ℕ) :
+    cumulativeErrorDecrease errors steps -
+      cumulativeErrorIncrease errors steps = endpointGain errors steps := by
+  calc
+    cumulativeErrorDecrease errors steps - cumulativeErrorIncrease errors steps =
+        ∑ k ∈ Finset.range steps,
+          (positivePart (-transitionDiff errors k) -
+            positivePart (transitionDiff errors k)) := by
+          simp [cumulativeErrorDecrease, cumulativeErrorIncrease,
+            Finset.sum_sub_distrib]
+    _ = ∑ k ∈ Finset.range steps, -transitionDiff errors k := by
+      apply Finset.sum_congr rfl
+      intro k _
+      simpa using positivePart_sub_positivePart_neg (-transitionDiff errors k)
+    _ = -(∑ k ∈ Finset.range steps, transitionDiff errors k) := by
+      rw [Finset.sum_neg_distrib]
+    _ = -(errors steps - errors 0) := by rw [sum_transitionDiff]
+    _ = endpointGain errors steps := by simp [endpointGain]
+
+theorem totalVariation_eq_decrease_add_increase
+    (errors : ℕ → ℝ) (steps : ℕ) :
+    totalVariation errors steps = cumulativeErrorDecrease errors steps +
+      cumulativeErrorIncrease errors steps := by
+  unfold totalVariation cumulativeErrorDecrease cumulativeErrorIncrease
+  rw [← Finset.sum_add_distrib]
+  apply Finset.sum_congr rfl
+  intro k _
+  simpa [add_comm] using
+    (positivePart_add_positivePart_neg (transitionDiff errors k)).symm
+
+theorem endpointGain_inSignedUnitInterval {errors : ℕ → ℝ} {steps : ℕ}
+    (herrors : ∀ k, inUnitInterval (errors k)) :
+    inSignedUnitInterval (endpointGain errors steps) := by
   unfold endpointGain inSignedUnitInterval inUnitInterval at *
-  constructor <;> linarith
+  constructor <;> linarith [(herrors 0).1, (herrors 0).2,
+    (herrors steps).1, (herrors steps).2]
 
-def positivePart (x : ℝ) : ℝ := max 0 x
-
-def transitionDiff {n : ℕ} (errors : Fin (n + 2) → ℝ)
-    (k : Fin (n + 1)) : ℝ :=
-  errors k.succ - errors k.castSucc
-
-def totalVariation {n : ℕ} (errors : Fin (n + 2) → ℝ) : ℝ :=
-  ∑ k, |transitionDiff errors k|
-
-def backslidingNumerator {n : ℕ} (errors : Fin (n + 2) → ℝ) : ℝ :=
-  ∑ k, positivePart (transitionDiff errors k)
-
-/--
-Exact share of error-path variation due to error-increasing transitions.  A
-constant trajectory has no transition variation and is assigned value zero.
--/
-def backslidingFraction {n : ℕ} (errors : Fin (n + 2) → ℝ) : ℝ :=
-  if totalVariation errors = 0 then 0
-  else backslidingNumerator errors / totalVariation errors
-
-theorem backslidingFraction_inUnitInterval {n : ℕ}
-    {errors : Fin (n + 2) → ℝ} :
-    inUnitInterval (backslidingFraction errors) := by
-  have hvariation_nonneg : 0 ≤ totalVariation errors :=
-    Finset.sum_nonneg fun _ _ => abs_nonneg _
-  have hnumerator_nonneg : 0 ≤ backslidingNumerator errors :=
-    Finset.sum_nonneg fun _ _ => le_max_left _ _
-  have hnumerator_le : backslidingNumerator errors ≤ totalVariation errors :=
-    Finset.sum_le_sum fun _ _ => by
-      cases max_cases 0
-          (errors (Fin.succ ‹_›) - errors (Fin.castSucc ‹_›)) <;>
-      cases abs_cases
-          (errors (Fin.succ ‹_›) - errors (Fin.castSucc ‹_›)) <;>
-      linarith!
-  unfold backslidingFraction
-  split_ifs with hzero
-  · exact ⟨le_rfl, zero_le_one⟩
-  · exact ⟨div_nonneg hnumerator_nonneg hvariation_nonneg,
-      div_le_one_of_le₀ hnumerator_le hvariation_nonneg⟩
+theorem abs_endpointGain_le_totalVariation (errors : ℕ → ℝ) (steps : ℕ) :
+    |endpointGain errors steps| ≤ totalVariation errors steps := by
+  rw [← cumulativeErrorDecrease_sub_increase,
+    totalVariation_eq_decrease_add_increase, abs_le]
+  constructor <;>
+    linarith [cumulativeErrorDecrease_nonneg errors steps,
+      cumulativeErrorIncrease_nonneg errors steps]
 
 end Formalization

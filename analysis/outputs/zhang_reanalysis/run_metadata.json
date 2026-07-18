@@ -1,0 +1,81 @@
+{
+  "profile": "standard",
+  "seed": 20260717,
+  "lock_file": "/Users/brettreynolds/projects/LLM-CLI-projects/papers/retarget/agi-evaluation/analysis/source_manifest.lock.json",
+  "code_source": {
+    "repository": "https://github.com/SALT-NLP/illusion-of-robustness.git",
+    "commit": "411ceecd714068d161ab5ff307015a7e0eba8fd6",
+    "license_observed": null,
+    "note": "No LICENSE file was visible at this commit; this companion reimplements only the released statistical procedures and attributes them explicitly."
+  },
+  "paper_source": {
+    "authors": "Zhang, Koyejo, and Yang",
+    "arxiv_id": "2607.12963",
+    "version": "v2",
+    "submitted": "2026-07-15",
+    "abstract_url": "https://arxiv.org/abs/2607.12963",
+    "source_url": "https://arxiv.org/src/2607.12963v2"
+  },
+  "cells_requested": [
+    "mmlu_pro.gpt55",
+    "mmlu_pro.gpt54",
+    "mmlu_pro.gpt41",
+    "mmlu_pro.deep",
+    "mmlu_pro.grok",
+    "mmlu_pro.mistr",
+    "mmlu_pro.gptos",
+    "mmlu_pro.gemin",
+    "gpqa.gpt55",
+    "gpqa.gpt54",
+    "gpqa.gpt41",
+    "gpqa.deep",
+    "gpqa.grok",
+    "gpqa.mistr",
+    "gpqa.gptos",
+    "gpqa.gemin",
+    "hle.gpt55",
+    "hle.gpt54",
+    "hle.gpt41",
+    "hle.deep",
+    "hle.grok",
+    "hle.mistr",
+    "hle.gptos",
+    "hle.gemin",
+    "simpleqa.gpt55",
+    "simpleqa.gpt54",
+    "simpleqa.gpt41",
+    "simpleqa.deep",
+    "simpleqa.grok",
+    "simpleqa.mistr",
+    "simpleqa.gptos",
+    "simpleqa.gemin"
+  ],
+  "config": {
+    "default_cells": null,
+    "n_boot": 1000,
+    "split_reps": 200,
+    "trial_counts": [
+      2,
+      5,
+      10,
+      20
+    ],
+    "tail_qs": [
+      0.05,
+      0.1,
+      0.2
+    ],
+    "subsample_reps": 10,
+    "sensitivity_boot": 64,
+    "sensitivity_split": 64
+  },
+  "all_downloads_checksum_verified": true,
+  "limitations": [
+    "Subtracting the baseline pseudo-null expectation is a noise correction, not an unbiased non-null effect estimator.",
+    "Split WTD is unbiased for a noisy-selected set and may miss the oracle latent tail.",
+    "Absolute loss tail and WTD answer different questions and aren't combined.",
+    "The released QA benchmarks don't instantiate the manuscript's ten CHC-style domains.",
+    "Public dataset metadata exposed no license at pinning time; the cache is excluded from version control.",
+    "No model generations, graders, deployment outcomes, or external validity targets are added."
+  ]
+}

@@ -1,0 +1,65 @@
+{
+  "schema_version": 1,
+  "pinned_on": "2026-07-17",
+  "paper": {
+    "authors": "Zhang, Koyejo, and Yang",
+    "arxiv_id": "2607.12963",
+    "version": "v2",
+    "submitted": "2026-07-15",
+    "abstract_url": "https://arxiv.org/abs/2607.12963",
+    "source_url": "https://arxiv.org/src/2607.12963v2"
+  },
+  "code": {
+    "repository": "https://github.com/SALT-NLP/illusion-of-robustness.git",
+    "commit": "411ceecd714068d161ab5ff307015a7e0eba8fd6",
+    "license_observed": null,
+    "note": "No LICENSE file was visible at this commit; this companion reimplements only the released statistical procedures and attributes them explicitly."
+  },
+  "data": {
+    "organization": "SALT-NLP",
+    "collection_url": "https://huggingface.co/collections/SALT-NLP/context-induced-instability",
+    "license_observed": null,
+    "note": "The public dataset metadata exposed no license at pinning time. Treat this as a reproducibility analysis, not a grant of redistribution rights.",
+    "models": [
+      {"key": "gpt55", "label": "gpt-5.5", "suffix": "gpt55"},
+      {"key": "gpt54", "label": "gpt-5.4", "suffix": "gpt54"},
+      {"key": "gpt41", "label": "gpt-4.1", "suffix": "gpt41"},
+      {"key": "deep", "label": "DeepSeek-V4-Pro", "suffix": "deep"},
+      {"key": "grok", "label": "Grok-4.20-NR", "suffix": "grok"},
+      {"key": "mistr", "label": "Mistral-Large-3", "suffix": "mistr"},
+      {"key": "gptos", "label": "gpt-oss-120b", "suffix": "gptos"},
+      {"key": "gemin", "label": "gemini-3.1-fl", "suffix": "gemin"}
+    ],
+    "benchmarks": [
+      {
+        "key": "mmlu_pro",
+        "label": "MMLU-Pro",
+        "repo_prefix": "mmlu-pro",
+        "baseline_pattern": "SALT-NLP/{prefix}-context-baseline-{suffix}",
+        "perturbed_pattern": "SALT-NLP/{prefix}-ctx-screen-{suffix}",
+        "suffix_overrides": {"gpt54": "gpt54-10k"}
+      },
+      {
+        "key": "gpqa",
+        "label": "GPQA",
+        "repo_prefix": "gpqa_diamond",
+        "baseline_pattern": "SALT-NLP/{prefix}-context-baseline-{suffix}",
+        "perturbed_pattern": "SALT-NLP/{prefix}-ctx-screen-{suffix}"
+      },
+      {
+        "key": "hle",
+        "label": "HLE",
+        "repo_prefix": "hle",
+        "baseline_pattern": "SALT-NLP/{prefix}-context-baseline-{suffix}",
+        "perturbed_pattern": "SALT-NLP/{prefix}-ctx-screen-{suffix}"
+      },
+      {
+        "key": "simpleqa",
+        "label": "SimpleQA",
+        "repo_prefix": "simpleqa-verified",
+        "baseline_pattern": "SALT-NLP/{prefix}-context-baseline-{suffix}",
+        "perturbed_pattern": "SALT-NLP/{prefix}-ctx-screen-{suffix}"
+      }
+    ]
+  }
+}

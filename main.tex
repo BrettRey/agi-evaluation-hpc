@@ -1,15 +1,15 @@
 \documentclass[12pt]{article}
 \input{.house-style/preamble.tex}
-\hypersetup{pdftitle={From Aggregate Scores to Projectible Profiles: Robustness in AGI Evaluation}}
+\usepackage{float}
+\hypersetup{pdftitle={From Aggregate Scores to Warranted Inference in AGI Evaluation}}
 \setlength{\headheight}{14pt}
 \setlength{\emergencystretch}{1.5em}
 
-\newcommand{\pss}{\mathrm{PSS}}
 \newcommand{\ins}{\mathrm{INS}}
 \newcommand{\wtd}{\mathrm{WTD}}
-\newcommand{\dr}{\mathrm{DR}}
+\newcommand{\wtl}{\mathrm{WTL}}
 
-\title{From Aggregate Scores to Projectible Profiles:\\Robustness in AGI Evaluation}
+\title{From Aggregate Scores to Warranted Inference\\in AGI Evaluation}
 \author{Brett Reynolds \orcidlink{0000-0003-0073-7195}\thanks{I used ChatGPT 5, Claude Sonnet 4.5, and Gemini Pro 2.5 extensively in drafting and revising the paper. I reviewed, edited, and approved all the material and take full responsibility for the final text and conclusions. \href{mailto:brett.reynolds@humber.ca}{brett.reynolds@humber.ca}}\\
 Humber Polytechnic \& University of Toronto}
 \date{}
@@ -19,379 +19,395 @@ Humber Polytechnic \& University of Toronto}
 \maketitle
 
 \begin{abstract}
-Contemporary evaluations of artificial general intelligence report broad capability profiles, but their aggregate scores are often asked to support inferences they haven't been validated to support. Stable domain means can conceal offsetting item-level improvements and degradations; stable profile shape can coexist with severe harmful-tail failures; and behavioural stability alone doesn't identify the mechanisms responsible for it. I call a score \term{projectible} (able to support a declared inference beyond its own construction) and make that property the organizing principle for AGI evaluation. An evaluation should begin with a declared prediction or decision, population, unit of analysis, intervention range, and time horizon. It should then report robustness at four distinct granularities: profile-shape similarity, signed level change, mean absolute item instability, and worst-tail degradation. Retention, response to feedback, and scaffold dependence require separate protocols rather than a universal stability index. Alternative domain weights should likewise earn their use through held-out predictive validity and calibration rather than through claims about which abilities are constitutive of intelligence. The framework preserves the breadth of multidomain batteries while making cancellation, tail risk, transport failure, and evidential limits visible. It yields black-box protocols that are operational now without treating their outputs as evidence of a homeostatic mechanism or a natural kind.
+Finite multidomain batteries are used to support claims about untested tasks, contexts, systems, and future behaviour. Yet aggregate stability can conceal offsetting item-level changes, while a change-based tail statistic can miss failures that are severe in both tested conditions. I use \term{projectibility} for target-indexed support for a specified inference beyond the observations used to construct a score. Projectibility belongs within, rather than in place of, a broader validity argument.
+
+I develop an evaluation discipline with three moves. First, declare the projection target, system and task populations, bearer, intervention range, time horizon, decision loss, and evidential test. Second, preserve five distinct descriptions: domain-profile correlation, signed level change, item instability, worst-tail degradation, and absolute worst-tail loss. Third, test the projection using holdouts at the relevant facet; causal and decision claims require interventions or loss-sensitive evidence.
+
+Interpretable aggregates are separated from predictive or decision models, while retention, feedback, and component dependence are treated as applications with their own controls. A reanalysis of 32 released model--benchmark cells and known-truth simulations shows what the granular descriptions distinguish and why pseudo-null-adjusted and split-tail estimates aren't interchangeable. The result is a target-indexed evaluation framework, not a new general-purpose score.
 \end{abstract}
 
-\section{What Should an AGI Evaluation Let Us Infer?}\label{sec:projection}
+\section{The Inferential Overreach of AGI Scores}\label{sec:problem}
 
-\textcite{hendrycks2025agi} move AGI evaluation beyond isolated benchmarks by adapting Cattell--Horn--Carroll (CHC) theory to a ten-domain capability profile. This broad profile improves on a single leaderboard score. The measurement-theoretic account in \textcite{hernandezorallo2017} likewise emphasizes explicitness about the abilities, populations, and uses for which scores are interpreted. But the multidomain proposal leaves a prior question open: what should passing the evaluation let us infer?
+An unchanged average can conceal a changed system.
 
-A score can summarize observed performance without predicting anything beyond the observations used to compute it. Evaluation becomes decision-relevant only when the score travels: from tested items to untested items, from one context to another, from a model in the laboratory to a deployed system, or from present performance to later behaviour. I use \term{projectibility} for this ability to support a specified inference beyond the score's own construction \citep{boyd1991,reynolds2026notEveryStableCluster}.
+The argument has three moves. First, declare the inference or decision and the scope over which it is meant to hold. Second, preserve distinctions that aggregation compresses: domain-profile correlation, signed level, two-sided item change, change in the worst tail, and absolute tail loss. Third, test the proposed inference with evidence not used to construct the score and matched to the declared scope. Granular description preserves candidate evidence; it doesn't, by itself, warrant a broader claim.
 
-Projectibility isn't a generic property of a metric. It's always projectibility for a declared target. A release team may need to predict harmful failures under long, noisy contexts. A procurement team may need to predict task completion in a fixed tool environment. A cognitive scientist may ask whether two systems share a representation-based competence. These aren't interchangeable questions, and a score that works for one needn't work for the others.
+\textcite{zhang2026illusionRobustness} add task-irrelevant context to benchmark items and find that aggregate accuracy often moves little even when many item-level response probabilities move in opposite directions. Their adjusted estimates reach 13.6\% for mean absolute item change and 53.2\% for worst-decile degradation across the reported model--benchmark cells. The affected examples are also largely model-specific.
 
-Before choosing metrics or weights, an evaluation should declare five parameters:
+The immediate lesson isn't that aggregate accuracy is useless. A stable mean answers only a question about the mean. The same value is compatible with no item changes, balanced improvements and degradations, or a stable set of serious failures. Those states may support different predictions and decisions.
+
+The difficulty becomes acute when a finite battery is interpreted as evidence of general capability. \textcite{raji2021whole} argue that broad benchmark claims routinely outrun the contextual tasks used to construct them. \textcite{hendrycks2025agi}, for example, organize AGI evaluation as a ten-domain battery grounded in Cattell--Horn--Carroll (CHC) theory. The move from isolated leaderboards to a multidomain profile is valuable, but breadth within a battery doesn't establish which inferences the profile supports beyond it.
+
+Hendrycks et al.'s battery is one motivating case of a general measurement problem. When an AGI score is used to support claims about novel items, contexts, systems, or future behaviour, its intended range is exceptionally broad relative to a finite construction sample. The same framework applies to multidomain AI evaluation more generally, but AGI claims make the gap especially visible.
+
+The contribution is a target-indexed evaluation discipline rather than a novel family of mathematical operations. Its three moves are to declare the projection before choosing the score, preserve the relevant levels of description, and test the projection against a simple baseline on matching evidence. Aggregation is warranted only when held-out evidence for a shared projection target supports it. Retention, feedback response, and component dependence later illustrate how the same discipline changes when the time horizon, intervention, or bearer changes.
+
+\section{From Observations to Declared Projections}\label{sec:projection}
+
+Validity attaches to proposed interpretations and uses of scores, not to a test in isolation \citep{messick_1989_validity,messick1995Validity}. I use \term{projectibility}, following the philosophical vocabulary associated with warranted projection \citep{Goodman1955,boyd1991}, for one question within the broader validity argument: does the evidence support a specified inference beyond the observations used to construct the score? Projectibility doesn't replace construct validity, generalizability, transportability, or decision analysis.
+
+Different inferences and uses require different warrants. Table~\ref{tab:projection_relations} separates six relations that a broad phrase such as \enquote{the score generalizes} can obscure. A decision isn't itself an epistemic projection. It depends on projectible estimates together with a declared loss, utility, or constraint, and is included because score use belongs to the wider validity argument.
+
+\begin{table}[tbp]
+\centering\small
+\caption{Inferential relations, decision use, and evidence that could warrant them.}\label{tab:projection_relations}
+\begin{tabular}{@{}>{\raggedright\arraybackslash}p{0.25\linewidth}
+                    >{\raggedright\arraybackslash}p{0.29\linewidth}
+                    >{\raggedright\arraybackslash}p{0.37\linewidth}@{}}
+\toprule
+Claim or use & Declared range & Matching evidence \\
+\midrule
+Tested to untested items & Item or task population & Item- or template-cluster holdout from a stated sampling frame \\
+One context to another & Realizations or perturbation families & Hold out realizations, or entire families for the stronger claim \\
+One system population to another & Models, lineages, or configurations & Hold out the corresponding systems rather than near-identical versions \\
+Present to future behaviour & Sessions, releases, or deployment periods & Chronological validation at the stated horizon \\
+Behaviour to causal explanation & Mechanisms and rival routes & Mechanistic intervention and controls for alternative causes \\
+Score to decision & Actions and consequences & Independent calibration plus a declared loss, utility, or constraint \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+For causal effects, this point has a precise analogue: transporting an effect between populations requires assumptions about which causal mechanisms change and which remain invariant, not merely good held-out prediction \citep{pearlBareinboim2014externalValidity}. The present framework is mostly predictive and decision-oriented. It invokes causal transport only to mark a stronger claim that ordinary benchmark validation doesn't establish.
+
+Before calculation, an evaluator should register a \term{projection declaration}:
 
 \begin{enumerate}
-\item \textbf{Projection target}: the outcome, inference, explanation, or decision the evaluation is meant to support
-\item \textbf{Population}: the model families, versions, deployment settings, and users to which the claim is intended to apply
-\item \textbf{Unit of analysis}: a base model, a stateful agent, or a deployed model--tool--retrieval system
-\item \textbf{Intervention range}: the contexts, delays, distribution shifts, or component changes across which the projection is expected to hold
-\item \textbf{Time horizon}: immediate performance, retention across sessions, or downstream behaviour over weeks or months
+\item \textbf{Claim and projection target}: the outcome, interpretation, or explanation to be inferred
+\item \textbf{System population}: the model families, versions, configurations, settings, and users in scope
+\item \textbf{Task population}: the item or task universe and its sampling frame
+\item \textbf{Bearer and unit}: a base model, stateful agent, or deployed model--tool--retrieval composite
+\item \textbf{Intervention range}: the perturbation families and realizations over which the claim is meant to hold
+\item \textbf{Time horizon}: immediate, delayed, or later deployment behaviour
+\item \textbf{Decision criterion}: the loss, utility, constraint, or action threshold when a decision is intended
+\item \textbf{Evidential test}: the holdout unit or other evidence that could support or defeat the claim
 \end{enumerate}
 
-Table~\ref{tab:projection_cards} illustrates how the same broad evaluation can serve different targets only by changing its unit, perturbations, and outcome data.
+A separate sampling audit records what generated the observations: model and version, item, domain, perturbation family and realization, response replicate, scorer, and time. These facets may be crossed, nested, fixed, or sampled. Generalizability theory provides the established vocabulary of an admissible universe, multiple facets, and a decision-specific measurement design \citep{brennan2001generalizability}. This proposal adds signed, paired, and tail-sensitive descriptions; it doesn't replace that machinery.
+
+Here and below, a system \enquote{lineage} is an operational dependency group defined by declared provenance, training, distillation, shared components, or data dependence, not merely by a family label.
+
+Consider a running release decision. A committee wants to predict serious task loss for a deployed agent when it encounters a previously unseen family of irrelevant contexts over the next release cycle. The system population is the product lineage, the item population is the declared deployment-task frame, the bearer is the full agent, the outer holdout is a later version crossed with a held-out context family, and the release rule includes an absolute tail-loss constraint. A random item split within familiar contexts wouldn't test that projection.
+
+Field interests determine which target matters. They don't determine whether the evidence supports it. Projectibility is target-indexed without becoming conventional: the target is chosen, but success is constrained by the appropriate warrant, whether matched holdout performance, calibration and decision value, or intervention against rival explanations.
+
+\section{What Aggregate Stability Doesn't Establish}\label{sec:profile}
+
+Aggregation can collapse distinctions at several levels. A stable mean within a domain can't distinguish unchanged items from item-level churn. A stable ten-domain profile can't distinguish a broadly preserved pattern from a narrow construction or subprocess that fails sharply. A stable average across models can't distinguish shared from family-specific failure sets.
+
+Analogous cases arise outside broad capability testing. \textcite{vondermalsburg2026diverging} find that transformers can appear human-aligned for one agreement-attraction configuration while diverging in another, directly warning against projection from an isolated configuration or model. \textcite{kuribayashi2026dualalignment} find that different layer-specific surprisal measures align best with different aspects of human sentence processing. The latter result supports target-dependent measure selection rather than item-level disaggregation. Together, the cases show why a broad label doesn't determine which description supports a particular inference.
+
+\subsection{Data Structure and Three Estimand Modes}\label{ssec:setup}
+
+A full observation may be indexed by system and version, domain, item, perturbation family, perturbation realization, response replicate, scorer, and time. The facets can be crossed, nested, fixed, or sampled. Counting output rows as independent observations would generally be wrong.
+
+To keep the definitions readable, fix a system, time, scorer protocol, and perturbation realization. Let domains be indexed by \(g=1,\ldots,G\), items within domain \(g\) by \(i=1,\ldots,N_g\), and conditions by \(c\), with baseline \(0\) and perturbation \(p\). Let \(s_{igc}\in[0,1]\) be the item score. Define
+\[
+\delta_{igp}=s_{igp}-s_{ig0},
+\qquad
+a_{gc}=\frac{1}{N_g}\sum_{i=1}^{N_g}s_{igc},
+\]
+and let \(\mathbf a_c=(a_{1c},\ldots,a_{Gc})\).
+
+The same symbols support three different estimands. With deterministic decoding on a fixed paired set, the quantities below are exact descriptions of that set. Under a declared stochastic generation and scoring protocol, \(s_{igc}\) is an expected score estimated from repeated responses and, when relevant, scorers. Inference to an item, context, system, or time population also requires sampling or holdout from that declared universe. Repetition within an item doesn't create a representative item sample.
+
+If item inclusion probabilities differ, population means require design weights and a \(q\)-tail should represent \(q\) of the target-population mass; the unweighted formulas below describe a fixed set or equal-probability sample.
+
+Table~\ref{tab:descriptions} gives the minimal descriptive set. The raw domain profiles and item-change distributions remain part of the report; the displayed quantities don't replace them.
 
 \begin{table}[tbp]
 \centering\small
-\caption{Examples of declared projection targets.}\label{tab:projection_cards}
-\begin{tabular}{@{}>{\raggedright\arraybackslash}p{0.20\linewidth}
-                    >{\raggedright\arraybackslash}p{0.22\linewidth}
-                    >{\raggedright\arraybackslash}p{0.26\linewidth}
-                    >{\raggedright\arraybackslash}p{0.23\linewidth}@{}}
+\caption{Distinct descriptions preserved before target-specific validation.}\label{tab:descriptions}
+\begin{tabular}{@{}>{\raggedright\arraybackslash}p{0.16\linewidth}
+                    >{\raggedright\arraybackslash}p{0.25\linewidth}
+                    >{\raggedright\arraybackslash}p{0.50\linewidth}@{}}
 \toprule
-Target & Unit & Relevant variation & External outcome \\
+Output & Granularity & Question answered \\
 \midrule
-Context robustness & Deployed agent & Irrelevant context type and length & Correctness and harmful failures \\
-Retention & Stateful system & Clean-session delays & Performance on taught, held-out items \\
-Scaffold dependence & Declared system configuration & Tool, retrieval, and context degradation & Task success under component change \\
-Deployment reliability & Deployed system & Users, tasks, and environments & Calibration, completion, and incident rates \\
+\(r_p\) & Domain profile & How strongly were the centred, scaled domain profiles linearly associated? \\
+\(L_{gp},L_p\) & Domain and overall level & Did average performance rise or fall? \\
+\(\ins_{gp}\) & Items within a cell & How much two-sided paired item change occurred? \\
+\(\wtd_{q,gp}\) & Change tail & How large was mean degradation in the worst-changing \(q\)-fraction? \\
+\(\wtl^{(T)}_{q,gc}\) & Absolute loss tail & How large was target-specific loss in the worst-loss \(q\)-fraction? \\
 \bottomrule
 \end{tabular}
 \end{table}
 
-The field selects which question matters; it doesn't determine whether the projection succeeds. Once a target is declared, the evaluation has to demonstrate out-of-sample validity, calibration, and transport across the claimed range. This keeps purpose-indexing from becoming conventionalism.
+\subsection{Profile Correlation and Signed Level}\label{ssec:profile_level}
 
-The proposal developed below has four rules. Declare the projection before choosing the score. Keep profile, level, item, and tail granularities separate. Compare every richer model against a simple baseline. Aggregate only when a shared target validates the aggregation. These rules don't define what AGI is. They set the evidential conditions under which an AGI evaluation can support claims about systems beyond the test itself.
-
-\section{Why Aggregate Stability Isn't Reliability}\label{sec:aggregation}
-
-\subsection{Cancellation at the Item Level}\label{ssec:cancellation}
-
-Suppose a model's accuracy is 70\% both with and without a perturbation. It's tempting to call the model robust. The identical means are also compatible with a different result: some questions become much easier, others much harder, and the changes cancel.
-
-\textcite{zhang2026illusionRobustness} demonstrate this pattern under task-irrelevant context. Across models and benchmarks, aggregate accuracy often changes little even though individual examples undergo large shifts in both directions. Noise-floor-adjusted item instability (INS) reaches 13.6\% across the reported model--benchmark cells, and adjusted worst-decile degradation (10\%-WTD) reaches 53.2\%. The examples affected are largely model-specific. On MMLU-Pro, cross-model correlations in per-example change average approximately zero.
-
-This isn't merely another prompt-sensitivity result. It identifies a structural defect in aggregate robustness claims. A signed mean can be close to zero because nothing changed or because large positive and negative changes offset. Those states warrant different reliability claims; whether the shifts predict failures in deployments with irreversible actions or along long agent trajectories requires external validation.
-
-\subsection{The Same Problem Recurs Above Items}\label{ssec:levels}
-
-Aggregation can hide heterogeneity at several levels. A stable mean within a domain can conceal item-level churn. A stable ten-domain profile can conceal a narrow construction or subprocess that fails sharply. A stable average across models can conceal family-specific failure sets.
-
-The issue already appears in linguistic evaluation. \textcite{vondermalsburg2026diverging} find that transformer models can look human-aligned for one agreement-attraction configuration while diverging sharply in another, warning against projection from isolated configurations or individual models. \textcite{kuribayashi2026dualalignment} likewise find that layer-specific surprisal from earlier and later layers aligns best with different aspects of human sentence processing; no single layer-specific measure was optimal across both the naturalistic and ambiguity-resolution settings. Neither study tests aggregate AGI scores directly. They provide analogous evidence that the granularity of a score has to match the granularity of the intended projection.
-
-The current lesson for AGI evaluation is direct. A stable domain vector is evidence about a domain vector. It isn't automatically evidence that the same items remain reliable, that the harmful tail is controlled, or that the result transports to another model family.
-
-\subsection{Stability Doesn't Identify Its Cause}\label{ssec:stability_cause}
-
-A second inference also needs blocking. Observed stability isn't by itself evidence of a mechanism that maintains a capability cluster. Stability, network order, maintenance, and corrective control are separate achievements, and only the last warrants strict homeostatic language \citep{reynolds2026notEveryStableCluster}. \textcite{weinberger2026HomeostasisCausalControl} shows why control is more than constancy: lower-scale adjustments can produce a stable higher-scale control relation. A repeated black-box score establishes neither that relation nor the mechanism producing it.
-
-This distinction matters even if one has no interest in natural-kind theory. A robust behavioural regularity can be useful for prediction while its internal basis remains unknown. Conversely, an elegant mechanistic story doesn't rescue a score that fails to predict its declared target. Projectibility is the evaluative target; causal evidence can explain or improve it, but it can't be read off behavioural stability.
-
-\subsection{Equal Weighting Is a Baseline, Not a Metaphysical Error}\label{ssec:weight_problem}
-
-The same discipline applies to domain weights. Human CHC research finds differential loadings across abilities \citep{carroll1993human,mcgrew2009chc,schneider2018chc}. Those results don't by themselves establish causal importance in AI systems or decision relevance for every deployment. Transport from human factor structure to machine evaluation is an empirical hypothesis.
-
-Equal weights are a useful baseline: simple, transparent, and easy to falsify. An alternative weighting scheme earns its place only if it improves prediction or decision quality for a declared target on held-out systems. Human loadings, structural hypotheses, or causal interventions may inform candidate weights, but no fixed weighting is a defensible default before that comparison.
-
-\section{A Multi-Granular Robustness Profile}\label{sec:profile}
-
-\subsection{Setup and Notation}\label{ssec:setup}
-
-Let domains be indexed by \(g=1,\ldots,G\), items within domain \(g\) by \(i=1,\ldots,N_g\), and perturbations by \(p=1,\ldots,P\). The baseline condition is \(p=0\). Let
+For nonconstant profiles, report Pearson correlation directly:
 \[
-s_{igp}=\Pr(A_{igp}=1)
+r_p=\operatorname{corr}_g(\mathbf a_0,\mathbf a_p)\in[-1,1].
 \]
-be the latent probability that the system receives credit on item \(i\) in domain \(g\) under condition \(p\). Repeated responses or probability scores provide estimates of \(s_{igp}\). Define the paired item-level change
-\[
-\delta_{igp}=s_{igp}-s_{ig0}.
-\]
-The corresponding domain score is
-\[
-a_{gp}=\frac{1}{N_g}\sum_{i=1}^{N_g}s_{igp},
-\]
-and \(\mathbf{a}_p=(a_{1p},\ldots,a_{Gp})\) is the domain profile under perturbation \(p\).
+The unit-interval transform \((1+r_p)/2\) adds no information and invites ratio-like interpretations, so it isn't used. A high \(r_p\) establishes only strong linear association between the centred, scaled profiles. Any positive affine transformation of the profile can yield \(r_p=1\), even when level or spread changes.
 
-Table~\ref{tab:notation} summarizes the principal outputs. They answer different questions and shouldn't be collapsed by default.
+With ten fixed domains, \(r_p\) is a descriptive summary of those ten estimated means. Resampling items within domains propagates uncertainty in the means, but not uncertainty in the choice of domains. Correlation is undefined when either profile has zero variance and degenerates to \(\pm1\) with only two nonconstant domains. Reports should publish the profiles and their spreads; a preregistered centred distance or rank correlation may supplement \(r_p\) when it better matches the target.
 
-\begin{table}[tbp]
-\centering\small
-\caption{The proposed robustness outputs.}\label{tab:notation}
-\begin{tabular}{@{}lll@{}}
-\toprule
-Output & Granularity & Question \\
-\midrule
-\(\pss_p\) & Domain profile & Did relative domain shape persist? \\
-\(L_{gp}, L_p\) & Domain and overall level & Did performance rise or fall? \\
-\(\ins_{gp}\) & Items within a cell & How much two-sided item change occurred? \\
-\(\wtd_{q,gp}\) & Harmful item tail & How severe was the worst \(q\)-fraction? \\
-\(\dr_d\) & Retention at delay \(d\) & How much initial performance was retained? \\
-\(G,B\) & Feedback trajectory & Did errors decline, and how much backsliding occurred? \\
-\bottomrule
-\end{tabular}
-\end{table}
-
-\subsection{Profile-Shape Similarity}\label{ssec:pss}
-
-For each perturbation, compute the correlation between the baseline and perturbed domain profiles:
-\[
-r_p=\operatorname{corr}_g(\mathbf{a}_0,\mathbf{a}_p).
-\]
-The correlation can be reported directly. If a unit-interval display is operationally useful, define
-\[
-\pss_p=\frac{1+r_p}{2}.
-\]
-This mapping changes presentation, not evidential content. A high \(\pss_p\) means that relative domain strengths and weaknesses were similar under perturbation \(p\). It doesn't mean that absolute level, individual items, or the harmful tail remained stable.
-
-Uncertainty in \(\pss_p\) should propagate score estimation within domains, for example by resampling items and repeated responses within each domain rather than treating the estimated domain means as fixed.
-
-\(\pss_p\) is undefined when either profile has zero variance. Pearson correlation is also only one similarity choice. Spearman correlation can test rank preservation, while cosine similarity emphasizes direction. The measure and its interpretation should be preregistered. Disagreement among them is substantive information rather than a reason to pick the most favourable result.
-
-Designed perturbations needn't be exchangeable draws from one common population. Temporal delay, context contamination, scaffold removal, and distribution shift can produce different effects for different reasons. Report \(\pss_p\) by perturbation rather than Fisher-pooling heterogeneous interventions by default. A summary across perturbations is permissible only with declared weights representing a specified deployment mixture.
-
-\subsection{Signed Level Change}\label{ssec:level}
-
-For each domain and perturbation, report
+Signed domain and overall changes are
 \[
 L_{gp}=a_{gp}-a_{g0},
-\]
-and report the unweighted overall change
-\[
+\qquad
 L_p=\frac{1}{G}\sum_{g=1}^{G}L_{gp}.
 \]
-Because scores are normalized to \([0,1]\), these differences lie in \([-1,1]\). Positive and negative changes remain visible. This replaces a capped ratio such as \(\min(1,a_{gp}/a_{g0})\), which discards improvements and can hide offsetting changes when it's the only reported summary.
+They lie in \([-1,1]\) for unit-interval scores. The equal-domain mean is a transparent default description, not a measurement-neutral claim that all domains have equal interval meaning. An item-pooled, unequally weighted, or deployment-mixture mean has to be labelled and justified.
 
-If target-specific domain weights \(w_g^{(Y)}\) have been validated for outcome \(Y\), a weighted change may also be reported:
-\[
-L_p^{(Y)}=\sum_{g=1}^{G}w_g^{(Y)}(a_{gp}-a_{g0}),
-\qquad \sum_g w_g^{(Y)}=1.
-\]
-The superscript matters. There's no purpose-free weighted level change.
+\subsection{Item Instability and Directional Components}\label{ssec:item_instability}
 
-\subsection{Item Instability and Harmful Tails}\label{ssec:item_tail}
-
-Signed level change still permits cancellation within a domain. Adapting the item-level estimands of \textcite{zhang2026illusionRobustness}, define mean absolute item instability for each perturbation-by-domain cell:
+Signed change can cancel within a domain. Mean absolute paired change is
 \begin{equation}\label{eq:ins}
-\ins_{gp}=\frac{1}{N_g}\sum_{i=1}^{N_g}|\delta_{igp}|.
+\ins_{gp}=\frac{1}{N_g}\sum_{i=1}^{N_g}|\delta_{igp}|\in[0,1].
 \end{equation}
-This quantity is in \([0,1]\). It measures the magnitude of two-sided change, not its direction. Report it beside \(L_{gp}\), since two systems can have the same \(\ins_{gp}\) while one mostly improves and the other mostly degrades.
-
-To isolate severe degradation, choose a tail fraction \(q\in(0,1]\) before inspecting the results. Let \(m_g=\lceil qN_g\rceil\), and let
+Its directional components are
 \[
-\delta_{(1)gp}\leq\delta_{(2)gp}\leq\cdots\leq\delta_{(N_g)gp}
+F^+_{gp}=\frac{1}{N_g}\sum_i(\delta_{igp})_+,
+\qquad
+F^-_{gp}=\frac{1}{N_g}\sum_i(-\delta_{igp})_+.
 \]
-be the ordered item changes. Define
+Here \(F^+\) is mean positive change and \(F^-\) is mean negative change, recorded as a nonnegative magnitude. For deterministic binary scores, these are the incorrect-to-correct and correct-to-incorrect transition proportions. The identities
+\[
+L_{gp}=F^+_{gp}-F^-_{gp},
+\qquad
+\ins_{gp}=F^+_{gp}+F^-_{gp}
+\]
+make cancellation explicit and imply \(|L_{gp}|\leq\ins_{gp}\).
+
+\subsection{Worst-Tail Degradation Is a Change Statistic}\label{ssec:wtd}
+
+Choose \(q\in(0,1]\) and a minimum tail count before inspecting results. Let \(m_g=\lceil qN_g\rceil\), and order paired changes from smallest to largest. Define
 \begin{equation}\label{eq:wtd}
-\wtd_{q,gp}=-\frac{1}{m_g}\sum_{\ell=1}^{m_g}\delta_{(\ell)gp}.
+\wtd_{q,gp}
+=-\frac{1}{m_g}\sum_{\ell=1}^{m_g}\delta_{(\ell)gp}
+\in[-1,1].
 \end{equation}
-A larger positive value indicates worse degradation in the selected tail. If every item improves, \(\wtd_{q,gp}\) can be negative; it shouldn't be clamped to zero.
+WTD is a finite-sample expected-shortfall analogue applied to the loss \(-\delta\) \citep{acerbiTasche2002expectedShortfall,rockafellarUryasev2002cvar}. Because the ceiling makes the empirical tail mass \(m_g/N_g\), the selected set is exactly a \(q\)-tail only when those quantities coincide.
 
-The full distribution of \(\delta_{igp}\) should accompany these summaries. For binary scoring, also report the estimated mass of correct-to-incorrect and incorrect-to-correct transitions. For probabilistic scoring, report the corresponding directional changes in correctness probability. This makes the cancellation pattern inspectable.
+A positive WTD indicates mean deterioration among the worst-changing items. A negative value means that even the selected lower tail improved on average. The statistic measures signed worst-tail change, not absolute harm. Calling it a harmful-tail measure would import consequences that correctness change alone doesn't encode.
 
-\subsection{Repeated Sampling and Noise Correction}\label{ssec:noise}
+\subsection{Absolute Worst-Tail Loss}\label{ssec:wtl}
 
-Neither \(\ins\) nor \(\wtd\) can be estimated responsibly from one stochastic response per item. Absolute values create a positive sampling floor even under a true null effect, and selecting the worst observed tail selects negative noise.
+A change statistic misses a stable serious failure. If the same safety-critical items are failed at baseline and under perturbation, their \(\delta_{igp}\) values are zero, so both INS and WTD can be zero. The running release decision still needs an absolute loss constraint.
 
-Follow the design of \textcite{zhang2026illusionRobustness} by collecting repeated, balanced samples under baseline and perturbed conditions. Construct pseudo-null experiments by splitting or resampling baseline trials into groups with the same sizes as the real conditions. Recompute \(\ins\) and \(\wtd\) in each pseudo-null experiment to estimate the mean sampling floor; subtracting that floor is a correction, not an unbiased recovery of latent instability. Reports should include the raw estimate, estimated floor, untruncated difference, and a bootstrap confidence interval clustered by item. This paper also recommends leaving negative adjusted values visible, since they convey correction uncertainty.
+For target \(T\), declare an item loss \(\lambda^{(T)}_{igc}\in[0,1]\) that incorporates the response, reference outcome, and any consequence severity relevant to the decision. Order condition-specific losses from largest to smallest and define
+\begin{equation}\label{eq:wtl}
+\wtl^{(T)}_{q,gc}
+=\frac{1}{m_g}\sum_{\ell=1}^{m_g}\lambda^{(T)}_{[\ell]gc}
+\in[0,1].
+\end{equation}
 
-To avoid using the same noise for tail selection and estimation, use disjoint samples. One half selects the items with the smallest estimated changes; the other estimates their degradation. Reverse the roles and average over repeated random splits to use the data symmetrically. The held-out half estimates degradation for the noisy-selected set; noisy selection can still miss the oracle tail of latent changes.
+Report \(\wtl^{(T)}_{q,g0}\) and \(\wtl^{(T)}_{q,gp}\) separately. Their difference can be secondary, but it can't replace their levels. When consequences differ across items, a binary \(1-\text{correctness}\) loss is inadequate; severity belongs in the declared target loss. If loss isn't normalized, report it in its natural units instead of claiming the unit-interval bound.
 
-The design fails or changes interpretation when baseline and perturbed item sets aren't paired, the alleged perturbation adds task-relevant information, outputs are deterministic one-shots, profiles have zero variance, floor or ceiling effects dominate, or \(N_g\) is too small for the chosen tail. Results from heterogeneous perturbations and delays shouldn't be pooled merely to obtain a larger sample. Nor should one model's worst-tail item set be presumed to transfer without validation, given Zhang et al.'s evidence that affected items are largely model-specific.
+\subsection{Estimation, Selection, and Multiplicity}\label{ssec:uncertainty}
 
-\subsection{Why No General Robustness Scalar}\label{ssec:no_scalar}
+With stochastic generation or scoring, absolute values give the statistic a positive expectation under the response pseudo-null, while selecting the worst observed tail selects noise. Balanced repeated samples can estimate conditional response probabilities. Following \textcite{zhang2026illusionRobustness}, baseline-only pseudo-null contrasts should reproduce the real response counts. Reports should show the raw statistic, mean pseudo-null contribution, untruncated adjusted value, and uncertainty. This correction isn't an unbiased-recovery guarantee.
 
-Profile similarity, signed change, item instability, and harmful-tail degradation aren't noisy measures of one latent quantity. They answer different questions. A high \(\pss\) with a strongly negative \(L\) means that the profile retained its shape while falling in level. A near-zero \(L\) with high \(\ins\) means that changes cancelled. Moderate \(\ins\) with high \(\wtd\) means that instability is concentrated in a harmful tail.
+Tail selection and estimation should use disjoint response splits when item changes or losses are noisy. Cross-fitting addresses reuse of response noise; it doesn't guarantee recovery of the latent population tail. Deterministic fixed-set descriptions have no response-sampling contribution to remove, although uncertainty about new items or contexts remains.
 
-The primary output is a dashboard indexed by domain and perturbation. A scalar is warranted only when a named target \(Y\) validates a function
+Resampling and holdout units should follow the projection declaration. Preserve paired items, shared baselines, perturbation realizations, scorers, and model lineage. An item bootstrap conditional on fixed domains and perturbations doesn't support claims about new domains or perturbation families. When a descriptive report contains many cells or tail fractions, distinguish cellwise from simultaneous uncertainty and state how selection or multiplicity is controlled.
+
+These estimands presuppose a sound benchmark. Disaggregation can't resolve ambiguous items or an ill-designed perturbation. Annotation quality, statistical power, construct coverage, and the invariant property under stress testing have to be justified independently \citep{bowmanDahl2021benchmarking}.
+
+\subsection{Why No General Robustness Scalar Follows}\label{ssec:no_scalar}
+
+The quantities above aren't noisy indicators of one latent robustness variable. A high \(r_p\) with negative \(L_p\) means that the centred, scaled profiles remained linearly associated while level fell. Near-zero \(L_{gp}\) with high INS means that changes cancelled. High WTD localizes degradation in a change tail, while high WTL can reveal stable absolute loss even when every change statistic is zero.
+
+The primary output is a multilevel descriptive report indexed by system, domain, and perturbation. A scalar is warranted only when held-out performance for a named projection target supports a function of these descriptions. The result is then a target-specific predictive or decision model, not a universal index of general intelligence.
+
+\section{Worked Demonstration}\label{sec:demonstration}
+
+The framework needs more than algebraic examples. The \href{https://github.com/BrettRey/agi-evaluation-hpc/tree/master/analysis}{empirical companion} uses the released trial-level outputs from \textcite{zhang2026illusionRobustness} and known-truth simulations. It has three aims: reproduce the distinction between aggregate change and paired item instability; compare raw, pseudo-null-adjusted, and split-sample tail estimators; and demonstrate why a change tail can't replace an absolute loss tail.
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=0.94\linewidth]{analysis/outputs/section5_evidence.pdf}
+\caption{Released-output reproduction and known-truth checks. (A) Recomputed adjusted WTD for all 32 cells against the rounded published values. (B) Raw, pseudo-null-adjusted, and held-out split WTD for MMLU-Pro--gpt-5.4; the latter two estimate different estimands. (C) A stable-poor simulation has zero latent WTD but .80 absolute worst-decile loss. (D) With ten domains and latent \(r=.65\), correlation estimation remains accurate at moderate profile spread but attenuates under low spread. Full settings and numerical outputs are in the empirical companion.}\label{fig:empirical_checks}
+\end{figure}
+
+\subsection{Released-Trial Reanalysis}\label{ssec:zhang_reanalysis}
+
+The released design crosses four benchmarks with eight models and supplies 20 baseline and 20 context trials for every item in each of the resulting 32 cells. The reanalysis uses those responses rather than attempting to recreate outputs from proprietary model versions. It pins arXiv version~2, the source-repository commit, all 64 dataset revisions and file hashes, seeds, and analysis settings.
+
+Recomputed values agree closely with the rounded table in the preprint: the largest absolute discrepancies are 0.053 percentage points for baseline accuracy, 0.20 points for signed change, 0.056 points for adjusted INS, and 0.135 points for adjusted WTD. The agreement checks the pipeline; it isn't independent validation of the estimands.
+
+The MMLU-Pro--gpt-5.4 cell illustrates what the aggregate can't distinguish. Baseline accuracy is .8119 and context accuracy .7904, for a signed change of -.0215. Raw INS is .0673; subtracting the baseline pseudo-null contribution of .0212 gives .0461. Raw worst-decile WTD is .3680; subtracting its .1049 pseudo-null contribution gives an adjusted value of .2631. The held-out split estimate is .2911. Thus a two-point average decline coexists with a .2631 all-trial adjusted WTD and a .2911 held-out split WTD. These aren't endpoints of an uncertainty interval.
+
+The pseudo-null-adjusted and split-tail estimates shouldn't be treated as alternative implementations of the same correction. Split WTD exceeds pseudo-null-adjusted WTD in 31 of the 32 released cells, by .0331 on average, with differences from -.0012 to .0864. The pseudo-null procedure subtracts the expected response-noise contribution from a statistic selected and measured on all trials. The split procedure instead selects items on one response half and measures their changes on the other. The split procedure estimates the latent effect of a noisy-selected set, which needn't be the oracle tail defined by latent item effects.
+
+\subsection{Known-Truth Checks}\label{ssec:known_truth}
+
+Simulation makes the target distinction observable. Under a null effect, mean adjusted INS, adjusted WTD, and split WTD are .0033, .0039, and -.0018 against a truth of zero. Depending on the estimator, 31--56\% of the estimates are negative. Keeping those values untruncated is necessary if zero-centred correction is intended.
+
+In a sparse-collapse scenario, split WTD averages .4514 against a mean truth of .4550 for the sets selected on noisy response halves, a bias of -.0036. The oracle worst-decile effect is .5500. Cross-fitting nearly removes reuse bias for its selected-set estimand without recovering the different oracle estimand. A report should state which tail it estimates rather than describe cross-fitting as a general debiasing step.
+
+In the stable-poor scenario, the same low-performing items have unchanged response probabilities across conditions, so latent WTD is zero. Their absolute worst-decile loss is .80. The corresponding cross-fitted estimates are .0013 and .7911. A change tail and an absolute loss tail can disagree even without sampling error; the disagreement reflects their definitions.
+
+A final ten-domain simulation probes profile correlation. With latent \(r=.65\), moderate between-domain spread yields a mean observed \(r=.645\) and root-mean-square error .043. Holding the latent correlation fixed while reducing profile spread lowers the mean observed correlation to .275 and raises root-mean-square error to .472. Nested-bootstrap coverage falls from .988 to .579 even as mean interval width increases from .249 to 1.111. When the perturbed latent profile is flat, its true correlation is undefined, but finite samples produce correlations with standard deviation .324. Raw profiles and their spreads are part of the evidence, not optional decoration around \(r\).
+
+The demonstration is deliberately bounded. It warrants fixed-data claims about the 32 released cells and conditional claims about estimator behaviour under the specified simulations. It can't establish prediction of deployment incidents, transport to a CHC battery, measurement invariance, retention, or component dependence. It illustrates the descriptive part of the framework; it doesn't supply the external outcome needed to validate projectibility.
+
+\section{From Descriptions to Warranted Inferences}\label{sec:validation}
+
+The demonstration preserves distinctions that may be needed for inference or decision about a target. It doesn't establish which distinctions matter beyond the released cells or simulation designs. Messick's point returns here: predictive performance is one source of evidence for a proposed interpretation or use, not a complete theory of validity \citep{messick1995Validity}. Construct representation, response processes, comparability, consequences, and relevant external relations are additional, interacting considerations in the validity argument.
+
+\subsection{Match the Statistical Design to the Projection}\label{ssec:matching}
+
+There's no single observational row for the framework. An item-generalization study may treat task-template clusters as the outer units. A perturbation-transport study may compare entire held-out families within systems. A model-population study needs enough independent lineages to hold out lineages rather than outputs. A temporal study requires a chronological split. Response replicates estimate cells inside these designs; they don't multiply the number of independent systems, items, or contexts.
+
+Let \(u\) index the independent unit appropriate to a declared projection, \(Y_u\) the external outcome, and \(\mathbf X_u\) a preregistered set of baseline and granular predictors constructed without \(Y_u\). Compare a simple model \(h_0\), such as equal-domain baseline performance or a prior incident rate, with a richer model \(h_1(\mathbf X_u)\). Under the target loss \(\mathcal L_T\), the relevant increment is
 \[
-f_Y(\pss,L,\ins,\wtd,\ldots)
+\Delta_T
+=\operatorname{E}_{\mathrm{holdout}}\!
+\left[\mathcal L_T\{Y,h_0\}
+      -\mathcal L_T\{Y,h_1(\mathbf X)\}\right].
 \]
-on held-out systems. The fitted function is then a target-specific predictive or decision model, not a universal index of general intelligence.
+A positive estimate with decision-relevant uncertainty supports added predictive value within that holdout population. It doesn't establish transport to another one.
 
-\section{Retention, Feedback, and Scaffold Dependence}\label{sec:protocols}
+The fitted model should reflect the design. Shared baseline observations induce dependence across perturbation cells; related versions share lineage; and the granular predictors are themselves estimated with error. Regularization or dimension reduction may be needed when many cells predict outcomes for few independent systems. Repeated-measures, hierarchical, or errors-in-variables models are often defensible, but no one form is mandatory. The paper's requirement is that the row, dependence model, predictor construction, and outer holdout be stated.
 
-\subsection{Durable Retention}\label{ssec:retention}
+For the running release decision, a random split of familiar items would test only item prediction. The stronger target requires development on earlier versions and context families, followed by assessment on a later version crossed with an untouched family. Thresholds, tail fraction, feature selection, and model tuning belong inside the development partition.
 
-Retention is a longitudinal projection, not a component of generic robustness. Pre-register novel facts, procedures, or concepts; verify immediate performance; and retest at declared delays in clean sessions. Item screening for baseline floor and ceiling effects should use data independent of the data used to estimate retention. Otherwise selection on a noisy immediate score creates regression to the mean.
+If the richer model exceeds a preregistered minimum improvement in target loss and calibrates the absolute tail constraint within tolerance there, it supports next-cycle prediction for that lineage and intervention range. Failure would restrict the report to the studied versions and context families rather than support the claimed next-cycle prediction.
 
-At each delay \(d\), compute signed change, \(\ins\), and \(\wtd\) exactly as in Section~\ref{sec:profile}. Don't average delays by default, since a system that holds for 24 hours and fails after seven days has a meaningful trajectory.
+\subsection{Scores and Predictive Models Impose Different Constraints}\label{ssec:score_model}
 
-For taught items indexed by \(t\), if a one-sided retained-mass summary is useful, define
-\begin{equation}\label{eq:dr}
-\dr_d=
-\frac{\sum_t \min(s_{t0},s_{td})}
-     {\sum_t s_{t0}},
+An interpretable score and a predictive model impose different constraints. A score such as
+\[
+S_T=\sum_{g=1}^{G}w_g^{(T)}a_{g0},
+\qquad
+w_g^{(T)}\geq0,\quad \sum_gw_g^{(T)}=1,
+\]
+retains an ordinary direction: more of each component can't lower the total. A predictive or decision model may legitimately use negative conditional coefficients, interactions, nonlinearities, or a noncompensatory tail constraint. Convex weights shouldn't be presented as the generally optimal predictive form.
+
+Equal-domain weighting is a useful baseline because it's transparent and difficult to tune. It isn't measurement-neutral. Mapping heterogeneous domain scores to \([0,1]\) doesn't show that equal numerical differences have equal meaning. Alternative weights may be estimated with regularization, preregistered from an independent theory, or informed by a shrinkage prior. In every case, their value lies in held-out calibration, predictive loss, or decision value relative to the simple baseline.
+
+\subsection{CHC and Comparability}\label{ssec:chc_scope}
+
+CHC offers a developed vocabulary for broad human cognitive abilities \citep{carroll1993human,mcgrew2009chc,schneider2018chc}. It can organize a broad AI battery without becoming an ontology of machine intelligence or a default machine weighting. Human loadings and the positive manifold don't automatically transport to artificial systems.
+
+Profile comparison already assumes that domains and scoring rules retain sufficiently similar meaning across systems. Rubric-invariance checks, family-specific item analyses, differential-item-functioning analyses, or multi-group item-response models can test that assumption when the data support them \citep{meredith1993measurementInvariance}. This paper doesn't conduct a full invariance study. It treats CHC as a defeasible measurement vocabulary: compare it with simpler and alternative decompositions, and retain it only within the targets and populations for which comparability and external performance hold.
+
+\subsection{Decision Use}\label{ssec:decision_use}
+
+Decision uses require losses and constraints at the start, not only after the descriptive statistics have been calculated \citep{KeeneyRaiffa1993}. False reassurance, false alarms, and severe tail events can have different costs. A release rule may combine a calibrated expected-loss model with a noncompensatory WTL constraint. When WTL is declared noncompensatory, a stable mean can't override its violation; an imprecise tail estimate still can't support a confident action.
+
+No generic capability--stability tiers follow from this framework. Thresholds for monitoring, release, or independent review have to be calibrated against relevant outcomes. Reports should also keep base-model and deployed-system claims separate and identify every untested transport step.
+
+\subsection{Bounded Empirical Claims}\label{sec:predictions}
+
+The proposal entails comparative claims that should be preregistered within a bounded study universe.
+
+\emph{P1: Some granular descriptions justify their measurement cost for some targets.} Before a study, name the target class, system population, minimum useful reduction in held-out loss or calibration error, and sampling cost. A component fails for that class if it doesn't meet the threshold with adequate precision. It should then be removed from that target-specific model, even if it remains descriptively interesting.
+
+\emph{P2: Useful granularity varies by target.} Register a finite set of targets and compare the best regularized model built from granular descriptions with simple aggregate baselines under a common outer validation design. If the simple model remains within a preregistered equivalence margin across that universe, the added granularity doesn't improve enough to justify inclusion there.
+
+\emph{P3: Weights and models have limited transport unless demonstrated otherwise.} Register source and target populations and a maximum acceptable loss of calibration or decision value. If one score or model repeatedly transports within that tolerance across target changes, a more general scheme becomes empirically defensible over that range.
+
+These claims don't predict that every granular description will help or that transport will fail. Their falsifiable content lies in the registered target universe, comparison, margin, and cost. Predicting a mechanistic label from behaviour may make the descriptive set a useful proxy within a population; it doesn't remove the logical underdetermination of mechanism by behaviour.
+
+\section{Applications of the Projection Declaration}\label{sec:protocols}
+
+Retention, feedback response, and component dependence aren't constitutive parts of one robustness construct. They're examples of how the declaration changes when the time horizon, intervention, or bearer changes.
+
+\subsection{Retention of Above-Pretest Gain}\label{ssec:retention}
+
+For a learning claim, test performance before instruction, immediately afterward, and at each declared clean-session delay. Let these item-level scores be \(b_t\), \(u_t\), and \(v_{td}\). Define above-pretest gains
+\[
+g_{t0}=(u_t-b_t)_+,
+\qquad
+g_{td}=(v_{td}-b_t)_+,
+\]
+and total immediate above-pretest gain \(M_0=\sum_tg_{t0}\). Define
+\begin{equation}\label{eq:retained_gain}
+R^{\mathrm{gain}}_d
+=\frac{\sum_t\min(g_{t0},g_{td})}{M_0}
 \end{equation}
-provided the denominator is positive. This asks how much immediately demonstrated performance remains at delay \(d\) without allowing later gains to offset losses on other items. Gains remain visible in the signed item changes. The measure is behavioural: a high \(\dr_d\) doesn't by itself show that the base model consolidated an internal memory.
+
+With a preregistered minimum average gain \(\gamma_{\min}>0\), interpret this ratio only when \(M_0/N\geq\gamma_{\min}\). Report the pretest, immediate score, delayed score, denominator, threshold, and signed item changes. A high ratio with negligible immediate gain isn't evidence of durable learning.
+
+Interpreting above-pretest gain as caused by instruction requires additional design support. Novel arbitrary associations can reduce prior-knowledge concerns, while a matched no-instruction group can address repeated testing or other rival causes. Independent screening and estimation samples reduce regression to the mean. Delays should remain separate unless a declared temporal target supplies weights.
 
 \subsection{Response to Feedback}\label{ssec:feedback}
 
-A separate protocol asks whether error rates fall over repeated attempts with a declared form of feedback. Let \(e_k\in[0,1]\) be the error rate at attempt \(k\), for \(k=1,\ldots,K\) and \(K\geq2\). Report endpoint gain
-\begin{equation}\label{eq:gain}
-G=e_1-e_K
-\end{equation}
-and define total transition variation and its backsliding component as
+Let \(e_k\in[0,1]\) be error at attempt \(k=1,\ldots,K\). Define cumulative decreases, cumulative increases, endpoint gain, and total variation:
 \[
-V=\sum_{k=2}^{K}|e_k-e_{k-1}|,
+D=\sum_{k=2}^{K}(e_{k-1}-e_k)_+,
 \qquad
-U=\sum_{k=2}^{K}(e_k-e_{k-1})_{+}.
+U=\sum_{k=2}^{K}(e_k-e_{k-1})_+,
 \]
-The backsliding share is
-\begin{equation}\label{eq:backsliding}
-B=\begin{cases}
-U/V, & V>0,\\
-0,   & V=0.
-\end{cases}
-\end{equation}
-Here \((x)_{+}=\max(0,x)\). \(G>0\) indicates net improvement; lower \(B\in[0,1]\) indicates that less transition variation came from error increases. \(B\) isn't the fraction of attempts that got worse, and multiplying \(G\) and \(1-B\) would create a composite with no validated interpretation. Report the two quantities separately, with task-level trajectories and uncertainty.
+\[
+G=e_1-e_K=D-U,
+\qquad
+V=D+U.
+\]
+Report \(G\) and \(U\) as primary trajectory summaries, with \(U/(K-1)\) when attempt counts differ. The retired backsliding share satisfies
+\[
+B=\frac{U}{V}=\frac{V-G}{2V}\qquad(V>0).
+\]
+Because \(B\) is determined by \(G\) and \(V\), it adds no independent output and has no continuous extension at a flat trajectory.
 
-Feedback type is part of the intervention. \enquote{Try again}, self-review, tool feedback, and an explicit error diagnosis provide different information. Results transport only across feedback regimes for which transport has been tested.
+Repeated attempts can improve performance without feedback through resampling, extra computation, or task exposure. A feedback claim requires a matched no-feedback control with attempt count, token budget, tools, timing, generation settings, and scoring held constant. Report \(\Delta G\) and \(\Delta U\) between conditions with uncertainty at the randomization unit. \enquote{Try again}, self-review, tool output, and explicit error diagnosis are different interventions.
 
-\subsection{The Unit of Evaluation and Scaffold Dependence}\label{ssec:scaffolds}
+\subsection{Bearer and Component Dependence}\label{ssec:component_dependence}
 
-Context windows, retrieval systems, tools, and persistent stores complicate the bearer of a score. A base model and a deployed agent are different units. A retrieval system needn't be dismissed as a fake capability merely because the base model performs poorly without it; the relevant question is whether the projection concerns the base model or the deployed composite.
+A base model and a deployed model--tool--retrieval composite are different bearers of a score. For a declared composite, compare the intended configuration, selected component degradations, and a minimal model-only configuration when that contrast is decision-relevant. Tools and retrieval may interact, so a small factorial design can be more informative than degrading one component at a time.
 
-For a declared system, test at least three configurations:
+Level, item change, WTD, and absolute WTL should be reported for every transition. A gradual performance change across the tested degradation levels supports inference only about those levels; a large decrease after altering a component indicates dependence on it. Neither result identifies the \enquote{real} agent.
+
+Construct and mechanistic claims require additional evidence. A multimodal system can score well on visual questions because its responses can depend on language cues even without image input \citep{asadi2026mirage}. Behavioural testing alone also underdetermines whether performance relies on a representation; probes and causal interventions can strengthen that claim \citep{yetman2026representation,arora_2026_sparse_neuron_basis}. These provide additional validity evidence; they don't follow from stability in the descriptive report.
+
+\section{Workflow and Limits}\label{sec:workflow}
+
+\subsection{Operational Sequence}\label{ssec:workflow_sequence}
+
+The design can be implemented without access to model internals:
 
 \begin{enumerate}
-\item the intended deployment configuration;
-\item one or more degraded configurations, such as noisy retrieval, restricted context, or weaker tools;
-\item a minimal configuration that isolates the base model where that contrast is decision-relevant.
+\item \textbf{Register the projection declaration.} Name the claim, system and task populations, bearer, intervention range, horizon, decision criterion, and matching evidential test.
+\item \textbf{Audit the sampling facets.} Record systems and lineages, item and template clusters, perturbation families and realizations, response replicates, scorers, and time; mark each fixed, sampled, crossed, or nested.
+\item \textbf{Fix the measurement design.} Specify paired items, rubrics, target loss, tail fraction and minimum count, perturbations, controls, sampling budget, and the distinction between fixed-set, stochastic-response, and population inference.
+\item \textbf{Run balanced conditions.} Randomize order where possible, retain item identifiers, and prevent data used for adaptation, tail selection, or threshold setting from leaking into final estimation.
+\item \textbf{Publish the descriptive report.} Include profiles, \(r\), \(L\), INS, directional components, WTD, baseline and perturbed WTL, raw and adjusted estimates, and cellwise or simultaneous uncertainty.
+\item \textbf{Validate the intended projection.} Compare a simple baseline with the richer score or model on the outer holdout named in advance. Report calibration, target loss, and uncertainty in the incremental value.
+\item \textbf{Release an audit trail.} Publish code, data provenance, seeds after testing, model and scorer versions, exclusions, missingness, compute use, split assignments, and preregistered deviations.
 \end{enumerate}
 
-Report level, item instability, and harmful-tail changes for every transition. A graceful curve supports a projection about component degradation within the tested range. A sharp drop supports a claim of component dependence. Neither result, by itself, determines which configuration is the \enquote{real} agent.
+Lottery-style sampling from declared perturbation families can reduce direct optimization against known test cases. It doesn't make the sample representative or the result intrinsically valid. The sampled conditions still have to support the intervention range in the declaration.
 
-Construct validity remains separate. A multimodal system that performs visual question answering without images may be exploiting language priors rather than visual information \citep{asadi2026mirage}. A scaffold-degradation test can reveal dependence, but deciding what ability was measured requires interventions that distinguish rival routes to performance.
+For the running release decision, the final report would identify the later system version and untouched context family, show absolute WTL beside change-based WTD, and evaluate the release rule under the declared loss. If the outer family was used to choose \(q\), features, or thresholds, the advertised projection remains untested.
 
-\subsection{What Behaviour Can't Establish}\label{ssec:mechanism_boundary}
+\subsection{Limitations}\label{sec:limitations}
 
-\textcite{yetman2026representation} argues that behavioural testing alone can't establish with certainty whether a performance relies on a representation. Probes can test whether information is present and exploitable; activation patching, steering, or ablation can increase confidence that a representation plays a causal role. Interventions on identified sparse neuron sets that change agreement behaviour illustrate one possible route from behavioural regularity to mechanistic evidence \citep{arora_2026_sparse_neuron_basis}.
+First, disaggregation doesn't repair construct-invalid tasks, ambiguous scoring, or poor coverage. Nor does this revision establish measurement invariance for CHC domains across artificial systems.
 
-These methods can strengthen an explanation of why a projection holds. They remain additional evidence. The dashboard in this paper is deliberately black-box and should be labelled as such. High retention isn't yet an internal consolidation mechanism; declining errors aren't yet corrective control; stable profiles aren't yet a homeostatic cluster.
+Second, repeated sampling and tail estimation can be expensive. Adaptive allocation may reduce cost but creates additional selection and dependence that the analysis should represent. Deterministic fixed-set reports avoid response-repetition cost while remaining silent about wider item or context populations.
 
-\section{Validation and Weighting}\label{sec:validation}
+Third, a perturbation is informative only relative to a property expected to remain invariant. Task-irrelevant context is designed to preserve the answer; distribution shifts, tool changes, and component removal may change the task itself. The evaluator has to defend the comparison.
 
-\subsection{Incremental Predictive Validity}\label{ssec:incremental}
+Fourth, tail membership and item effects may not transfer across models or versions. Zhang et al.'s model-specific changes are evidence against assuming a common risk set, not evidence that no transport is possible.
 
-Let \(Y\) denote the declared external outcome: deployment task success, calibrated risk, retention at a specified delay, or another target not used to construct the evaluation scores. The first comparison is with simple baselines. For a ten-domain battery,
-\[
-S_{\mathrm{equal}}=\frac{1}{G}\sum_{g=1}^{G}a_{g0}
-\]
-is a useful reference. Depending on the target, a single snapshot score, model size, or prior incident rate may be another.
+Fifth, the empirical demonstration in Section~\ref{sec:demonstration} contains no external deployment outcome and doesn't validate a general predictive composite.
 
-A richer evaluation earns its added complexity only if it improves held-out prediction of \(Y\). Compare nested models such as
-\[
-Y\sim S_{\mathrm{equal}}
-\]
-and
-\[
-Y\sim \mathbf{a}_0+\pss+L+\ins+\wtd+\dr+G+B.
-\]
-The appropriate comparison depends on the outcome: proper scoring rules for probabilistic events, calibration error for risk estimates, and out-of-sample loss or explained variance for continuous outcomes. Report uncertainty in the increment, not just the fitted coefficients.
-
-Every predictor in the comparison should be constructed without using the observations that define \(Y\). If \(Y\) is seven-day retention, for example, \(\dr\) computed from those same seven-day responses has to be excluded; retention at an earlier delay or on an independent item sample may instead serve as a predictor.
-
-Validation also requires an outcome that is diagnostically independent of the score's construction. If the same failures define \(\wtd\) and serve as its prediction target, the exercise is circular. Deployment incidents, future task success, or performance under a later perturbation family provide stronger tests.
-
-\subsection{Target-Specific Weights}\label{ssec:weights}
-
-For a target \(Y\), a candidate weighted score is
-\[
-S_Y=\sum_{g=1}^{G}w_g^{(Y)}a_{g0},
-\qquad w_g^{(Y)}\geq0,\quad \sum_g w_g^{(Y)}=1.
-\]
-Weights may be estimated with regularization, preregistered from an independent theory, or given a shrinkage prior informed by human CHC data. In every case, compare \(S_Y\) with equal weights on data not used to select the weights.
-
-Use nested cross-validation when the same dataset supports both selection and assessment. Prefer external validation on later model versions or distinct model families. Report calibration, sensitivity to the candidate domain decomposition, and whether the weights transport. A weight on storage that improves prediction of seven-day retention need not improve prediction of immediate tool-use success.
-
-Causal interventions can also inform weighting. Degrading one component and measuring downstream changes can test whether it's upstream for a particular outcome. But causal importance still doesn't yield a purpose-free weight. The intervention, target, and deployment mixture determine what the effect means for a decision.
-
-\subsection{CHC as a Defeasible Measurement Vocabulary}\label{ssec:chc_scope}
-
-CHC offers a developed vocabulary for broad cognitive abilities and an existing multidomain battery structure. It's useful here as an organizing hypothesis, not as an ontology of machine intelligence. The human positive manifold, differential \(g\)-loadings, and hierarchy may or may not reproduce across artificial systems.
-
-Before transporting a CHC-based score across model families, test whether the domain definitions and item relations remain comparable. A decomposition that predicts one external outcome but fragments on another may still be useful within its scope. If alternative decompositions predict the target better, the evaluation should change. The category earns its keep through projection, not inheritance from human psychometrics.
-
-\section{Operational Workflow}\label{sec:workflow}
-
-The complete workflow can be implemented without architectural access:
-
-\begin{enumerate}
-\item \textbf{Register a projection card.} State \(Y\), the population, unit, intervention range, time horizon, acceptable uncertainty, and any tail constraint.
-\item \textbf{Fix the measurement design.} Specify domains, paired items, scoring rubrics, perturbation families, tail fraction \(q\), delays, feedback regimes, and configuration changes.
-\item \textbf{Plan repeated sampling.} Choose repetitions from a precision or power target and publish the compute budget. If adaptive allocation is used, keep the adaptation data separate from final estimation.
-\item \textbf{Run paired conditions.} Balance sample counts across baseline and perturbations, randomize order where possible, and retain item identifiers.
-\item \textbf{Estimate each cell.} Report baseline level, \(L\), \(\ins\), \(\wtd\), transition distributions, and confidence intervals for every domain-by-perturbation cell. Report \(\pss\) separately at profile level.
-\item \textbf{Correct nonlinear noise.} Use baseline-only pseudo-null resampling for \(\ins\) and \(\wtd\), and use disjoint samples for tail selection and estimation.
-\item \textbf{Validate externally.} Fit any target-specific weighting or composite on development data and assess it on held-out systems and outcomes.
-\item \textbf{Release an auditable report.} Publish seeds after testing, scoring code, raw and adjusted estimates, missingness, exclusions, compute use, and all preregistered deviations.
-\end{enumerate}
-
-Lottery-style sampling from declared perturbation families can reduce direct test-item optimization. It doesn't make the results intrinsically valid or ungamable. The sampled conditions still need to represent the intervention range named in the projection card.
-
-\section{Predictions and Failure Conditions}\label{sec:predictions}
-
-The framework makes claims that can fail.
-
-\textit{P1: Granular measures add information.} For at least some deployment targets, item instability and harmful-tail degradation will improve held-out prediction beyond baseline accuracy, signed mean change, and profile similarity.
-
-\textit{Failure condition}: If \(\ins\) and \(\wtd\) add no predictive or decision value across adequately powered, externally validated studies, the extra sampling isn't justified for those targets.
-
-\textit{P2: The useful granularity is target-dependent.} Domain-profile stability will predict some broad outcomes, while item and tail measures will better predict outcomes driven by isolated failures. No granularity will dominate across all targets.
-
-\textit{Failure condition}: If one simple aggregate consistently matches or beats the dashboard across targets, populations, and interventions, the multi-granular design should be reduced to that aggregate.
-
-\textit{P3: Weight transport is limited.} Weights optimized for one target or model population will often lose calibration or predictive value under a different target, family, or deployment mixture.
-
-\textit{Failure condition}: If one stable weight vector repeatedly transports without loss across these changes, a general weighting scheme becomes empirically defensible.
-
-\textit{P4: Behavioural and mechanistic evidence can dissociate.} Systems with similar dashboards may rely on different internal routes, while systems with different internal implementations may support the same declared projection.
-
-\textit{Failure condition}: If dashboard similarity predicts preregistered mechanistic-similarity measures with near-ceiling held-out accuracy across model families, the evidential boundary drawn in Section~\ref{ssec:mechanism_boundary} is too conservative.
-
-These predictions are deliberately comparative. They don't assume universal numerical cut-offs before distributions and external outcomes exist.
-
-\section{Decision Use and Governance}\label{sec:governance}
-
-Governance needs decisions, not merely more scores. A regulator or release committee should specify the loss associated with false reassurance, false alarms, and harmful-tail events. The evaluation can then be calibrated against those losses.
-
-No generic capability--stability tiers are justified at present. A threshold for monitoring, release, or independent review should be estimated from the relevant outcome data and accompanied by uncertainty. A stable mean can't override an unacceptable tail constraint; conversely, a noisy tail estimate with inadequate sample size shouldn't trigger a confident decision.
-
-Reports should keep the base model and deployed system distinct, identify the tested configurations, and state where transport is untested. This improves governance even before a predictive composite is available. It prevents one attractive number from hiding the assumptions about population, unit, and intervention range on which the decision actually depends.
-
-Multi-granular reporting can make narrow optimization more visible. Offsetting improvements and degradations, dependence on a scaffold, and failure concentrated in one domain are harder to hide when cells and tails are published. It doesn't make gaming impossible, nor does a high dashboard establish \enquote{genuine general intelligence}.
-
-\section{Limitations and Extensions}\label{sec:limitations}
-
-First, the framework inherits any construct-validity failures in its battery. Disaggregating an invalid test doesn't make it valid. CHC domains are a defeasible starting point, and comparable labels needn't have measurement invariance across biological and artificial systems.
-
-Second, repeated item-level sampling is expensive. Tail estimates require enough items and enough repetitions to distinguish latent change from sampling noise. Adaptive allocation may reduce cost, but it complicates inference and can create new selection bias.
-
-Third, an invariance test is only as good as its perturbation. Task-irrelevant context is a clean case because it's designed not to change the answer. Distribution shifts, tool changes, and scaffold removal often change the task itself. Each protocol has to state which property is expected to remain invariant and why.
-
-Fourth, worst-tail membership may be unstable across models and versions. This limits transport but can itself be decision-relevant. Evaluation should measure the target system rather than assume that another model's difficult items identify its risks.
-
-Fifth, the framework is behavioural. It can establish predictive regularities without settling whether a system represents, consolidates, understands, or controls. Mechanistic interpretability may supply stronger evidence, but it introduces its own validity and transport problems.
-
-Finally, the proposal doesn't settle the ontology or boundary of AGI. It asks a narrower question: what does an evaluation allow us to infer, and how do we know? That narrower target is enough to rule out several common overclaims and to improve present measurement practice.
-
-Formal verification can establish that metric definitions are bounded under stated assumptions. It can't establish construct validity, sampling adequacy, predictive validity, or a homeostatic mechanism. The revised Lean companion formalizes only algebraic invariants of the retained estimands and leaves the statistical protocol as an empirical obligation.
+Finally, the framework neither defines AGI nor settles whether a system represents, understands, consolidates, or controls. It asks what a finite evaluation supports and what additional evidence a broader claim would require. That narrower question applies beyond AGI, even though AGI claims make it especially pressing.
 
 \section{Conclusion}\label{sec:conclusion}
 
-Multidomain profiles are a necessary improvement over narrow benchmarks, but breadth alone doesn't make an AGI evaluation projectible. Aggregate accuracy can conceal item-level flips. Stable domain shape can coexist with falling levels and harmful tails. Repeated black-box performance can remain silent about mechanism.
+The same aggregate accuracy can describe unchanged items, balanced improvements and degradations, or stable severe failures. A domain profile repeats that compression at a coarser level.
 
-The remedy is to design backward from the inference or decision. Declare the target, population, unit, intervention range, and time horizon. Report profile shape, signed level, item instability, and harmful-tail degradation separately. Treat retention, feedback response, and scaffold dependence as distinct protocols. Use equal weighting as a baseline and allow alternatives only when they improve held-out prediction and calibration.
+The response has three moves: declare the projection target and scope; preserve domain-profile correlation, signed level, item instability, directional components, worst-tail degradation, and absolute worst-tail loss; then test the projection with a holdout on the corresponding facet. Held-out items, perturbation families, system-dependency groups, and later releases answer different questions.
 
-This approach is deliberately less ontologically ambitious than a homeostatic account of general intelligence. It's also more demanding empirically. A metric earns its place by what it predicts beyond itself, at the granularity and over the range for which the claim is made.
+The demonstration warrants only fixed-data and conditional simulation claims, not transport to deployment. Projectibility names the additional target-indexed support needed for inference beyond the observations used to construct a score. It's part of validity, not a property of a descriptive report. The discipline is general: declare, preserve resolution, and test with evidence drawn from the corresponding scope. Only then is aggregation warranted for that target.
 
 \appendix
 
 \section{Formal Sanity Check of the Estimands}\label{app:formal_metrics}
 
-A \href{https://github.com/BrettRey/agi-evaluation-hpc/tree/master/formalization}{companion Lean~4 module} checks range properties of the retained estimands. For an admissible correlation \(r\in[-1,1]\), PSS lies in \([0,1]\). With item scores in \([0,1]\), signed mean change and WTD lie in \([-1,1]\), while INS lies in \([0,1]\). Retained mass additionally requires non-negative scores and a positive baseline total. Error rates in \([0,1]\) bound endpoint gain to \([-1,1]\); the exact backsliding share lies in \([0,1]\), with a constant trajectory assigned \(B=0\).
+A \href{https://github.com/BrettRey/agi-evaluation-hpc/tree/master/formalization}{companion Lean~4 module} proves raw-estimand bounds and the identities
+\[
+|L|\leq\ins,\qquad
+L=F^+-F^-,\qquad
+\ins=F^++F^-,
+\]
+It also verifies \(G=D-U\), \(V=D+U\), and \(|G|\leq V\).
 
-The tail is an external selector, so the WTD proof checks only the range for a selected set, not whether a noisy ranking recovers the latent tail. Correlation estimation, pseudo-null correction, split-sample selection, and predictive or construct validity remain outside the formalization. Algebraic bounds establish neither reliability nor projectibility, and they don't identify a mechanism.
+Tail membership remains external; the code covers neither noisy-tail identification, adjustment, cross-fitting, correlation, nor sampling. Adjusted estimates can violate raw bounds. These results establish neither reliability nor projectibility.
 
 \newpage
 \printbibliography
