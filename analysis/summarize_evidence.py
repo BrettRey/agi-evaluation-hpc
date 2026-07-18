@@ -216,7 +216,7 @@ def plot_compact(root: Path, path: Path) -> None:
     ax.bar(x - width / 2, cases["true_wtd"], width, label="change WTD", color="#C44E52")
     ax.bar(x + width / 2, cases["true_absolute_loss_tail"], width, label="absolute loss tail", color="#4C72B0")
     ax.set_xticks(x, cases["case"].str.replace("_", "\n"))
-    ax.set_ylabel("Latent probability")
+    ax.set_ylabel("Latent value")
     ax.set_title("C. Stable failure requires an absolute target")
     ax.legend(frameon=False, fontsize=8)
     for position, value in zip(x - width / 2, cases["true_wtd"]):
