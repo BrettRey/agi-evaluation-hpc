@@ -133,7 +133,7 @@ def adjusted_metrics(
     n_boot: int = 1000,
     seed: int = 42,
 ) -> dict[str, float | int]:
-    """Return raw metrics, pseudo-null expectations, and untruncated pseudo-null-adjusted estimates."""
+    """Return raw metrics, pseudo-null expectations, and untruncated null-referenced differences."""
     base = _as_2d(baseline, "baseline")
     pert = _as_2d(perturbed, "perturbed")
     point = basic_metrics(base, pert, q=q)

@@ -6,7 +6,7 @@ evidence. It does four bounded things:
 
 1. reanalyses all 32 model-by-benchmark cells released by Zhang, Koyejo, and
    Yang;
-2. compares raw, pseudo-null-adjusted, and held-out split-tail estimators;
+2. compares raw, null-referenced, and held-out split-tail estimators;
 3. simulates cancellation, known latent effects, trial/tail sensitivity, and
    stable absolute failure; and
 4. tests how Pearson profile correlation behaves with only ten domain means.
@@ -94,14 +94,16 @@ probability. The scripts report:
 - INS: \(N^{-1}\sum_i|\delta_i|\);
 - WTD at tail fraction \(q\): the negative mean of the smallest \(q\)-fraction
   of \(\delta_i\); and
-- absolute loss tail: the largest \(q\)-fraction of perturbed-condition loss
-  \(1-s_{i1}\).
+- case-risk tail: the largest \(q\)-fraction of latent itemwise expected loss
+  \(1-s_{i1}\). This is not the tail of realized binary errors.
 
 The baseline-only pseudo-null expectation follows the authors' released procedure: two
 pseudo-conditions are resampled from each item's baseline trials, and the mean
 null INS/WTD is subtracted from the raw estimate. Subtraction is untruncated;
-a negative pseudo-null-adjusted value is retained. This is a sampling-noise correction,
-not an unbiased estimator under every non-null alternative.
+a negative null-referenced value is retained. This is a diagnostic relative to a null
+centred on the baseline response distribution, not a general bias correction under
+nonnull alternatives. Internal output columns retain the authors' ``adjusted`` label
+for source compatibility.
 
 The split-tail procedure selects items on one random half of both conditions
 and measures them on the disjoint halves, then swaps the halves and averages.
@@ -110,7 +112,7 @@ unbiased for the latent effect of the *noisy-selected set*, which can differ
 from the oracle tail selected using latent effects. The simulations report both
 targets rather than describing split-tail WTD as a universal correction.
 
-Absolute loss tail is separate because a system can be stably poor:
+The case-risk tail is separate because a system can be stably poor:
 condition-to-condition WTD can be zero while perturbed-condition loss remains
 high. Both raw and cross-fitted versions are reported.
 
@@ -118,11 +120,11 @@ high. Both raw and cross-fitted versions are reported.
 
 `outputs/zhang_reanalysis/` contains:
 
-- `main_reanalysis.csv` and `.tex`: the 32 released cells, raw/pseudo-null/pseudo-null-adjusted
-  INS and WTD, split-tail WTD, split-half reliability, and absolute loss tail;
+- `main_reanalysis.csv` and `.tex`: the 32 released cells, raw/pseudo-null/null-referenced
+  INS and WTD, split-tail WTD, split-half reliability, and case-risk tail;
 - `download_audit.csv`: the dataset commit and verified file hash used;
 - `published_comparison.pdf`: recomputed values against the rounded main table;
-- `wtd_estimators.pdf`: raw, pseudo-null-adjusted, and held-out estimates kept
+- `wtd_estimators.pdf`: raw, null-referenced, and held-out estimates kept
   visually distinct; and
 - `trial_tail_sensitivity.csv` / `.pdf` when sensitivity isn't skipped.
 

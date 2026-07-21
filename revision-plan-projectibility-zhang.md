@@ -16,7 +16,7 @@ The recommended working title is **From Aggregate Scores to Projectible Profiles
 
 ## What the reconnaissance found
 
-Two live TODOs were added to `main.tex` on 17 July:
+Two live TODOs were added to `warranted-inference-in-agi-evaluation.tex` on 17 July:
 
 1. a project-wide instruction to retire the HPC/homeostasis framing and rebuild around projectibility and predictive validation;
 2. a Zhang-specific instruction to add item-transition distributions, two-sided instability, harmful-tail degradation, repeated sampling, noise correction, and split-sample tail estimation.

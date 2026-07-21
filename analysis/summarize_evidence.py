@@ -198,14 +198,14 @@ def plot_compact(root: Path, path: Path) -> None:
     ax.scatter(released["wtd_adjusted_published"], released["wtd_adjusted"], s=18, color="#4C72B0")
     limit = max(released["wtd_adjusted_published"].max(), released["wtd_adjusted"].max()) + 0.02
     ax.plot([0, limit], [0, limit], color="#333333", linewidth=0.8)
-    ax.set(xlabel="Published pseudo-null-adjusted WTD", ylabel="Reanalysis", title="A. Public trials recover the rounded table",
+    ax.set(xlabel="Published null-referenced WTD", ylabel="Reanalysis", title="A. Public trials recover the rounded table",
            xlim=(0, limit), ylim=(0, limit))
 
     ax = axes[0, 1]
     central = released[released["cell"] == "mmlu_pro.gpt54"].iloc[0]
     values = [central["wtd_raw"], central["wtd_adjusted"], central["split_wtd"]]
     ax.bar([0, 1, 2], values, color=["#C44E52", "#4C72B0", "#55A868"])
-    ax.set_xticks([0, 1, 2], ["raw", "pseudo-null-\nadjusted", "held-out\nsplit"])
+    ax.set_xticks([0, 1, 2], ["raw", "null-\nreferenced", "held-out\nsplit"])
     ax.set_ylabel("WTD")
     ax.set_title("B. Estimators remain distinct\nMMLU-Pro / gpt-5.4")
 
@@ -214,10 +214,10 @@ def plot_compact(root: Path, path: Path) -> None:
     x = np.arange(len(cases))
     width = 0.34
     ax.bar(x - width / 2, cases["true_wtd"], width, label="change WTD", color="#C44E52")
-    ax.bar(x + width / 2, cases["true_absolute_loss_tail"], width, label="absolute loss tail", color="#4C72B0")
+    ax.bar(x + width / 2, cases["true_absolute_loss_tail"], width, label="case-risk tail", color="#4C72B0")
     ax.set_xticks(x, cases["case"].str.replace("_", "\n"))
     ax.set_ylabel("Latent value")
-    ax.set_title("C. Stable failure requires an absolute target")
+    ax.set_title("C. Stable failure requires absolute risk")
     ax.legend(frameon=False, fontsize=8)
     for position, value in zip(x - width / 2, cases["true_wtd"]):
         if np.isclose(value, 0.0):

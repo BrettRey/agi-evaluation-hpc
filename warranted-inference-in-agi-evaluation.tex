@@ -1,0 +1,429 @@
+\documentclass[12pt]{article}
+\input{.house-style/preamble.tex}
+\usepackage{float}
+\hypersetup{
+  pdftitle={From Aggregate Scores to Warranted Inference in AGI Evaluation},
+  pdfkeywords={AGI evaluation, validity, projectibility, tail risk, transportability}
+}
+\setlength{\headheight}{14pt}
+\setlength{\emergencystretch}{1.5em}
+
+\newcommand{\ins}{\mathrm{INS}}
+\newcommand{\wtd}{\mathrm{WTD}}
+\newcommand{\wtl}{\mathrm{WTL}}
+
+\title{From Aggregate Scores to Warranted Inference\\in AGI Evaluation}
+\author{Brett Reynolds \orcidlink{0000-0003-0073-7195}\thanks{I used ChatGPT 5, Claude Sonnet 4.5, and Gemini Pro 2.5 extensively in drafting and revising the paper. I reviewed, edited, and approved all the material and take full responsibility for the final text and conclusions. \href{mailto:brett.reynolds@humber.ca}{brett.reynolds@humber.ca}}\\
+Humber Polytechnic \& University of Toronto}
+\date{}
+
+\begin{document}
+
+\maketitle
+
+\begin{abstract}
+Finite multidomain batteries are routinely invoked to support claims about untested tasks, contexts, systems, and future behaviour. Precision within a standardized evaluation universe doesn't warrant those claims, and aggregation may suppress distinctions material to them. I use \term{projectibility} for the evidential status of a declared empirical or explanatory source--target inference beyond score construction, within a unified validity argument.
+
+The framework separates descriptive evidence, measurement interpretations, predictive and causal claims, and decision warrant. It requires a bounded target and declared use, a sampling audit, preservation of potentially relevant granularity, and evidence matched to the inferential relation. For paired-condition evaluation, it distinguishes domain-profile correlation, signed level change, item instability, worst-tail degradation, and absolute tails of case risk and realized loss.
+
+I reanalyse data from 32 released model--benchmark cells and use known-truth simulations to demonstrate these distinctions and compare null-referenced with split-tail estimators. Neither exercise validates an external projection. Broader AGI claims require broader, claim-specific evidence and continuing validation in use.
+\end{abstract}
+
+\noindent\textbf{Keywords:} AGI evaluation; validity; projectibility; tail risk; transportability
+
+\section{The Inferential Overreach of AGI Scores}\label{sec:problem}
+
+Multidomain evaluations are often invoked to support inferences or decisions without evidence that the distinctions compressed by their aggregate scores are irrelevant to those uses. Standardization fixes prompts, scoring, and conditions so that repeated evaluation answers a stable question. It also narrows the universe represented by the score.
+
+When fixed facets vary in the intended target domain, reliability within the standardized universe can increase while extrapolation weakens. \Textcite[22--31]{kane2013validating} develops the inferential distinction; \textcite[132--135]{brennan2001generalizability} formalizes the change in universe. More observations from the narrowed universe leave systematic underrepresentation of the target intact. \Textcite[746]{messick1995Validity} describes the resulting depth--breadth tension between valid description of specific complex performances and the power of a broader construct interpretation.
+
+\Textcite[2, 4--6]{zhang2026illusionRobustness} supply a controlled AI example. They add task-irrelevant context to benchmark items and find that aggregate accuracy often moves little even when many item-level response probabilities move in opposite directions. Their baseline-null-subtracted estimates reach 13.6\% for mean absolute item change and 53.2\% for worst-decile degradation across the reported model--benchmark cells. The affected examples are also largely model-specific.
+
+A stable mean is compatible with unchanged items, balanced improvements and degradations, or a persistent set of serious failures. Those states may support different predictions and decisions. The declared target determines the useful granularity.
+
+Interpreting a finite evaluation as evidence of general capability widens the gap. \textcite{raji2021whole} argue that broad benchmark claims routinely outrun the contextual tasks used to construct them. \textcite{hendrycks2025agi} respond to part of this problem with a revisable ten-domain task framework informed by Cattell--Horn--Carroll (CHC) theory. They warn that a total can conceal bottleneck failures and recommend reporting the domain profile, the vector of domain scores, alongside it.
+
+The profile preserves distinctions that a total erases, but it still compresses item changes and tails, and its domain structure may not transfer across systems. Neither total nor profile establishes which inferences the task framework supports beyond its construction.
+
+A score is an indicator, not the construct or its definition \citep[742]{messick1995Validity}. An operational interpretation can support claims about average performance over its admissible universe, but moving from that interpretation to a broader construct requires an additional argument \citep[24]{kane2013validating}.
+
+Claims made under the label AGI are typically open-ended: their intended range isn't exhausted by an enumerated task battery. No finite battery can validate unrestricted generality by coverage alone. A study can identify a bounded source--target link, preserve distinctions potentially relevant to it, and combine empirical evidence with substantive or formal rationale where the claim permits. Aggregates can describe their construction samples; broader uses require matching warrants. Success on one projection may motivate a wider claim, but warrants don't automatically compose into unrestricted generality.
+
+The paper makes three linked contributions. First, it turns beyond-construction claims into explicit, separately testable source--target links and assigns responsibility for their evidence. Second, it instantiates that discipline for paired-condition evaluation by separating behavioural descriptions from target-conditioned risk and lifting them to a joint target distribution with distinct case-risk and realized-loss tails. Third, it specifies a developer--deployer handoff for completing and maintaining warrants across the boundary between a reference evaluation and a local use. The reanalysis and simulations test claims about the second contribution's estimands and estimators; they don't validate an external deployment projection.
+
+\section{From Observations to Declared Projections}\label{sec:projection}
+
+Validation concerns a proposed argument about interpretation and use. Its target claims and intended use have to be stated from the outset; validity doesn't attach to a test in isolation \citep{messick1995Validity,kane2013validating}.
+
+Messick uses score generically for qualitative or quantitative summaries of groups, environments, objects, and institutions as well as persons \citep[741]{messick1995Validity}. The same validity architecture applies to a base model, an agent, or a deployed model--tool--workflow composite, provided the bearer is explicit.
+
+For \textcite[85--86, 94--98]{goodman1983}, projectibility is historical and practice-relative: it depends on past actual projections and on entrenchment produced by linguistic use. \Textcite[136--141]{boyd1991} treats projectability judgments as empirically revisable in light of background theory and, for inductive or explanatory categories, answerable to causal structure. I borrow \term{projectibility} for the evidential status of a declared empirical or explanatory source--target inference beyond the observations used to construct a score.
+
+Projectibility isn't an additional aspect of validity or a name for the warrant of an entire decision. It functions as a link-level audit discipline within an interpretation-and-use argument. It treats prospective declaration as the standard for confirmatory use, matches evidence to the facet over which the claim is meant to travel, assigns responsibility for supplying that evidence, and blocks automatic composition of successful links. A claim formulated after inspection of source results can still be tested on genuinely fresh evidence, but it isn't a preregistered confirmation.
+
+The projective claim, its evidence-relative warrant, the worldly dependence that makes it reliable, and any causal explanation of that dependence can come apart. Values also enter construct labels, content definitions, and score interpretations; they aren't confined to a final decision edge \citep[747--749]{messick1995Validity}. In a decision, projectible factual premises are combined with constraints, institutional authority, feasible alternatives, and an action rule.
+
+\Textcite[744--746]{messick1995Validity} distinguishes a generalizability aspect, which asks whether score properties and interpretations extend across tasks, populations, settings, occasions, and raters, from an external aspect, which asks whether convergent and discriminant relations, pertinent criteria, and applied utility support the proposed meaning and use. In the argument-based approach, \textcite{kane2013validating} evaluates the assumptions connecting observed responses, scores, a universe of admissible observations, a target domain, and score use.
+
+Projectibility isolates and names the beyond-observation subset of the links in a Kane-style interpretation-and-use argument; it doesn't propose a rival validity theory. Generalization to an admissible test universe, extrapolation to a broader target domain, transport across contexts, systems, or populations, and temporal prediction require different evidence.
+
+These links remain premises within a larger validity argument. \Textcite[741--747]{messick1995Validity} also asks about content relevance and representativeness, substantive theory and response processes, structural fidelity between scoring and construct, and the consequences of interpretation and use. No single holdout design answers all of those questions.
+
+\Textcite[179--181, 195--196]{embretson1983construct} further distinguishes the \term{construct representation} claim about processes, strategies, and knowledge stores underlying item responses from \term{nomothetic span}, the score's network of relations with measures, criteria, groups, and tasks. Either can be strong while the other is weak. Projectibility scopes each claim by asking how far it can travel beyond its construction evidence. A process model doesn't itself establish external reach, and predictive success doesn't show that the proposed process generated the score. For factor scores, too, validity is relative to a purpose and depends on analysis of both test and criterion tasks \citep[693]{carroll1993human}.
+
+Table~\ref{tab:projection_relations} separates eight inferential relations from decision use for analytic purposes. Together, they form premises within one validity argument.
+
+\begin{table}[H]
+\centering\footnotesize
+\caption{Inferential relations, decision use, and especially relevant evidence.}\label{tab:projection_relations}
+\begin{tabular}{@{}>{\raggedright\arraybackslash}p{0.25\linewidth}
+                    >{\raggedright\arraybackslash}p{0.29\linewidth}
+                    >{\raggedright\arraybackslash}p{0.37\linewidth}@{}}
+\toprule
+Claim or use & Declared range & Especially relevant evidence \\
+\midrule
+Observed responses to test universe & Admissible item, template, and replicate universe & Representative sampling, cluster holdout, or a generalizability design for the declared frame \\
+Test universe to target task domain & Intensionally specified tasks and operating conditions & External task or episode sampling plus content and process rationale \\
+One context to another & Realizations or perturbation families & External realizations or families and explicit invariance assumptions \\
+One system population to another & Models, lineages, or configurations & Independent systems or lineages plus prespecified invariance or transport models \\
+One operator, workflow, or site to another & Roles, organizations, workflows, or sites & External target sampling, effect-modifier checks, and partial pooling where justified \\
+Present to future behaviour & Sessions, releases, or deployment periods & Chronological observations at the stated horizon plus temporal rationale \\
+Behaviour to causal explanation & Processes, mechanisms, and rival routes & Process evidence, interventions where the claim and access permit them, and rival tests \\
+Behaviour to consequence distribution & Affected parties, exposure paths, and settings & Exposure sampling, outcome surveillance or impact study, and group-conditional analysis \\
+Evidence and values to decision & Actions and consequences & Calibrated factual premises, feasible alternatives, declared values and constraints, distributional analysis, and monitoring \\
+\bottomrule
+\end{tabular}
+\end{table}
+\thispagestyle{fancy}
+
+For any inferential row in Table~\ref{tab:projection_relations}, and for any decision that uses it, a confirmatory evaluator should register a \term{projection declaration} before calculation. An exploratory analysis should complete the same fields and reserve new evidence for confirmation:
+
+\begin{enumerate}
+\item \textbf{Claim and source--target relation}: the outcome, interpretation, or explanation to be inferred, the source evaluation universe, and the bounded target range
+\item \textbf{System population}: the model families, versions, configurations, and technical settings in scope
+\item \textbf{Operator and affected populations}: the roles, teams, and sites participating in performance; the people or groups exposed to its consequences; and any relevant exposure strata
+\item \textbf{Task population}: the intensional task specification or admissibility rule and its sampling frame
+\item \textbf{Bearer and unit}: a base model, stateful agent, or deployed model--tool--retrieval composite, together with the observational unit
+\item \textbf{Intervention range}: the perturbation families and realizations over which the claim is meant to hold
+\item \textbf{Time horizon}: immediate, delayed, or later deployment behaviour
+\item \textbf{Risk measure}: the item, episode, or realization indexing loss; its consequence bearer or bearers and exposure measure; and the joint target-population probability distribution
+\item \textbf{Decision criterion}: the objectives, consequences, feasible actions and alternatives, preferences or loss, applicable constraints, and action threshold
+\item \textbf{Evidential standard, failure conditions, and responsibility}: the evidence and tolerance that could support the claim, what would defeat or restrict it, who supplies the source evidence, and who can perform target-specific testing
+\end{enumerate}
+
+When the source evaluator and target decision-maker are different organizations, the declaration assigns responsibility for each part of the source--target warrant without treating either party's evidence as sufficient for the whole.
+
+A separate sampling audit records what generated the observations: model and version, item, domain, perturbation family and realization, operator role, team or site, affected-population and exposure stratum, response replicate, scorer, and time. Facets may be crossed or nested, and their levels may be fixed or sampled. Generalizability theory provides the established vocabulary of an admissible universe, multiple facets, and a decision-specific measurement design \citep{brennan2001generalizability}. The analysis below combines that machinery with signed, paired, and tail-sensitive descriptions.
+
+Representative task sampling and construct representation are different obligations: one concerns coverage of the performance domain, the other whether the observations engage the processes and structures named in the interpretation \citep[745]{messick1995Validity}. More sampling from a poorly represented process doesn't repair the process claim, and a well-supported process account doesn't establish population coverage.
+
+The same interaction may be error for one projection and signal for another. A system-by-item-by-context component is error for a context-invariant ranking but signal for predicting context-specific risk. A system-by-operator interaction may be nuisance variation for a base-model claim and essential signal for a workflow claim. Messick's analogous example is reading demand: irrelevant to one subject-matter interpretation but relevant to a criterion that itself requires reading \citep[743]{messick1995Validity}. The model-specific item changes reported by \textcite[2, 4--6]{zhang2026illusionRobustness} show why the classification has to follow the target.
+
+Here, \term{lineage} denotes an operational dependency group defined by declared provenance, training, distillation, shared components, or data dependence rather than by a family label alone.
+
+For a concrete declaration, consider a law firm's release decision for a legal-research assistant. The claim is that the next version of the complete model--retrieval--tool workflow will keep its worst-decile case risk at or below .20 when local matters contain an unseen family of answer-irrelevant context. Case risk is expected loss on a prospectively specified 0--1 expert rubric for matter-level research quality.
+
+The joint target distribution weights matter episodes by projected use across declared matter types and jurisdictions, with lawyers as operators and clients, courts, and third parties recorded as affected populations. The .20 rule applies to the maximum of practice-area-conditional tails, together with separate red-line constraints, rather than to a pooled loss across affected parties. The horizon is the next release cycle.
+
+Earlier versions and familiar context families form the source evidence. The developer supplies lineage provenance, reference prompts, scorers, and perturbation results; the firm supplies the local task and exposure distribution, rubric, alternatives, and constraints. A later version crossed with an untouched context family and held-out local matters supplies the final test of the rubric-scored claim. A prespecified 95\% confidence interval constructed directly for the maximum practice-area tail entirely below .20 supports the bounded claim; one entirely above .20 defeats it; an interval crossing .20 is inconclusive and calls for more evidence or restricted use.
+
+The rubric is a surrogate: its relation to realized consequences for clients, courts, and third parties is a separate projection that held-out task scoring doesn't establish and that requires exposure and outcome surveillance in use. A random item split within familiar contexts tests neither the version nor context transport at issue.
+
+\section{Distinctions Lost under Aggregation}\label{sec:profile}
+
+Aggregation collapses distinctions at several levels: a stable domain mean can coexist with item-level churn, a stable ten-domain profile with a sharp failure in a narrow task class, and a stable average across models with family-specific failure sets.
+
+This section instantiates the projection framework for paired-condition evaluation. The quantities form a diagnostic menu, not a universal dashboard. A target-specific study should preregister the subset that bears on its claim. The word \emph{stable} should be unpacked into the included senses; reporting the full module can make a multisense description more transparent, but it doesn't make the claim unrestricted. Retaining the paired source data keeps omitted distinctions auditable.
+
+\subsection{Data Structure and Three Estimand Modes}\label{ssec:setup}
+
+Counting response rows as independent observations would generally be wrong; the independent unit follows the projection declaration.
+
+Fix a system, time, scorer protocol, and perturbation realization. Let domains be indexed by \(g=1,\ldots,G\), items within domain \(g\) by \(i=1,\ldots,N_g\), and conditions by \(c\), with baseline \(0\) and perturbation \(p\). Let \(s_{igc}\in[0,1]\) be the item score. In a sequential-agent evaluation, an item may be a complete task episode or trajectory, provided its score and target loss are defined at that level. Define
+\[
+\delta_{igp}=s_{igp}-s_{ig0},
+\qquad
+a_{gc}=\frac{1}{N_g}\sum_{i=1}^{N_g}s_{igc},
+\]
+and let \(\mathbf a_c=(a_{1c},\ldots,a_{Gc})\).
+
+The same symbols support three different estimands. With deterministic decoding on a fixed paired set, the quantities below are exact descriptions of that set. Under a declared stochastic generation and scoring protocol, \(s_{igc}\) is an expected score estimated from repeated responses and, when relevant, scorers. Inference to an item, context, system, or time population also requires sampling or holdout from that declared universe. Repetition within an item doesn't create a representative item sample.
+
+If item inclusion probabilities differ, population means require design weights and a \(q\)-tail should represent \(q\) of the target-population mass. The unweighted formulas below use the empirical item measure, so they describe a fixed equally weighted set or an equal-probability sample.
+
+For the paired-condition design, Table~\ref{tab:descriptions} gives the descriptive module used here; reports using it should retain the raw domain profiles and item-change distributions alongside the summaries.
+
+\begin{table}[tbp]
+\centering\small
+\caption{Paired-condition behavioural descriptions and target-conditioned risk.}\label{tab:descriptions}
+\begin{tabular}{@{}>{\raggedright\arraybackslash}p{0.16\linewidth}
+                    >{\raggedright\arraybackslash}p{0.25\linewidth}
+                    >{\raggedright\arraybackslash}p{0.50\linewidth}@{}}
+\toprule
+Output & Granularity & Question answered \\
+\midrule
+\(r_p\) & Domain profile & How strongly were the centred, scaled domain profiles linearly associated? \\
+\(L_{gp},L_p\) & Domain and overall level & Did average performance rise or fall? \\
+\(\ins_{gp}\) & Items within a cell & How much two-sided paired item change occurred? \\
+\(\wtd_{q,gp}\) & Change tail & How large was mean degradation in the worst-changing \(q\)-fraction? \\
+Absolute-loss tails & Cases and realized draws & How large were the case-risk and realized-loss tails? \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\subsection{Profile Correlation and Signed Level}\label{ssec:profile_level}
+
+For nonconstant profiles, report Pearson correlation directly:
+\[
+r_p=\operatorname{corr}_g(\mathbf a_0,\mathbf a_p)\in[-1,1].
+\]
+A high \(r_p\) establishes only strong linear association between the centred, scaled profiles. Any positive affine transformation of the profile can yield \(r_p=1\), even when level or spread changes.
+
+With ten fixed domains, \(r_p\) is a descriptive summary of those ten estimated means. Resampling items within domains propagates uncertainty in the means, but not uncertainty in the choice of domains. Correlation is undefined when either profile has zero variance and degenerates to \(\pm1\) with only two nonconstant domains. Reports should publish the profiles and their spreads; a preregistered centred distance or rank correlation may supplement \(r_p\) when it better matches the target.
+
+Signed domain and overall changes are
+\[
+L_{gp}=a_{gp}-a_{g0},
+\qquad
+L_p=\frac{1}{G}\sum_{g=1}^{G}L_{gp}.
+\]
+They lie in \([-1,1]\) for unit-interval scores. The equal-domain mean describes an equally weighted domain set; alternative domain or deployment weights encode different scales and target mixtures and have to be labelled and justified.
+
+\subsection{Item Instability and Directional Components}\label{ssec:item_instability}
+
+Signed change can cancel within a domain. Mean absolute paired change is
+\begin{equation}\label{eq:ins}
+\ins_{gp}=\frac{1}{N_g}\sum_{i=1}^{N_g}|\delta_{igp}|\in[0,1].
+\end{equation}
+Its directional components are
+\[
+F^+_{gp}=\frac{1}{N_g}\sum_i(\delta_{igp})_+,
+\qquad
+F^-_{gp}=\frac{1}{N_g}\sum_i(-\delta_{igp})_+.
+\]
+Here \(F^+\) is mean positive change and \(F^-\) is mean negative change, recorded as a nonnegative magnitude. For deterministic binary scores, these are the incorrect-to-correct and correct-to-incorrect transition proportions. The identities
+\[
+L_{gp}=F^+_{gp}-F^-_{gp},
+\qquad
+\ins_{gp}=F^+_{gp}+F^-_{gp}
+\]
+make cancellation explicit and imply \(|L_{gp}|\leq\ins_{gp}\).
+
+\subsection{Worst-Tail Degradation}\label{ssec:wtd}
+
+Choose \(q\in(0,1]\) and a minimum tail count before inspecting results. Let \(m_g=\lceil qN_g\rceil\), and order paired changes from smallest to largest. Define
+\begin{equation}\label{eq:wtd}
+\wtd_{q,gp}
+=-\frac{1}{m_g}\sum_{\ell=1}^{m_g}\delta_{(\ell)gp}
+\in[-1,1].
+\end{equation}
+WTD is a finite-sample expected-shortfall analogue applied to the loss \(-\delta\) \citep{acerbiTasche2002expectedShortfall,rockafellarUryasev2002cvar}. Because the ceiling makes the empirical tail mass \(m_g/N_g\), the selected set is exactly a \(q\)-tail only when those quantities coincide.
+
+A positive WTD indicates mean deterioration among the worst-changing items. A negative value means that even the selected lower tail improved on average. WTD measures signed worst-tail change; consequences enter through the target-specific loss defined below.
+
+\subsection{Absolute Worst-Tail Loss}\label{ssec:wtl}
+
+A change statistic misses a stable serious failure. If the same safety-critical items are failed at baseline and under perturbation, their \(\delta_{igp}\) values are zero, so both INS and WTD can be zero. The running release decision still needs an absolute loss constraint.
+
+For target \(T\), let \(R\) collect response, scorer, and outcome randomness within an item--condition cell, let \(\ell^{(T)}_{igcR}\in[0,1]\) be a realized item or episode loss, and let \(\mu^{(T)}_{igc}=\operatorname{E}_R(\ell^{(T)}_{igcR}\mid i,g,c)\) be its conditional expected loss. Either may be a prospectively scored surrogate rather than an observed downstream consequence; that status and any proposed surrogate--consequence link have to be stated. Because WTL averages loss, differences on the chosen scale have to carry the intended meaning \citep{KeeneyRaiffa1993}. Ordinal hazard classes should remain separate strata or define constraints rather than be averaged as if their labels were cardinal.
+
+Order condition-specific case risks from largest to smallest and define
+\begin{equation}\label{eq:wtl}
+\wtl^{\mathrm{case},(T)}_{q,gc}
+=\frac{1}{m_g}\sum_{\ell=1}^{m_g}\mu^{(T)}_{[\ell]gc}
+\in[0,1].
+\end{equation}
+
+Equation~\ref{eq:wtl} identifies cases with high conditional expected loss. An empirical realized-loss tail instead orders draws of \(\ell^{(T)}_{igcR}\) from a specified mixture over cells and residual realizations. The two coincide only under restrictive conditions, such as no residual loss variation within cells. Report condition-specific levels of the selected estimand as the primary results and their difference as a secondary result.
+
+A binary \(1-\text{correctness}\) loss is inadequate when consequences differ across items. If loss isn't normalized, report it in its natural units. Equation~\ref{eq:wtl} is a domain-conditional diagnostic; a decision-facing tail uses the declared joint target distribution or an explicitly chosen set of conditional constraints.
+
+\subsection{From Fixed Batteries to Target-Population Risk}\label{ssec:target_risk}
+
+The finite-set formulas don't by themselves define an action-level risk distribution. For a deployment-facing target, let \(J\sim P_T\) index a joint draw over every varying facet in scope, including system, task or episode, perturbation family and realization, operator, affected-population stratum, and time. Let \(R\) collect response, scorer, and downstream-outcome randomness conditional on \(J\), let \(S_{JcR}\) be the realized score under condition \(c\), and let \(\ell^{(T)}_{JR}\in[0,1]\) be realized target loss. Define \(\delta_J=\operatorname{E}_R(S_{JpR}-S_{J0R}\mid J)\), \(D_J=-\delta_J\), and \(\mu^{(T)}_J=\operatorname{E}_R(\ell^{(T)}_{JR}\mid J)\).
+
+With \(Q_{V,T}\) the quantile function of \(V\) under the indicated target distribution, define
+\[
+\operatorname{ES}^{+}_{q,T}(V)
+=\frac{1}{q}\int_{1-q}^{1}Q_{V,T}(u)\,\mathrm du.
+\]
+The deployment-facing change tail and absolute-loss tails are
+\[
+\operatorname{WTD}_{q,T}=\operatorname{ES}^{+}_{q,T}(D_J),
+\qquad
+\wtl^{\mathrm{case}}_{q,T}=\operatorname{ES}^{+}_{q,T}(\mu^{(T)}_J),
+\qquad
+\wtl^{\mathrm{real}}_{q,T}=\operatorname{ES}^{+}_{q,T}(\ell^{(T)}_{JR}).
+\]
+
+The target functional orders probability mass rather than merely similar-looking benchmark items; with discrete mass, it takes a fractional atom at the cutoff when needed. The realized-loss functional integrates both \(P_T(J)\) and the conditional distribution of \(R\), so it generally differs from the tail of conditional case risks. A decision has to name which tail it constrains and whether the rule applies jointly, by stratum, to the maximum conditional tail, or through separate noncompensatory limits. If repeated exposure matters, let \(J\) index a person--horizon or task trajectory and report cumulative exposure separately.
+
+\subsection{Estimation, Selection, and Multiplicity}\label{ssec:uncertainty}
+
+With stochastic generation or scoring, absolute values create a positive response-sampling floor, while selecting the worst observed tail selects noise. The positive-part directional components \(F^+\) and \(F^-\) inherit the same floor. The baseline-only pseudo-null procedure used by \textcite{zhang2026illusionRobustness} estimates the nonlinear statistic expected under no condition difference centred on the baseline response distribution. Raw minus that expectation is a useful null-referenced diagnostic, not a general bias correction: under a real effect, response variances and the selection floor can change nonadditively. If reported, the pseudo-null contrast should reproduce the real response counts and remain untruncated, with uncertainty.
+
+When latent item changes are the target, tail selection and estimation should use disjoint response splits or an explicit hierarchical model. Cross-fitting targets the latent effect of the selected set without reusing the same response noise; that estimand may differ from the latent population tail. Deterministic fixed-set descriptions have no response-sampling contribution to remove, although uncertainty about new items or contexts remains.
+
+Resampling and holdout units should follow the projection declaration. Preserve paired items, shared baselines, perturbation realizations, scorers, and model lineage. An item bootstrap conditional on fixed domains and perturbations estimates item-sampling uncertainty within those fixed facets; claims about new domains or perturbation families require corresponding outer evidence.
+
+For case-risk WTL, uncertainty can also enter through conditional loss estimates, target probabilities, severity elicitation, exposure weights, and sparse group samples. Realized-loss WTL also requires the response, scorer, and outcome variation represented by \(R\). Reports should propagate those sources, distinguish cellwise from simultaneous uncertainty, and state how tail or subgroup selection and multiplicity are controlled.
+
+These estimands presuppose a sound benchmark. Disaggregation can't resolve ambiguous items or an ill-designed perturbation. Annotation quality, statistical power, construct coverage, and the invariant property under stress testing have to be justified independently \citep{bowmanDahl2021benchmarking}.
+
+\subsection{Behavioural Description and Target-Conditioned Risk}\label{ssec:no_scalar}
+
+Profile shape, signed level, item instability, directional change, and WTD are behavioural descriptions. By contrast, the WTLs summarize tails of conditional case risk and realized loss under a declared loss scale, exposure distribution, and affected population. These quantities answer distinct questions and needn't be manifestations of one latent variable.
+
+A high \(r_p\) with negative \(L_p\) means that the centred, scaled profiles remained linearly associated while level fell. Near-zero \(L_{gp}\) with high INS means that changes cancelled. High WTD localizes degradation in a change tail, while a high absolute-loss tail can reveal stable risk even when every change statistic is zero.
+
+When this paired-condition module is used, publish the behavioural report separately from any target-conditioned risk report. A scalar may summarize the construction sample when its operation, scale, and weights are explicit. Any warrant established for a score interpretation, predictive model, or decision rule is limited to the target and population represented by its evidence.
+
+\section{Empirical Demonstration and Estimator Checks}\label{sec:demonstration}
+
+The \href{https://github.com/BrettRey/agi-evaluation-hpc/tree/master/analysis}{empirical companion} analyses released trial-level outputs from \textcite{zhang2026illusionRobustness} and known-truth simulations. It reproduces the distinction between aggregate change and paired item instability, compares raw, null-referenced, and split-sample tail estimators, distinguishes change tails from case-risk tails, and probes profile correlation when between-domain spread is low. Figure~\ref{fig:empirical_checks} summarizes these checks.
+
+\begin{figure}[!t]
+\centering
+\includegraphics[width=0.94\linewidth]{analysis/outputs/section5_evidence.pdf}
+\caption{Released-output reproduction and known-truth checks. (A) Recomputed null-referenced WTD for all 32 cells against the rounded values reported by \textcite[4]{zhang2026illusionRobustness}. (B) Raw, null-referenced, and held-out split WTD for MMLU-Pro--gpt-5.4; the latter two estimate different estimands. (C) A stable-poor simulation has zero latent WTD but .80 worst-decile latent itemwise expected loss (case-risk WTL). (D) With ten domains and latent \(r=.65\), correlation estimation remains accurate at moderate profile spread but attenuates under low spread. Full settings and numerical outputs are in the empirical companion.}\label{fig:empirical_checks}
+\end{figure}
+
+\subsection{Released-Trial Reanalysis}\label{ssec:zhang_reanalysis}
+
+The released design crosses four benchmarks with eight models and supplies 20 baseline and 20 context trials for every item in each of the resulting 32 cells \citep[3--4]{zhang2026illusionRobustness}. The reanalysis uses those responses rather than attempting to recreate outputs from proprietary model versions. The companion pins the preprint version, repository commit, data hashes, seeds, and analysis settings.
+
+Recomputed values agree with the rounded table in the preprint to within .21 percentage points across baseline accuracy, signed change, INS, and WTD. This agreement verifies reproduction of the published pipeline; the full audit is in the companion.
+
+For MMLU-Pro--gpt-5.4, baseline accuracy is .8119 and context accuracy .7904, a signed change of -.0215. Raw worst-decile WTD is .3680; subtracting the baseline pseudo-null expectation of .1049 gives a null-referenced value of .2631. The held-out split estimate is .2911. Thus a two-point average decline coexists with much larger change in the selected tail.
+
+The null-referenced and split-tail procedures estimate different quantities. Split WTD exceeds the null-referenced value in 31 of the 32 released cells, by .0331 on average. The former subtracts a baseline-null expectation from a statistic selected and measured on all trials; it needn't remove bias under a nonnull effect. The split procedure selects items on one response half and measures their changes on the other, estimating the latent effect of a noisy-selected set rather than the oracle tail defined by latent item effects.
+
+\subsection{Known-Truth Checks}\label{ssec:known_truth}
+
+Simulation makes the target distinction observable. Under a null effect, mean null-referenced INS, null-referenced WTD, and split WTD are .0033, .0039, and -.0018 against a truth of zero. Depending on the estimator, 31--56\% of the estimates are negative. Keeping those values untruncated is necessary for a zero-centred diagnostic.
+
+In a sparse-collapse scenario, null-referenced WTD averages .3445 against an oracle worst-decile effect of .5500. Split WTD averages .4514 against a mean truth of .4550 for the sets selected on noisy response halves, a bias of -.0036. Cross-fitting nearly removes reuse bias for its selected-set estimand, which differs from the oracle estimand. Reports should state which tail they estimate.
+
+In the stable-poor scenario, the same low-performing items have unchanged response probabilities across conditions, so latent WTD is zero. Their worst-decile latent itemwise expected loss is .80, the case-risk WTL. The tail of realized binary errors is a different estimand. The corresponding cross-fitted estimates are .0013 and .7911. A change tail and an absolute case-risk tail can disagree even without sampling error; the disagreement reflects their definitions.
+
+A final ten-domain simulation probes profile correlation. With latent \(r=.65\), moderate between-domain spread yields a mean observed \(r=.645\) and root-mean-square error .043. Holding the latent correlation fixed while reducing profile spread lowers the mean observed correlation to .275 and raises root-mean-square error to .472. Coverage of 95\% nested-bootstrap intervals falls from .988 to .579 even as mean interval width increases from .249 to 1.111. When the perturbed latent profile is flat, its true correlation is undefined, but finite samples produce correlations with standard deviation .324. Reports should accompany \(r\) with the raw profiles and their spreads.
+
+Together, the reanalysis supports fixed-data claims about the 32 released cells, while the simulations support conditional claims under their specified designs. Testing a declared external projection remains a separate empirical step.
+
+\section{Testing Declared Projections}\label{sec:validation}
+
+Once source descriptions are fixed, each declared source--target link needs evidence matched to its own inferential relation. Content, response-process, structural, invariance, predictive, causal, and decision evidence answer different premises in the validity argument.
+
+Predictive projection comes first because it follows directly from the estimator checks; the later subsections turn to aggregate interpretation, CHC measurement claims, and decision use.
+
+\subsection{Predictive Projection: Match the Statistical Design to the Claim}\label{ssec:matching}
+
+For a predictive projection, the observational row follows the declared source--target link. An item-generalization study may treat task-template clusters as the outer units. A perturbation-transport study may compare entire held-out families within systems. A model-population study needs enough independent lineages to hold out lineages rather than outputs. A temporal study requires a chronological split. Response replicates estimate cells inside these designs; they don't multiply the number of independent systems, items, or contexts.
+
+Let \(u\) index the independent unit appropriate to a declared projection, \(Y_u\) the external outcome, and \(\mathbf X_u\) a preregistered set of baseline and granular predictors constructed without \(Y_u\). Compare a simple model \(h_0\), such as equal-domain baseline performance or a prior incident rate, with a richer model \(h_1(\mathbf X_u)\). Under the target loss \(\mathcal L_T\), the relevant increment is
+\[
+\Delta_T
+=\operatorname{E}_{\mathrm{holdout}}\!
+\left[\mathcal L_T\{Y,h_0\}
+      -\mathcal L_T\{Y,h_1(\mathbf X)\}\right].
+\]
+A positive estimate with decision-relevant uncertainty supports added predictive value within that holdout population. It doesn't establish transport to another population.
+
+Shared baseline observations induce dependence across perturbation cells; related versions share lineage; and the granular predictors are themselves estimated with error. Regularization or dimension reduction may be needed when many cells predict outcomes for few independent systems. Repeated-measures, hierarchical, and errors-in-variables models address different parts of this structure. Reports should state the observational row, dependence model, predictor construction, and outer holdout.
+
+For the running release decision, development uses earlier versions and context families, followed by assessment on a later version crossed with an untouched family. Thresholds, tail fraction, feature selection, and model tuning belong inside the development partition. That final test can supply an interval for the later release's rubric-scored case-risk WTL; it can't by itself calibrate a forecasting model.
+
+Forecasting future release-period WTL requires repeated independent release-period or system-level units. A model of the exceedance event \(\wtl^{\mathrm{case}}_{q,T}>.20\) also requires calibration and scoring of that event probability. A model of case risk, a model of realized loss, and a model of a tail exceedance are distinct predictive objects.
+
+Incremental predictive value, coverage or error for the tail functional, and performance of the resulting policy are three separate judgments. The final partition applies the preregistered support, defeat, and inconclusive rules from the projection declaration. Too few independent lineages or severe events can leave the claim unresolved rather than show that transport failed.
+
+\subsection{Commensurability, Compensability, and Projectibility}\label{ssec:score_model}
+
+An aggregate faces three distinct questions. \term{commensurability} asks whether differences on its component scales can be combined with the claimed meaning. \term{compensability} asks whether strength in one component may offset weakness in another for the proposed use. \term{projectibility} asks whether the resulting summary supports the declared target inference. \Textcite[745--747]{messick1995Validity} treats the choice between compensatory totals, profiles, and minimum requirements as part of structural validity; \textcite[632]{carroll1993human} notes that linear factor models assume compensation.
+
+A monotone score such as
+\[
+S_T=\sum_{g=1}^{G}w_g^{(T)}a_{g0},
+\qquad
+w_g^{(T)}\geq0,\quad \sum_gw_g^{(T)}=1
+\]
+retains an ordinary direction: more of each component can't lower the total. It also encodes substitution among domains over the stated score ranges. Mapping heterogeneous scores to \([0,1]\) doesn't establish that equal differences have equal meaning or that those substitutions are acceptable. In a value model, the weights represent range-dependent tradeoffs rather than context-free domain importance \citep{KeeneyRaiffa1993}.
+
+A predictive model may legitimately use negative conditional coefficients, interactions, nonlinearities, or redundant predictors. Those coefficients needn't express value tradeoffs. An interpretable aggregate, by contrast, shouldn't separately weight algebraically dependent quantities such as \(L\), INS, \(F^+\), and \(F^-\), because the redundancy obscures the effective coefficients on positive and negative change. Equal-domain weighting remains a useful descriptive and predictive baseline because it's transparent and difficult to tune, but equal nominal weights needn't make equal statistical contributions when domain variances and covariances differ \citep[305--308]{brennan2001generalizability}.
+
+Interpreting an aggregate as a measure requires a defensible account of the content, substantive, structural, and comparability assumptions implicated by that interpretation. The evidence set is claim-specific, and omission of a potentially relevant basis needs justification \citep[744, 747]{messick1995Validity}. Using the aggregate as a predictive index needs target-matched out-of-sample performance. A causal explanation needs process evidence and interventions against plausible rival routes where access and the study design permit them. A decision rule also needs defensible value scales, distributional tradeoffs, feasible alternatives, and decision performance.
+
+\Textcite{borsboom2004conceptValidity} impose a stronger causal condition on measurement: variation in the measured attribute has to cause variation in the score. Within its tested range, held-out prediction may warrant use of a formula as a predictive index or decision input without showing that it measures a causally efficacious AGI attribute.
+
+\subsection{Measurement Interpretation: CHC and Comparability}\label{ssec:chc_scope}
+
+CHC can enter AI evaluation at four levels \citep{carroll1993human,mcgrew2009chc,schneider2018chc}. First, it supplies a content taxonomy for organizing tasks. Second, it proposes a latent covariance structure in a declared system population. Third, that structure may contribute to an external prediction. Fourth, it may be interpreted as a functional or causal organization. Evidence at one level doesn't establish the next. The framework proposed by \textcite{hendrycks2025agi} principally supplies the first; the other claims require additional study.
+
+The AGI label and the selection of domains also define which performances count as valuable. Content standards and score thresholds are themselves validation objects: increasing levels should reflect increasing construct complexity rather than construct-irrelevant difficulty \citep[6]{messick1995standardsValidity}. Claiming that two systems meet the same standard presupposes comparability even when they aren't directly ranked \citep[7]{messick1995standardsValidity}.
+
+Task performances are observed; broad and general abilities are inferred from their relations. Transporting human loadings or the positive manifold to artificial systems requires evidence in the target population. The composition rule is a separate choice: a target may permit additive compensation, impose minimum requirements, treat one domain as a bottleneck, or posit a causal cascade.
+
+Across 591 nominally distinct models and 12 tests, \textcite[4--5]{ilicGignac2024cognitiveCapabilities} find a positive manifold and a strong general factor. Their hypothesized higher-order model with four first-order factors isn't interpretable; the supported group structure combines knowledge with reading and writing. The largely verbal task set and the difficulty of identifying independent models also limit the result \citep[7--9]{ilicGignac2024cognitiveCapabilities}. The study supports a general factor in that model population while leaving transport of the human CHC decomposition open.
+
+Descriptive profiles can be compared without claiming that they measure identical latent abilities. Interpreting profile differences as differences in the same abilities across systems requires a linking or invariance argument. Rubric checks, family-specific item analyses, differential-item-functioning analyses, and multi-group item-response or factor models can probe particular comparability assumptions when the design supports them \citep{meredith1993measurementInvariance}. Comparability is addressed assumption by assumption.
+
+\subsection{Decision Use}\label{ssec:decision_use}
+
+Decision framing specifies objectives, affected parties, consequences, feasible actions and alternatives, preferences and tradeoffs, and any applicable hard constraints before a score is optimized \citep{KeeneyRaiffa1993}. A numerical loss is one representation of that preference side, not a substitute for specifying it. False reassurance, false alarms, severe tail events, and repeated exposure can have different costs.
+
+WTL averages a selected tail of case risks or realized losses under a declared sampling measure; neither form automatically shows how consequences are distributed across people. When that distribution matters, index loss by the declared operator or affected-population stratum, and report stratum-conditional expected loss, tail loss, cumulative exposure, and applicable group constraints.
+
+Pooling across strata requires commensurable loss scales and a defensible rule for interpersonal or intergroup tradeoffs \citep{KeeneyRaiffa1993}. Calibration of a pooled quantity can't supply that rule. A hard WTL threshold prevents compensation by a good mean or profile but still permits tradeoffs within the selected tail; event-specific prohibitions or a maximum-loss constraint are needed when no such tradeoff is acceptable.
+
+A dashboard can support dominance screening without reduction to a scalar. Hard constraints, compensatory value or utility aggregation, and unconstrained predictive models feeding a policy are other structures; they answer different questions. A release rule may combine a calibrated expected-loss model with a specified case-risk or realized-loss WTL threshold that the mean can't override; an imprecise estimate can't support a confident action.
+
+Observed consequences prompt at least three questions. Do they reveal construct underrepresentation, construct-irrelevant variance, or a rival score interpretation? Do they undermine the relevance or utility claimed for this use? Do they make the policy unacceptable for independent distributive or ethical reasons even if the first two claims survive? The answers can overlap, and favorable consequences can't rescue an invalid interpretation \citep[746--749]{messick1995Validity}. Accurate prediction of pooled loss likewise doesn't justify how a policy trades losses across affected parties.
+
+Decision evidence is comparative. A proposed deployment rule should be assessed against feasible alternatives such as restricted use, mandatory review, a different workflow, or no deployment; comparison with alternatives also exposes its value commitments \citep[748]{messick1995Validity}. Thresholds for monitoring, release, or independent review have to be calibrated against relevant outcomes under those alternatives. Reports should also keep base-model and deployed-system claims separate and identify every untested transport step.
+
+\section{Workflow and Limits}\label{sec:workflow}
+
+Responsibility is divided but not dissolved. Developers are responsible for evidence supporting the interpretations and uses they advertise, while users remain responsible for the choices they make; foreseeable consequences create shared obligations \citep[57--58]{kane2013validating}. A developer can characterize a versioned model or reference configuration over declared task and perturbation frames, estimate selected paired-condition quantities with uncertainty, test component dependencies, and publish the source frame and unsupported facets. Those findings remain conditional on the developer's sampling measure and declared loss.
+
+A frontier developer can't anticipate every downstream task mix, workflow, operator population, affected population, consequence scale, or alternative policy. That practical limit narrows the claims its evidence can support; it doesn't make local validation unnecessary. The deployer completes the declaration for the full bearer, supplies application-specific relevance and utility evidence, and tests the remaining transport step against its task or episode frame \citep[744]{messick1995Validity}.
+
+In the law-firm example, the firm compares the complete workflow with feasible alternatives on retrospective or held-out local matters, monitors intended and unintended consequences and their distribution in use, and repeats assessment after material changes or drift. Evidence can combine developer studies, independent domain evaluations, justified partial pooling, synthetic and retrospective local cases, shadow deployment, prospective surveillance, and incident review. Thin evidence widens uncertainty and narrows permitted use.
+
+\subsection{Operational Sequence}\label{ssec:workflow_sequence}
+
+Most behavioural and predictive parts of the framework can be implemented without model internals. Measurement and causal claims may require additional process or intervention evidence. The operational sequence is:
+
+\begin{enumerate}
+\item \textbf{Register the claim and use.} Complete the ten-field projection declaration in Section~\ref{sec:projection}, including prospective support, defeat, and inconclusive conditions, and assign source-side and target-side responsibilities.
+\item \textbf{Audit the sampling facets.} Record systems and lineages, item and template clusters, perturbation families and realizations, operator roles, teams or sites, affected-population and exposure strata, response replicates, scorers, and time; mark facets as crossed or nested and their levels as fixed or sampled.
+\item \textbf{Fix the measurement and decision design.} Specify content and process rationales, rubrics, target-population weights, sampling budget, and the distinction between fixed-set, stochastic-response, and population inference. For a decision, specify affected parties, feasible alternatives, losses and distributional tradeoffs, constraints, and thresholds. For a paired-condition design, also specify paired units, perturbations, controls, tail fraction, minimum count, and the candidate outputs implicated by the claim. Replace general stability language with the bounded senses being tested.
+\item \textbf{Collect the observations.} For paired-condition designs, balance conditions, randomize order where possible, and retain item identifiers. In every design, prevent data used for adaptation, selection, or threshold setting from leaking into final estimation.
+\item \textbf{Publish description and risk separately.} For paired conditions, report the preregistered behavioural outputs and their uncertainty, retain the paired source data, and publish the full module when all of its bounded senses are in scope. For nonlinear item and tail summaries, distinguish raw, null-referenced, and split-sample estimates where used. When a decision model is supplied, state whether its absolute tail is over conditional case risks or realized losses and report it separately with its loss scale, joint target distribution, residual randomness, exposure assumptions, and conditional or noncompensatory constraints.
+\item \textbf{Test each source--target link.} For a measurement interpretation, examine the content, process, scoring, and comparability bases implicated by the claim and justify any omitted basis. For prediction, use matching external evidence and report calibration, target loss, incremental value, and uncertainty. For a causal explanation, intervene where possible and test rivals; a component-removal effect establishes dependence over the tested levels, not by itself an internal representation or corrective mechanism. For a decision, compare feasible policies under the stated values, constraints, and distribution of consequences. Exclude additional granular predictors from the target-specific model unless needed for the declared description or shown to add preregistered value for the target. Report unsupported or unresolved links as such.
+\item \textbf{Maintain a two-sided projection record.} After testing, publish the developer evidence card with the source frame, code, data provenance, prompts, seeds, model and scorer versions, exclusions, missingness, compute use, split assignments, granular results, uncertainty, rubrics, known limits, and update triggers. Join it to a deployer addendum containing the target frame, full bearer, operator and affected populations, exposure distribution, local losses and constraints, feasible alternatives, evidence sources, version mapping, local results, deviations, and monitoring plan. Reopen the validity argument after material system, population, workflow, or outcome change.
+\end{enumerate}
+
+\subsection{Limitations}\label{sec:limitations}
+
+Repeated sampling and tail estimation can be expensive. Adaptive allocation may reduce cost but creates additional selection and dependence that the analysis should represent. Deterministic fixed-set reports avoid response-repetition cost while remaining silent about wider item or context populations. Group-conditional assessment may require sensitive data and enough exposure in each stratum; inability to obtain them limits the corresponding claim rather than licensing a pooled substitute.
+
+A perturbation is informative only relative to a property expected to remain invariant. Task-irrelevant context is designed to preserve the answer; distribution shifts, tool changes, and component removal may change the task itself. The evaluator has to defend the comparison.
+
+Tail membership and item effects may not transfer across models or versions. \Textcite[2, 4--6]{zhang2026illusionRobustness} report model-specific changes, making a common risk set across models or versions an empirical hypothesis.
+
+The framework assembles and limits warrants from finite batteries. It applies beyond AGI, although the open-ended range of AGI claims makes the mismatch between battery and target especially visible.
+
+\section{Conclusion}\label{sec:conclusion}
+
+A standardized battery can describe its evaluation universe precisely. What its scores mean and support outside that universe depends on the content and processes represented, the facets over which the interpretation is meant to hold, relevant external relations, plausible rivals, and the proposed use. The paired-condition module distinguishes profile shape, signed level, two-sided item change, worst-tail degradation, case-risk tails, and realized-loss tails; none is a universal proxy for the others, and the declared claim determines which belong in a target-specific report.
+
+Projectibility is the link-level evidential status of an empirical or explanatory inference beyond score construction. The practical discipline is to declare its source, target, bearer, populations, horizon, tolerance, and failure conditions; retain the resolution potentially relevant to it; and assemble evidence appropriate to that relation. Measurement interpretations require a defensible account of the evidential bases they implicate; predictions require target-matched external tests; and causal explanations require process evidence and tests against rivals.
+
+Decisions also require defensible values, alternatives, institutional authority, and continuing scrutiny of consequences. Developers can characterize source frames and expose unsupported facets; deployers have to complete and monitor local target claims.
+
+A finite battery doesn't settle generality. Warrant for a broader claim may combine bounded empirical links with substantive, structural, causal, or formal theory capable of supporting their extension. Later studies may enlarge the supported range, but successful links don't automatically compose into an unrestricted AGI claim.
+
+\clearpage
+\printbibliography
+
+\end{document}

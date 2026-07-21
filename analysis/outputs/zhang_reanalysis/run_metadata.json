@@ -71,9 +71,9 @@
   },
   "all_downloads_checksum_verified": true,
   "limitations": [
-    "Subtracting the baseline pseudo-null expectation is a noise correction, not an unbiased non-null effect estimator.",
+    "Subtracting the baseline pseudo-null expectation is a null-referenced diagnostic, not a general nonnull bias correction.",
     "Split WTD is unbiased for a noisy-selected set and may miss the oracle latent tail.",
-    "Absolute loss tail and WTD answer different questions and aren't combined.",
+    "Case-risk tail and WTD answer different questions and aren't combined.",
     "The released QA benchmarks don't instantiate the manuscript's ten CHC-style domains.",
     "Public dataset metadata exposed no license at pinning time; the cache is excluded from version control.",
     "No model generations, graders, deployment outcomes, or external validity targets are added."

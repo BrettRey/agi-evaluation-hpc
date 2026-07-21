@@ -1,10 +1,10 @@
 # Makefile for LaTeX paper compilation
-# From Aggregate Scores to Projectible Profiles: Robustness in AGI Evaluation
+# From Aggregate Scores to Warranted Inference in AGI Evaluation
 
 # Configuration
 LATEX = xelatex
 BIBER = biber
-MAIN = main
+MAIN = warranted-inference-in-agi-evaluation
 OUTDIR = .
 
 # Targets

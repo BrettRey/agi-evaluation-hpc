@@ -2,7 +2,7 @@
 
 **Manuscript:** *From Aggregate Scores to Projectible Profiles: Robustness in AGI Evaluation*
 **Date:** 2026-07-17
-**Scope:** Read-only first-reader audit of the current `main.tex`. No manuscript edits were made.
+**Scope:** Read-only first-reader audit of the current `warranted-inference-in-agi-evaluation.tex`. No manuscript edits were made.
 
 ## Verdict
 

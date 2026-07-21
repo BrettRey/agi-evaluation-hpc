@@ -109,4 +109,4 @@ These changes remove mixed metaphors, reified agents, or ambiguity without flatt
 
 ## Scope of the edit
 
-If accepted, I will apply the terminology consistently to `main.tex`, reader-facing empirical labels and captions, `analysis/README.md`, `metrics_spec_v3.md`, and the public-facing Lean companion prose. Internal variable names can remain where renaming would add risk without changing what a reader sees. I will regenerate the empirical figure, run the analysis tests and Lean build, rebuild the paper, run the style and bibliography checks, and inspect the rendered pages.
+If accepted, I will apply the terminology consistently to `warranted-inference-in-agi-evaluation.tex`, reader-facing empirical labels and captions, `analysis/README.md`, `metrics_spec_v3.md`, and the public-facing Lean companion prose. Internal variable names can remain where renaming would add risk without changing what a reader sees. I will regenerate the empirical figure, run the analysis tests and Lean build, rebuild the paper, run the style and bibliography checks, and inspect the rendered pages.

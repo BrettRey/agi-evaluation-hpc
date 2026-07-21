@@ -28,7 +28,7 @@
     "ceiling": "Nominally balanced gains/losses are asymmetrically compressed at the ceiling."
   },
   "interpretation": {
-    "baseline_floor": "Raw minus the estimated baseline-only pseudo-null expectation; untruncated.",
+    "baseline_floor": "Null-referenced diagnostic: raw minus the estimated baseline-only pseudo-null expectation; untruncated.",
     "split_tail": "Unbiased for the noisy-selected set, not necessarily the oracle latent tail.",
     "absolute_tail": "Perturbed-condition loss, separate from condition-to-condition WTD."
   }

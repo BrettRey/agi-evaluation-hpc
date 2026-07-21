@@ -1,4 +1,4 @@
-"""Known-truth simulations for cancellation, INS/WTD, and absolute tail loss."""
+"""Known-truth simulations for cancellation, INS/WTD, and case-risk tails."""
 
 from __future__ import annotations
 
@@ -336,7 +336,7 @@ def plot_primary(summary: pd.DataFrame, path: Path) -> None:
                 match = subset[(subset["scenario"] == scenario) & (subset["estimator"] == estimator)]
                 values.append(float(match["estimate_mean"].iloc[0]))
             ax.bar(x + (i - (len(estimators) - 1) / 2) * width, values, width,
-                   label="pseudo-null-adjusted" if label == "adjusted" else label,
+                   label="null-referenced" if label == "adjusted" else label,
                    color=PALETTE[label], alpha=0.88)
         truth = []
         for scenario in scenarios:
@@ -377,7 +377,7 @@ def plot_sensitivity(summary: pd.DataFrame, path: Path) -> None:
                 rows["n_trials"],
                 rows["bias"],
                 marker="o",
-                label="pseudo-null-adjusted" if label == "adjusted" else label,
+                label="null-referenced" if label == "adjusted" else label,
                 color=PALETTE[label],
             )
         ax.axhline(0, color="#333333", linewidth=0.8)
@@ -402,10 +402,10 @@ def plot_absolute_tail(frame: pd.DataFrame, path: Path) -> None:
     fig, ax = plt.subplots(figsize=(7.4, 3.5))
     ax.bar(x - width / 2, frame["true_wtd"], width, label="true WTD (change)", color="#C44E52")
     ax.bar(x + width / 2, frame["true_absolute_loss_tail"], width,
-           label="true absolute loss tail", color="#4C72B0")
+           label="true case-risk tail", color="#4C72B0")
     ax.set_xticks(x, frame["case"].str.replace("_", "\n"))
     ax.set_ylabel("Probability scale")
-    ax.set_title("Change-based WTD doesn't measure stable absolute failure")
+    ax.set_title("Change-based WTD doesn't measure stable case risk")
     ax.legend(frameon=False, ncol=2, loc="upper center")
     fig.savefig(path)
     plt.close(fig)
@@ -440,7 +440,7 @@ def main() -> None:
         "config": config,
         "scenario_notes": notes,
         "interpretation": {
-            "baseline_floor": "Raw minus the estimated baseline-only pseudo-null expectation; untruncated.",
+            "baseline_floor": "Null-referenced diagnostic: raw minus the estimated baseline-only pseudo-null expectation; untruncated.",
             "split_tail": "Unbiased for the noisy-selected set, not necessarily the oracle latent tail.",
             "absolute_tail": "Perturbed-condition loss, separate from condition-to-condition WTD."
         },
