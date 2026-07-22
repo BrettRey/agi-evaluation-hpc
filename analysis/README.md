@@ -138,6 +138,12 @@ high. Both raw and cross-fitted versions are reported.
 At the top of `outputs/`, `evidence_summary.json` collects exact values suitable
 for prose claims, while `section5_evidence_table.csv` / `.tex` and
 `section5_evidence.pdf` provide a compact five-row table and four-panel figure.
+`hidden_distinctions.pdf` pairs the directional components against each other
+with the change tail against the absolute case-risk tail, both on the released
+data. `stable_mean_states.pdf` is a constructed illustration, not data: four
+item-change distributions with matched means and the worst-decile absolute loss
+each implies. All figures share `figstyle.py`, which mirrors the parent
+repository's house palette and is duplicated so this package reproduces alone.
 
 `outputs/instability/` contains the known-truth summaries, the explicit
 cancellation construction, the stable-failure comparison, trial-count/tail-q

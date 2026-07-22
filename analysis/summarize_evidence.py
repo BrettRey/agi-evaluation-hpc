@@ -14,6 +14,8 @@ import matplotlib.pyplot as plt
 import numpy as np
 import pandas as pd
 
+from . import figstyle
+
 from .metrics import json_safe
 
 
@@ -187,24 +189,20 @@ def plot_compact(root: Path, path: Path) -> None:
     released = pd.read_csv(root / "zhang_reanalysis" / "main_reanalysis.csv")
     absolute = pd.read_csv(root / "instability" / "absolute_tail_examples.csv")
     profile = pd.read_csv(root / "profile_correlation" / "profile_correlation_summary.csv")
-    plt.rcParams.update({
-        "font.size": 8.5, "axes.titlesize": 9.5, "axes.labelsize": 8.5,
-        "axes.spines.top": False, "axes.spines.right": False,
-        "savefig.dpi": 300, "savefig.bbox": "tight",
-    })
+    figstyle.setup(font_size=8.5, title_size=9.5, tick_size=8.0)
     fig, axes = plt.subplots(2, 2, figsize=(7.6, 6.0))
 
     ax = axes[0, 0]
-    ax.scatter(released["wtd_adjusted_published"], released["wtd_adjusted"], s=18, color="#4C72B0")
+    ax.scatter(released["wtd_adjusted_published"], released["wtd_adjusted"], s=18, color=figstyle.COLORS["primary"])
     limit = max(released["wtd_adjusted_published"].max(), released["wtd_adjusted"].max()) + 0.02
-    ax.plot([0, limit], [0, limit], color="#333333", linewidth=0.8)
+    ax.plot([0, limit], [0, limit], color=figstyle.COLORS["dark"], linewidth=0.8)
     ax.set(xlabel="Published null-referenced WTD", ylabel="Reanalysis", title="A. Reanalysis reproduces the published values",
            xlim=(0, limit), ylim=(0, limit))
 
     ax = axes[0, 1]
     central = released[released["cell"] == "mmlu_pro.gpt54"].iloc[0]
     values = [central["wtd_raw"], central["wtd_adjusted"], central["split_wtd"]]
-    ax.bar([0, 1, 2], values, color=["#C44E52", "#4C72B0", "#55A868"])
+    ax.bar([0, 1, 2], values, color=[figstyle.COLORS["secondary"], figstyle.COLORS["primary"], figstyle.COLORS["tertiary"]])
     ax.set_xticks([0, 1, 2], ["raw", "null-\nreferenced", "response-\nhalf split"])
     ax.set_ylabel("WTD")
     ax.set_title("B. Same comparison, different estimands\nMMLU-Pro / gpt-5.4")
@@ -213,8 +211,8 @@ def plot_compact(root: Path, path: Path) -> None:
     cases = absolute[absolute["case"].isin(["stable_poor", "sparse_collapse"])]
     x = np.arange(len(cases))
     width = 0.34
-    ax.bar(x - width / 2, cases["true_wtd"], width, label="change WTD", color="#C44E52")
-    ax.bar(x + width / 2, cases["true_absolute_loss_tail"], width, label="case-risk tail", color="#4C72B0")
+    ax.bar(x - width / 2, cases["true_wtd"], width, label="change WTD", color=figstyle.COLORS["secondary"])
+    ax.bar(x + width / 2, cases["true_absolute_loss_tail"], width, label="case-risk tail", color=figstyle.COLORS["primary"])
     ax.set_xticks(x, cases["case"].str.replace("_", "\n"))
     ax.set_ylabel("Latent value")
     ax.set_ylim(0, 0.95)
@@ -222,15 +220,15 @@ def plot_compact(root: Path, path: Path) -> None:
     ax.legend(frameon=False, fontsize=8)
     for position, value in zip(x - width / 2, cases["true_wtd"]):
         if np.isclose(value, 0.0):
-            ax.text(position, 0.015, "0", ha="center", va="bottom", color="#8B2F33", fontsize=8)
+            ax.text(position, 0.015, "0", ha="center", va="bottom", color=figstyle.COLORS["secondary"], fontsize=8)
 
     ax = axes[1, 1]
     selected = profile[profile["scenario"].isin(["moderate_transport", "low_spread"])]
     x = np.arange(len(selected))
     ax.errorbar(x, selected["mean_observed_r"], yerr=selected["sd_observed_r"],
-                fmt="o", capsize=3, color="#4C72B0", label="observed mean ± SD")
+                fmt="o", capsize=3, color=figstyle.COLORS["primary"], label="observed mean ± SD")
     ax.scatter(x, selected["true_r"], marker="_", s=180, linewidths=2.0,
-               color="#222222", label="latent r")
+               color=figstyle.COLORS["dark"], label="latent r")
     ax.set_xticks(x, ["moderate\nspread", "low\nspread"])
     ax.set_ylim(-0.1, 0.8)
     ax.set_ylabel("Profile correlation r")

@@ -12,6 +12,8 @@ smoke: test
 	cd $(ROOT) && $(PYTHON) -m analysis.simulate_bootstrap_coverage --profile smoke
 	cd $(ROOT) && $(PYTHON) -m analysis.reanalyse_zhang --profile smoke
 	cd $(ROOT) && $(PYTHON) -m analysis.summarize_evidence
+	cd $(ROOT) && $(PYTHON) -m analysis.plot_hidden_distinctions
+	cd $(ROOT) && $(PYTHON) -m analysis.plot_stable_mean_states
 
 standard: test
 	cd $(ROOT) && $(PYTHON) -m analysis.simulate_instability --profile standard
@@ -19,6 +21,8 @@ standard: test
 	cd $(ROOT) && $(PYTHON) -m analysis.simulate_bootstrap_coverage --profile standard
 	cd $(ROOT) && $(PYTHON) -m analysis.reanalyse_zhang --profile standard
 	cd $(ROOT) && $(PYTHON) -m analysis.summarize_evidence
+	cd $(ROOT) && $(PYTHON) -m analysis.plot_hidden_distinctions
+	cd $(ROOT) && $(PYTHON) -m analysis.plot_stable_mean_states
 
 refresh-lock:
 	cd $(ROOT) && $(PYTHON) -m analysis.pin_sources

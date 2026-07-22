@@ -1,6 +1,8 @@
 \documentclass[12pt]{article}
 \input{.house-style/preamble.tex}
 \usepackage{float}
+\usepackage{tikz}
+\usetikzlibrary{arrows.meta, positioning}
 \hypersetup{
   pdftitle={From Aggregate Scores to Warranted Inference in AGI Evaluation},
   pdfkeywords={AGI evaluation, validity, projectibility, tail risk, generalization}
@@ -49,11 +51,44 @@ A running example makes the issue concrete. A law firm is deciding whether to re
 
 The source score comes from a standardized evaluation, which fixes prompts, scoring, and conditions so that repeated evaluation answers a stable question. Standardization also narrows the \term{evaluation universe}: the tasks, prompts, scoring rules, and conditions represented by the score.
 
-Kane distinguishes two moves: generalizing from observed scores to a test's standardized universe and extrapolating from that universe to a broader target domain \citep[22--25]{kane2013validating}. Brennan shows why the distinction matters: a feature held fixed in the restricted universe may vary in the broader one, so standardization can raise precision within the former while weakening extrapolation to the latter \citep[132--135]{brennan2001generalizability}. More observations from the narrowed universe leave systematic underrepresentation of the target intact.
+\begin{figure}[tbp]
+\centering
+\footnotesize
+\begin{tikzpicture}[
+  node distance=6mm,
+  box/.style={draw, rounded corners=2pt, align=center, inner sep=4pt,
+              text width=23mm, minimum height=13mm, font=\footnotesize},
+  flow/.style={-{Latex[length=2mm]}, thick},
+  lab/.style={align=center, font=\scriptsize, text width=25mm}
+]
+\node[box] (obs) {Observed\\responses};
+\node[box, right=17mm of obs] (uni) {Evaluation\\universe};
+\node[box, right=17mm of uni] (dom) {Target task\\domain};
+\node[box, right=17mm of dom] (dep) {Deployed\\use};
+
+\draw[flow] (obs) -- node[lab, above=1mm] {generalization} (uni);
+\draw[flow] (uni) -- node[lab, above=1mm] {extrapolation} (dom);
+\draw[flow] (dom) -- node[lab, above=1mm] {transport} (dep);
+
+\node[lab, below=1mm of obs.south, text width=26mm] {hold out item or template clusters};
+\node[lab, below=1mm of uni.south, text width=26mm] {external task or episode sample};
+\node[lab, below=1mm of dom.south, text width=26mm] {held-out context families, lineages, sites, later releases};
+\node[lab, below=1mm of dep.south, text width=26mm] {exposure sampling and outcome surveillance};
+\end{tikzpicture}
+\caption{Where a score has to travel, and what answers each step. Each arrow is a separate claim with its own evidence, and warrant for one doesn't carry to the next. The lower row names the design that addresses the step above it; Table~\ref{tab:projection_relations} gives the full set of relations.}\label{fig:where_scores_travel}
+\end{figure}
+
+Kane distinguishes two moves: generalizing from observed scores to a test's standardized universe and extrapolating from that universe to a broader target domain \citep[22--25]{kane2013validating}. Figure~\ref{fig:where_scores_travel} places those moves in the longer chain the running example needs. Brennan shows why the distinction matters: a feature held fixed in the restricted universe may vary in the broader one, so standardization can raise precision within the former while weakening extrapolation to the latter \citep[132--135]{brennan2001generalizability}. More observations from the narrowed universe leave systematic underrepresentation of the target intact.
 
 Underrepresentation of the target is one inferential gap. Aggregation creates another even within a fixed evaluation universe. \Textcite[2, 4--6]{zhang2026illusionRobustness} provide a controlled example: they add task-irrelevant context to benchmark items and find that aggregate accuracy often moves little even when item-level response probabilities move in opposite directions. After subtracting the change expected from repeated baseline sampling alone, their estimates reach 13.6\% for mean absolute item change and 53.2\% for worst-decile degradation. The affected examples are also largely model-specific: on MMLU-Pro the mean cross-model correlation of per-item change is .00, and the mean Jaccard overlap of the most-affected decile is .09.
 
-A stable mean is compatible with unchanged items, balanced improvements and degradations, deterioration concentrated in a tail, or a persistent set of serious failures. Those states may support different predictions and decisions. The declared target identifies distinctions that may need to be preserved; matched evidence determines which earn a place in a target-specific report.
+A stable mean is compatible with unchanged items, balanced improvements and degradations, deterioration concentrated in a tail, or a persistent set of serious failures. Those states may support different predictions and decisions. The declared target identifies distinctions that may need to be preserved; matched evidence determines which earn a place in a target-specific report. Figure~\ref{fig:stable_mean_states} sets the four side by side.
+
+\begin{figure}[tbp]
+\centering
+\includegraphics[width=0.96\linewidth]{analysis/outputs/stable_mean_states.pdf}
+\caption{Four item-level states behind one stable mean, constructed for illustration rather than measured. The top row gives the distribution of per-item change; all four have the same near-zero mean. The bottom row gives the resulting worst-decile absolute loss. The first and fourth columns are indistinguishable in the top row and differ by .19 against .96 in the bottom one, which is why a change statistic can't stand in for an absolute risk measure.}\label{fig:stable_mean_states}
+\end{figure}
 
 Interpreting a finite evaluation as evidence of general capability widens the gap between the standardized evaluation universe and the intended target. \textcite{raji2021whole} argue that broad benchmark claims routinely outrun the contextual tasks used to construct them. \textcite{hendrycks2025agi} propose a revisable framework for evaluating AGI across ten cognitive domains, guided by Cattell--Horn--Carroll (CHC) theory, a hierarchical account of human cognitive abilities inferred from test-score correlations. They warn that a total can conceal bottleneck failures and recommend reporting the domain profile, the vector of domain scores, alongside it.
 
@@ -313,6 +348,14 @@ Recomputed values agree with the rounded table in the preprint to within .20 per
 For MMLU-Pro--gpt-5.4, baseline accuracy is .8119 and context accuracy .7904, a signed change of -.0215 with a 95\% item-bootstrap interval of \([-.0360,-.0070]\). Raw worst-decile WTD is .3680, interval \([.2870,.4510]\); subtracting the baseline pseudo-null expectation of .1049 gives a null-referenced value of .2631, and the response-half split estimate is .2911. Thus a 2.15-percentage-point average decline coexists with much larger change in the selected tail. These intervals resample items within fixed domains and perturbations, so they carry item-sampling uncertainty alone. The tail interval needs a further warning: it brackets the raw statistic at the released trial count, which is itself inflated by selection on response noise, so it isn't an interval for the latent worst-decile effect. Section~\ref{ssec:known_truth} shows that it covers that latent quantity essentially never. The null-referenced and split estimates, not the interval, are what address the inflation.
 
 The signed change also conceals two-sided movement. Its directional components are \(F^+=.0229\) and \(F^-=.0444\), which sum to the item instability of .0673 and differ by the signed change. In 22 of the 32 released comparisons both components exceed twice the absolute signed change, so most cells show substantial movement in both directions behind a small net.
+
+The same comparisons also separate a change tail from an absolute one. Cross-fitted worst-decile case risk runs from .924 to .996 across the 32 cells while the split change tail runs from .039 to .617. Under a binary \(1-\text{correctness}\) loss at these accuracies a high case-risk tail is close to arithmetic, so this isn't a finding about these particular models. It shows that the two quantities come apart outside simulation, and that a change statistic can't be read as an absolute one. Figure~\ref{fig:hidden_distinctions} shows both contrasts.
+
+\begin{figure}[tbp]
+\centering
+\includegraphics[width=0.96\linewidth]{analysis/outputs/hidden_distinctions.pdf}
+\caption{Two distinctions the released aggregates conceal. (A) Directional components for the 32 comparisons. The diagonal is exact cancellation, where improvement and degradation are equal and the signed change is zero; distance from the origin is how far items moved, and distance from the diagonal is how much of that movement survived aggregation. (B) The change tail and the absolute case-risk tail for the same comparisons, ordered by the change tail. Both estimators are selection-corrected, the split estimator for the change tail and cross-fitting for the case-risk tail, so they're comparable. Under a binary loss at these accuracies the case-risk tail is necessarily high; the point is that it carries no information about the change tail.}\label{fig:hidden_distinctions}
+\end{figure}
 
 The null-referenced and split-tail procedures estimate different quantities. Split WTD exceeds the null-referenced value in 31 of the 32 released comparisons, by .0331 on average. Those comparisons share items within a benchmark and lineage across models, so the tally describes the fixed released set rather than 31 independent replications. Selecting and estimating the tail on the same responses inflates it: the raw estimate exceeds the split estimate by .0906 on average, ranging from .0330 to .1696. The null-referenced procedure subtracts a baseline-null expectation from a statistic selected and measured on all trials; it needn't remove bias under a nonnull effect. The split procedure selects items on one response half and measures their changes on the other, estimating the latent effect of a noisy-selected set rather than the ideal tail selected using unobserved latent item effects.
 
