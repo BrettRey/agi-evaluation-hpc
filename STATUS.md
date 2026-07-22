@@ -2,9 +2,9 @@
 
 ## Current State
 
-**Phase:** Post-review major revision implemented and verified (*Minds and Machines* preparation)
+**Phase:** Framework revision complete and shipped; venue preparation pending
 
-**Last updated:** 2026-07-17
+**Last updated:** 2026-07-22
 
 **Working title:** *From Aggregate Scores to Warranted Inference in AGI Evaluation*
 
@@ -12,20 +12,24 @@ The October 2025 preprint, arXiv:2510.15236, is the historical starting point. T
 
 ## Current Thesis
 
-A finite evaluation first declares its projection target and scope, then preserves distinctions that aggregation compresses, and finally tests the intended inference against evidence matched to that scope. The projection declaration names the interpretation, system population, task and item population, bearer, intervention range, horizon, and matching evidential test. Decision use additionally declares loss, utility, or constraints.
+A finite evaluation first declares its projection target and scope, then preserves distinctions that aggregation compresses, and finally tests the intended inference against evidence matched to that scope. The projection declaration names the interpretation, system population, task and item population, bearer, intervention range, horizon, evidential test, and failure conditions. Decision use additionally declares loss, utility, alternatives, constraints, authority, and an action rule.
 
-Projectibility is one epistemic question within a broader Messickian validity argument: whether evidence supports a specified inference beyond the observations used to construct the score. A decision is not itself an epistemic projection; it depends on projectible estimates plus a declared decision criterion.
+Projectibility is the evidential standing of each specified source--target link within a broader Messickian and Kanean validity argument. Such a link may extend a score interpretation, prediction, or explanation beyond observed responses. A decision is not itself an epistemic projection; it depends on projectible factual premises plus a defensible decision structure.
+
+An aggregate can describe its construction sample without supporting a broader inference. Generalization from those observations to a declared evaluation universe and extrapolation from that universe to other tasks, contexts, systems, or times are distinct steps. The declared target identifies distinctions that may need preservation; matched evidence determines which support a target-specific report.
 
 ## Current Architecture
 
-1. Motivate the problem with Zhang, Koyejo, and Yang's item-level cancellation result and state the three-move thesis on page 1: declare, preserve resolution, and test.
-2. Separate item, context, system, temporal, causal, and decision relations rather than treating all of them as generic generalization.
-3. Record the crossed or nested data facets and distinguish fixed-set description, stochastic-response estimation, and population inference.
-4. Preserve Pearson profile correlation, signed level, item instability, directional components, worst-tail degradation, and absolute target loss as separate outputs.
-5. Demonstrate those distinctions through a locked reanalysis of all 32 released Zhang cells and known-truth simulations.
-6. Match the validation row and outer holdout to the intended projection; distinguish interpretable scores from predictive or decision models.
-7. Treat retention, feedback response, and component dependence as separate applications with pretests and matched controls.
-8. Close with an operational workflow and explicit limits rather than generic capability tiers.
+1. Introduce validity as warrant for a proposed interpretation and use, then use Goodman's grue case to explain the source--target problem for readers outside psychometrics.
+2. Make the law-firm deployment a running example and distinguish construction sample, standardized evaluation universe, and broader target.
+3. Separate item, task-domain, context, system, operator/site, temporal, causal, consequence, and decision relations rather than treating all as generic generalization.
+4. Record crossed or nested sampling facets and distinguish fixed-set description, stochastic-response estimation, and population inference.
+5. Preserve profile correlation, signed level, item instability, directional components, worst-tail degradation, case-risk tails, and realized-loss tails as non-substitutable outputs.
+6. Demonstrate those distinctions through a locked reanalysis of all 32 released Zhang comparisons and known-truth simulations while explicitly withholding any external-projection claim.
+7. Match the statistical row and outer holdout to the intended projection; distinguish descriptive aggregates, measurement interpretations, predictive models, value models, and decisions.
+8. Treat CHC as an organizing content taxonomy unless factor structure, cross-system comparability, and AGI interpretation receive their own evidence.
+9. Divide responsibility between developers' bounded source evidence and deployers' local completion and monitoring of warrants.
+10. Close with an operational workflow, limits, and the rule that successful bounded links don't automatically compose into unrestricted AGI.
 
 ## Measurement Decisions
 
@@ -35,27 +39,29 @@ Projectibility is one epistemic question within a broader Messickian validity ar
 - If item inclusion probabilities differ, use design weights and define tail mass over the target population.
 - Show raw, pseudo-null expectations, and untruncated adjusted estimates. Pseudo-null correction is not an unbiased-recovery guarantee.
 - Cross-fit noisy tail selection and estimation, while naming the noisy-selected-set estimand separately from the oracle latent tail.
-- Use a pre-instruction assessment and a visible minimum immediate-gain denominator for retention.
-- Report feedback endpoint gain and cumulative increases/decreases. The backsliding share \(B\) is algebraically redundant and retired.
-- Require a matched no-feedback control before attributing improvement to feedback.
+- Keep response-noise correction separate from projection across tasks, contexts, systems, lineages, operators, and time.
+- Match uncertainty, resampling, and holdout units to the facet over which the claim is intended to generalize.
 
-## Completed for the Post-Review Revision
+## Completed for the Current Revision
 
-- Wrote and approved revision-plan-post-review-2026-07-17.md and the canonical metrics_spec_v3.md.
-- Reframed projectibility within validity; added task/item population, decision loss, facet-specific holdouts, generalizability theory, causal transport, measurement invariance, and expected-shortfall context.
-- Added absolute WTL, renamed WTD, retired PSS and \(B\), repaired retention and feedback protocols, and made score-versus-model constraints explicit.
-- Added a reproducible empirical package under analysis/: arXiv v2, the source commit, and 64 Parquet revisions/hashes are pinned; cached source data are excluded from version control.
-- Reproduced all 32 released cells within rounding-level discrepancies and added null, sparse-collapse, stable-poor, and ten-domain profile-correlation simulations.
+- Reframed projectibility within validity; added task/item populations, decision structure, facet-specific holdouts, generalizability theory, causal transport, measurement invariance, and expected-shortfall context.
+- Added absolute WTL, renamed WTD, retired PSS and the backsliding share, and made descriptive-score, measurement, predictive-model, value-model, and decision distinctions explicit.
+- Added a reproducible empirical package under `analysis/`: arXiv v2, the source commit, and 64 Parquet revisions/hashes are pinned; cached source data are excluded from version control.
+- Reproduced all 32 released comparisons within rounding-level discrepancies and added null, sparse-collapse, stable-poor, and ten-domain profile-correlation simulations.
 - Passed 14/14 empirical tests and verified 64/64 locked file hashes (294,033,162 bytes).
-- Updated the Lean companion with raw bounds, \(|L|\leq\mathrm{INS}\), directional-component identities, feedback identities, WTL, and retained above-pretest gain. lake build passes (8,028 jobs).
+- Retained the Lean companion in the repository as an implementation check, but removed it from the paper's main intellectual case.
 - Updated recent references and validated all cited keys. Biber datamodel validation passes.
-- Reordered the paper so descriptions and their worked demonstration precede the validation stage. The final 16-page PDF has no undefined citations, undefined references, Biber warnings, or overfull boxes.
-- Completed cold rhetoric, measurement, projectibility/HPC, proofread, house-style, bibliography, and visual audits. Remaining linter flags are verified math-subscript or spelling false positives; the terminology gloss is explicit in the abstract and Section 2.
-- Completed a Lakoffian metaphor pass. The paper now consistently treats aggregation as compression, granular description as preserved resolution, inference as projection to a declared target and scope, evidence as warrant, and decisions as uses under declared loss. Misleading floor, scaffold, flow, and gain-mass language has been replaced.
+- Acquired and audited the relevant primary literature locally, including Goodman, Messick, Kane, Brennan, Embretson, CHC sources, transportability, benchmark-validity work, expected shortfall, Zhang et al., and related current AI-evaluation papers. A library scan of *Validity* has been requested separately.
+- Rebuilt the opening for a cross-field philosophy reader: validity theory receives an entry point, grue is explained before projectibility is borrowed, and the law-firm case arrives before the abstract declaration machinery.
+- Reordered the paper so descriptions and their empirical checks precede target-matched validation. The demonstration is expressly descriptive and estimator-focused; it doesn't validate an external deployment target.
+- Completed repeated rhetoric, structure, cohesion, editorial-scar-tissue, metaphor, projectibility, house-style, bibliography, and visual passes. The abstract, introduction, Section 2, and conclusion now use one link-level definition and discharge the same Goodman, CHC, empirical-scope, and developer--deployer promises.
+- Renamed the canonical artifacts from `main.*` to `warranted-inference-in-agi-evaluation.*` and updated the build and companion references.
+- Built and visually verified the final 21-page PDF. It has no undefined citations, undefined references, Biber warnings, or overfull boxes. The source and PDF were shipped to `master` at commit `fb90e72`.
 
 ## Next Steps
 
-- Brett review of the completed revision and any desired compression before venue formatting.
-- Apply *Minds and Machines* author guidelines and prepare the submission package.
+- Choose the submission venue. *Minds and Machines* remains a strong conceptual fit; a technical ML venue would likely require validation against an external projection target.
+- Apply the selected venue's formatting and disclosure requirements, then run the submission gate.
+- Review the requested library scan of *Validity* when it arrives and incorporate it only if it changes the argument or source support.
 - Decide whether to rename the GitHub repository, whose URL still contains the historical agi-evaluation-hpc slug.
 - Update the arXiv version and public status surfaces when the revision is ready to post.
