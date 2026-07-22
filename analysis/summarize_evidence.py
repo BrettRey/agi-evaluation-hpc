@@ -202,7 +202,16 @@ def plot_compact(root: Path, path: Path) -> None:
     ax = axes[0, 1]
     central = released[released["cell"] == "mmlu_pro.gpt54"].iloc[0]
     values = [central["wtd_raw"], central["wtd_adjusted"], central["split_wtd"]]
-    ax.bar([0, 1, 2], values, color=[figstyle.COLORS["secondary"], figstyle.COLORS["primary"], figstyle.COLORS["tertiary"]])
+    # Hatching plus direct value labels so the panel survives greyscale and
+    # does not rely on a red/green contrast.
+    bars = ax.bar([0, 1, 2], values,
+                  color=[figstyle.COLORS["secondary"], figstyle.COLORS["primary"],
+                         figstyle.COLORS["tertiary"]],
+                  hatch=["", "//", "xx"], edgecolor="white", linewidth=0)
+    for bar, value in zip(bars, values):
+        ax.text(bar.get_x() + bar.get_width() / 2, value + 0.008, f"{value:.3f}",
+                ha="center", va="bottom", fontsize=7.5,
+                color=figstyle.COLORS["dark"])
     ax.set_xticks([0, 1, 2], ["raw", "null-\nreferenced", "response-\nhalf split"])
     ax.set_ylabel("WTD")
     ax.set_title("B. Same comparison, different estimands\nMMLU-Pro / gpt-5.4")
