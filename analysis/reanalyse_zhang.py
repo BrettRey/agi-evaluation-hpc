@@ -24,6 +24,8 @@ import pandas as pd
 from .metrics import (
     adjusted_metrics,
     crossfit_absolute_loss_tail,
+    directional_components,
+    item_bootstrap,
     json_safe,
     split_half_reliability,
     split_sample_wtd,
@@ -166,7 +168,11 @@ def analyse_cell(
     reliability = split_half_reliability(
         baseline, perturbed, n_reps=split_reps, seed=seed + 3,
     )
-    return {**adjusted, **split, **absolute, **reliability}
+    directional = directional_components(baseline, perturbed)
+    item_boot = item_bootstrap(
+        baseline, perturbed, q=q, n_boot=n_boot, seed=seed + 4,
+    )
+    return {**adjusted, **split, **absolute, **reliability, **directional, **item_boot}
 
 
 def subsample_trials(values: np.ndarray, n_trials: int, rng: np.random.Generator) -> np.ndarray:

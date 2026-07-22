@@ -1,0 +1,5 @@
+quantity,estimand,truth,mean_estimate,coverage,mean_width
+signed_delta,population signed change,-0.02111679095886269,-0.021375,0.9375,0.026243968749999992
+ins_raw,population INS at this trial count,0.118400625,0.119319,0.9275,
+wtd_raw,population raw WTD at this trial count,0.2950625,0.29553000000000007,0.9175,0.05552537499999999
+wtd_raw,population LATENT WTD,0.15996682737108683,0.29553000000000007,0.0,0.05552537499999999

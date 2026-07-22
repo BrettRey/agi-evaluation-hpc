@@ -1,0 +1,15 @@
+{
+  "profile": "standard",
+  "n_items": 500,
+  "n_trials": 20,
+  "tail_q": 0.1,
+  "seed": 20260722,
+  "reps": 400,
+  "n_boot": 400,
+  "population": 400000,
+  "population_signed_delta": -0.02111679095886269,
+  "population_ins_raw": 0.118400625,
+  "population_latent_wtd": 0.15996682737108683,
+  "population_raw_wtd": 0.2950625,
+  "noise_inflation_raw_minus_latent": 0.13509567262891317
+}

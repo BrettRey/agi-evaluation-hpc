@@ -11,5 +11,8 @@
 *.fls
 *.synctex.gz
 
+# Analysis environment (see analysis/README.md)
+.venv-analysis/
+
 # macOS
 .DS_Store

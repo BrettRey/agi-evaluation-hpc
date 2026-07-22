@@ -122,6 +122,13 @@ high. Both raw and cross-fitted versions are reported.
 
 - `main_reanalysis.csv` and `.tex`: the 32 released cells, raw/pseudo-null/null-referenced
   INS and WTD, split-tail WTD, split-half reliability, and case-risk tail;
+  the directional components `f_plus` and `f_minus`, which sum to `ins_raw` and
+  differ by `signed_delta`; and 95% item-bootstrap intervals (`*_boot_lo`,
+  `*_boot_hi`, `*_boot_sd`) for signed change, INS, WTD, and the case-risk tail.
+  Those intervals resample items with replacement inside a fixed design, so they
+  carry item-sampling uncertainty only: domains, perturbation families, scorers,
+  and model versions stay fixed, and response-sampling uncertainty is handled
+  separately by the pseudo-null and split procedures;
 - `download_audit.csv`: the dataset commit and verified file hash used;
 - `published_comparison.pdf`: recomputed values against the rounded main table;
 - `wtd_estimators.pdf`: raw, null-referenced, and held-out estimates kept
@@ -135,6 +142,16 @@ for prose claims, while `section5_evidence_table.csv` / `.tex` and
 `outputs/instability/` contains the known-truth summaries, the explicit
 cancellation construction, the stable-failure comparison, trial-count/tail-q
 sensitivity, run metadata, and four vector PDF figures.
+
+`outputs/bootstrap_coverage/` contains the known-truth calibration check for the
+item bootstrap: per-replicate coverage indicators, a summary table, and run
+metadata recording the population truths. The check separates three estimands
+and reports coverage against each. The intervals are calibrated for the
+population signed change, population INS, and the population raw WTD at the
+given trial count. They do **not** cover the latent worst-tail effect, because
+selection on response noise shifts the statistic far more than item resampling
+varies it. Read a tail interval as item-sampling uncertainty around the raw
+statistic, never as an interval for the latent tail.
 
 `outputs/profile_correlation/` contains replicate- and summary-level ten-domain
 results, a compact LaTeX table, sensitivity results, run metadata, and three

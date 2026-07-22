@@ -84,6 +84,78 @@ def basic_metrics(
     }
 
 
+def directional_components(
+    baseline: np.ndarray | list[list[float]],
+    perturbed: np.ndarray | list[list[float]],
+) -> dict[str, float]:
+    """Mean positive and negative paired item change.
+
+    Both are recorded as non-negative magnitudes, so that ``signed_delta`` is
+    ``f_plus - f_minus`` and ``ins_raw`` is ``f_plus + f_minus``. For
+    deterministic binary scores they are the incorrect-to-correct and
+    correct-to-incorrect transition proportions.
+    """
+    base = _as_2d(baseline, "baseline")
+    pert = _as_2d(perturbed, "perturbed")
+    if base.shape[0] != pert.shape[0]:
+        raise ValueError("baseline and perturbed must contain the same items")
+    delta = pert.mean(axis=1) - base.mean(axis=1)
+    return {
+        "f_plus": float(np.clip(delta, 0.0, None).mean()),
+        "f_minus": float(np.clip(-delta, 0.0, None).mean()),
+    }
+
+
+def item_bootstrap(
+    baseline: np.ndarray | list[list[float]],
+    perturbed: np.ndarray | list[list[float]],
+    *,
+    q: float = 0.10,
+    n_boot: int = 2000,
+    seed: int = 42,
+    level: float = 0.95,
+) -> dict[str, float | int]:
+    """Percentile intervals from resampling items within a fixed design.
+
+    Items are drawn with replacement, preserving the pairing between
+    conditions. Domains, perturbation families, scorers, and model versions
+    stay fixed, so these intervals describe item-sampling uncertainty alone.
+    Claims about new domains, families, or systems need those levels sampled
+    or held out in turn, and response-sampling uncertainty is separate.
+    """
+    base = _as_2d(baseline, "baseline")
+    pert = _as_2d(perturbed, "perturbed")
+    if base.shape[0] != pert.shape[0]:
+        raise ValueError("baseline and perturbed must contain the same items")
+    if n_boot < 2:
+        raise ValueError("n_boot must be at least 2")
+    if not 0.0 < level < 1.0:
+        raise ValueError("level must lie in (0, 1)")
+    base_mean = base.mean(axis=1)
+    pert_mean = pert.mean(axis=1)
+    delta = pert_mean - base_mean
+    degradation = -delta
+    absolute_loss = 1.0 - pert_mean
+    n_items = base.shape[0]
+    rng = np.random.default_rng(seed)
+    draws = {"signed_delta": [], "ins_raw": [], "wtd_raw": [], "absolute_loss_tail_raw": []}
+    for _ in range(n_boot):
+        idx = rng.integers(0, n_items, size=n_items)
+        draws["signed_delta"].append(float(delta[idx].mean()))
+        draws["ins_raw"].append(float(np.abs(delta[idx]).mean()))
+        draws["wtd_raw"].append(upper_tail_mean(degradation[idx], q))
+        draws["absolute_loss_tail_raw"].append(upper_tail_mean(absolute_loss[idx], q))
+    alpha = (1.0 - level) / 2.0
+    out: dict[str, float | int] = {"n_item_boot": int(n_boot), "boot_level": float(level)}
+    for name, values in draws.items():
+        arr = np.asarray(values, dtype=float)
+        lo, hi = np.quantile(arr, [alpha, 1.0 - alpha])
+        out[f"{name}_boot_lo"] = float(lo)
+        out[f"{name}_boot_hi"] = float(hi)
+        out[f"{name}_boot_sd"] = float(arr.std(ddof=1))
+    return out
+
+
 def baseline_noise_floor(
     baseline: np.ndarray | list[list[float]],
     *,

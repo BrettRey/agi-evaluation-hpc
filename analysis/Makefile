@@ -9,12 +9,14 @@ test:
 smoke: test
 	cd $(ROOT) && $(PYTHON) -m analysis.simulate_instability --profile smoke
 	cd $(ROOT) && $(PYTHON) -m analysis.simulate_pss --profile smoke
+	cd $(ROOT) && $(PYTHON) -m analysis.simulate_bootstrap_coverage --profile smoke
 	cd $(ROOT) && $(PYTHON) -m analysis.reanalyse_zhang --profile smoke
 	cd $(ROOT) && $(PYTHON) -m analysis.summarize_evidence
 
 standard: test
 	cd $(ROOT) && $(PYTHON) -m analysis.simulate_instability --profile standard
 	cd $(ROOT) && $(PYTHON) -m analysis.simulate_pss --profile standard
+	cd $(ROOT) && $(PYTHON) -m analysis.simulate_bootstrap_coverage --profile standard
 	cd $(ROOT) && $(PYTHON) -m analysis.reanalyse_zhang --profile standard
 	cd $(ROOT) && $(PYTHON) -m analysis.summarize_evidence
 

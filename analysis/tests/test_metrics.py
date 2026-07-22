@@ -9,6 +9,8 @@ from analysis.metrics import (
     adjusted_metrics,
     basic_metrics,
     crossfit_absolute_loss_tail,
+    directional_components,
+    item_bootstrap,
     pearson_profile,
     split_half_reliability,
     split_sample_wtd,
@@ -31,6 +33,52 @@ class MetricTests(unittest.TestCase):
         self.assertAlmostEqual(result["signed_delta"], 0.0)
         self.assertAlmostEqual(result["ins_raw"], 0.20)
         self.assertAlmostEqual(result["wtd_raw"], 0.20)
+
+    def test_directional_components_satisfy_the_identities(self) -> None:
+        rng = np.random.default_rng(3)
+        baseline = rng.uniform(0.2, 0.8, size=(60, 4))
+        perturbed = np.clip(baseline + rng.normal(0.0, 0.1, size=(60, 4)), 0.0, 1.0)
+        point = basic_metrics(baseline, perturbed, q=0.10)
+        parts = directional_components(baseline, perturbed)
+        self.assertAlmostEqual(parts["f_plus"] - parts["f_minus"], point["signed_delta"])
+        self.assertAlmostEqual(parts["f_plus"] + parts["f_minus"], point["ins_raw"])
+        self.assertGreaterEqual(parts["f_plus"], 0.0)
+        self.assertGreaterEqual(parts["f_minus"], 0.0)
+
+    def test_directional_components_are_transition_proportions(self) -> None:
+        baseline = np.zeros((10, 1))
+        perturbed = np.zeros((10, 1))
+        perturbed[:3] = 1.0
+        parts = directional_components(baseline, perturbed)
+        self.assertAlmostEqual(parts["f_plus"], 0.3)
+        self.assertAlmostEqual(parts["f_minus"], 0.0)
+
+    def test_item_bootstrap_brackets_the_point_estimate(self) -> None:
+        rng = np.random.default_rng(11)
+        baseline = rng.uniform(0.3, 0.7, size=(120, 6))
+        perturbed = np.clip(baseline - rng.uniform(0.0, 0.2, size=(120, 6)), 0.0, 1.0)
+        point = basic_metrics(baseline, perturbed, q=0.10)
+        boot = item_bootstrap(baseline, perturbed, q=0.10, n_boot=400, seed=5)
+        for name in ("signed_delta", "ins_raw", "wtd_raw"):
+            self.assertLessEqual(boot[f"{name}_boot_lo"], point[name])
+            self.assertGreaterEqual(boot[f"{name}_boot_hi"], point[name])
+            self.assertGreater(boot[f"{name}_boot_sd"], 0.0)
+
+    def test_item_bootstrap_collapses_for_identical_items(self) -> None:
+        baseline = np.full((40, 3), 0.5)
+        perturbed = np.full((40, 3), 0.3)
+        boot = item_bootstrap(baseline, perturbed, q=0.10, n_boot=200, seed=7)
+        self.assertAlmostEqual(boot["signed_delta_boot_sd"], 0.0)
+        self.assertAlmostEqual(boot["wtd_raw_boot_lo"], 0.2)
+        self.assertAlmostEqual(boot["wtd_raw_boot_hi"], 0.2)
+
+    def test_response_noise_inflates_the_raw_tail_above_the_latent_tail(self) -> None:
+        from analysis.simulate_bootstrap_coverage import population_truths
+
+        truths = population_truths(population=40_000, n_trials=20, q=0.10, seed=3)
+        self.assertGreater(
+            truths["population_raw_wtd"], truths["population_latent_wtd"] + 0.05
+        )
 
     def test_constant_baseline_has_zero_null_floor(self) -> None:
         baseline = np.ones((20, 6))
