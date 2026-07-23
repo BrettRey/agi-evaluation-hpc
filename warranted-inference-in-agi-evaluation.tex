@@ -24,11 +24,11 @@ Humber Polytechnic \& University of Toronto}
 \maketitle
 
 \begin{abstract}
-Test batteries spanning several cognitive domains are now offered as measures of progress toward artificial general intelligence, and their scores read as evidence about tasks, contexts, systems, and times that were never tested. Precision within a standardized setting doesn't license that reading. Standardization narrows what a score represents even while stabilizing it, and aggregation discards distinctions within what remains. A stable average is consistent with unchanged items, with gains and losses that cancel, and with persistent severe failures.
+Multidomain test batteries are increasingly used to judge how close AI systems are to general intelligence, and a single score is then read as evidence about tasks, users, systems, and future versions the test never covered. A precise, repeatable score doesn't by itself support those wider claims. Standardizing a test fixes what it measures narrowly, and averaging over items hides how a system behaves: one mean is consistent with no change, with improvements and failures that cancel, and with a stable core of serious errors.
 
-Validity theory locates warrant in the argument for a proposed interpretation and use, not in the test alone. I use \term{projectibility} for the evidential standing of one specified source--target link: a claim extending an interpretation, prediction, or explanation beyond the observations that produced the score. Goodman's grue case shows why fit to those observations can't settle which extension is supported. Evaluators should declare each link, preserve the distinctions it makes relevant, and test it with evidence matched to the facet it crosses.
+This paper adapts validity theory from psychological measurement, where what's assessed is the argument for a particular interpretation and use of a test's scores, not the test itself. Each claim reaching beyond the tested cases, to a new task, context, system, or time, is a separate inference carrying its own evidential burden. I call the standing of such a claim its \term{projectibility}, after Goodman, and argue that evaluators should state each claim, keep the distinctions that bear on it, and test it with evidence matched to the gap it spans.
 
-A reanalysis of 32 released model--benchmark comparisons finds a small average decline coexisting with a much larger change tail, and simulations with known latent truths find a zero change tail coexisting with a high absolute risk tail. Both show that raw, null-referenced, and split-sample estimators target different objects. Neither shows that any quantity predicts an untested target. No developer can anticipate every downstream use, so evidential labour divides: developers characterize bounded source evaluations and expose unsupported facets; deployers complete and monitor local warrants. Bounded successes don't compose into unrestricted generality.
+A reanalysis of 32 released model--benchmark comparisons, and simulations with known answers, show that a stable average can hide large offsetting shifts and persistent severe failures, and that different estimators of these effects answer different questions. They don't show that any score predicts untested performance. Because no developer can foresee every use, the burden divides: developers characterize what their evaluation supports; deployers test and monitor the rest.
 \end{abstract}
 
 \noindent\textbf{Keywords:} AGI evaluation; validity; projectibility; tail risk; generalization
@@ -78,7 +78,7 @@ The source score comes from a standardized evaluation, which fixes prompts, scor
 \caption{Where a score has to travel, and what answers each step. Each arrow is a separate claim with its own evidence, and warrant for one doesn't carry to the next. The lower row names the design that addresses the step above it; Table~\ref{tab:projection_relations} gives the full set of relations.}\label{fig:where_scores_travel}
 \end{figure}
 
-Kane distinguishes two moves: generalizing from observed scores to a test's standardized universe and extrapolating from that universe to a broader target domain \citep[22--25]{kane2013validating}. Figure~\ref{fig:where_scores_travel} places those moves in the longer chain the running example needs. Brennan shows why the distinction matters: a feature held fixed in the restricted universe may vary in the broader one, so standardization can raise precision within the former while weakening extrapolation to the latter \citep[132--135]{brennan2001generalizability}. More observations from the narrowed universe leave systematic underrepresentation of the target intact.
+\Textcite[22--25]{kane2013validating} distinguishes two moves: generalizing from observed scores to a test's standardized universe and extrapolating from that universe to a broader target domain. Figure~\ref{fig:where_scores_travel} places those moves in the longer chain the running example needs. \Textcite[132--135]{brennan2001generalizability} shows why the distinction matters: a feature held fixed in the restricted universe may vary in the broader one, so standardization can raise precision within the former while weakening extrapolation to the latter. More observations from the narrowed universe leave systematic underrepresentation of the target intact.
 
 Underrepresentation of the target is one inferential gap. Aggregation creates another even within a fixed evaluation universe. \Textcite[2, 4--6]{zhang2026illusionRobustness} provide a controlled example: they add task-irrelevant context to benchmark items and find that aggregate accuracy often moves little even when item-level response probabilities move in opposite directions. After subtracting the change expected from repeated baseline sampling alone, their estimates reach 13.6\% for mean absolute item change and 53.2\% for worst-decile degradation. The affected examples are also largely model-specific: on MMLU-Pro the mean cross-model correlation of per-item change is .00, and the mean Jaccard overlap of the most-affected decile is .09.
 
@@ -90,7 +90,7 @@ A stable mean is compatible with unchanged items, balanced improvements and degr
 \caption{Four item-level states behind one stable mean, constructed for illustration rather than measured. The top row gives the distribution of per-item change; all four have the same near-zero mean. The bottom row gives the resulting worst-decile absolute loss. The first and fourth columns are indistinguishable in the top row and differ by .19 against .96 in the bottom one, which is why a change statistic can't stand in for an absolute risk measure.}\label{fig:stable_mean_states}
 \end{figure}
 
-Interpreting a finite evaluation as evidence of general capability widens the gap between the standardized evaluation universe and the intended target. \textcite{raji2021whole} argue that broad benchmark claims routinely outrun the contextual tasks used to construct them. \textcite{hendrycks2025agi} propose a revisable framework for evaluating AGI across ten cognitive domains, guided by Cattell--Horn--Carroll (CHC) theory, a hierarchical account of human cognitive abilities inferred from test-score correlations. They warn that a total can conceal bottleneck failures and recommend reporting the domain profile, the vector of domain scores, alongside it.
+The gap between the standardized evaluation universe and the intended target is widest when the target is general capability itself, since no target reaches further beyond a fixed set of tested cases. \Textcite{raji2021whole} argue that broad benchmark claims routinely outrun the contextual tasks used to construct them. \Textcite{hendrycks2025agi} propose the most developed framework aimed squarely at that target, evaluating AGI across ten cognitive domains guided by Cattell--Horn--Carroll (CHC) theory, a hierarchical account of human cognitive abilities inferred from test-score correlations. They themselves warn that a total can conceal bottleneck failures, and recommend reporting the domain profile, the vector of domain scores, alongside it.
 
 The profile preserves distinctions that a total erases, but it still compresses item changes and tails, and its domain structure may not transfer across systems (Section~\ref{ssec:chc_scope}). A score is an indicator, not the capability or attribute it's meant to represent; validity theory calls the represented capability or attribute the \term{construct} \citep[742]{messick1995Validity}. Neither total nor profile establishes which inferences the ten-domain framework supports beyond its construction; a broader construct interpretation requires an additional argument \citep[24]{kane2013validating}.
 
@@ -108,7 +108,7 @@ This paper makes three linked contributions. First, it turns claims beyond the o
 
 \section{Projectibility within a Validity Argument}\label{sec:projection}
 
-For AI evaluation, validity theory supplies the architecture for this proposal. Messick uses \term{score} broadly, for any qualitative or quantitative summary of observed regularities in people, groups, environments, objects, or institutions \citep[741]{messick1995Validity}. Kane's argument-based approach represents a proposed score interpretation and use as an explicit chain of inferences and assumptions, then asks whether that chain is coherent, complete, and adequately supported. The more ambitious the interpretation or use, the more backing its chain requires \citep[1--3]{kane2013validating}. The same architecture applies to a base model, an agent, or a deployed model--tool--workflow composite, provided the bearer of the claim is explicit.
+For AI evaluation, validity theory supplies the architecture for this proposal. \Textcite[741]{messick1995Validity} uses \term{score} broadly, for any qualitative or quantitative summary of observed regularities in people, groups, environments, objects, or institutions. Kane's argument-based approach represents a proposed score interpretation and use as an explicit chain of inferences and assumptions, then asks whether that chain is coherent, complete, and adequately supported. The more ambitious the interpretation or use, the more backing its chain requires \citep[1--3]{kane2013validating}. The same architecture applies to a base model, an agent, or a deployed model--tool--workflow composite, provided the bearer of the claim is explicit.
 
 Within this architecture, \term{projectibility} is assessed for each source--target link. It's graded and claim-relative: the evidential support that specified observations and revisable background assumptions give a declared source--target link, relative to a proposed interpretation or use. Grading doesn't imply a single numerical scale; it blocks the reading that a link is projectible or not in isolation from the amount, quality, and defeat conditions of its evidence. It isn't a separate aspect of validity or a name for the warrant of an entire decision. A \term{projectibility audit} identifies each such link, states the facet over which the claim is meant to travel, matches evidence to that facet, assigns responsibility for supplying the evidence, and blocks successful bounded links from automatically composing into a broader claim.
 
@@ -120,7 +120,7 @@ The audit also keeps four questions apart: what projective claim is being made; 
 
 A decision adds another layer. Projectible factual premises have to be combined with feasible alternatives, constraints, institutional authority, values, and an action rule. Values also enter construct labels, content definitions, and score interpretations rather than appearing only at the final decision stage \citep[747--749]{messick1995Validity}.
 
-Projectibility covers only the beyond-observation links in the larger validity argument. Messick also asks whether content represents the intended domain, observed responses engage the relevant processes, the scoring structure fits the claimed construct, relations with other measures and criteria support the interpretation, and consequences bear on the proposed use \citep[741--747]{messick1995Validity}. No holdout design answers all of those questions. Nor are the projective links interchangeable: generalization within a stated evaluation universe, extrapolation to a broader task domain, transport across contexts, systems, or populations, and temporal prediction require different evidence.
+Projectibility covers only the beyond-observation links in the larger validity argument. \Textcite[741--747]{messick1995Validity} also asks whether content represents the intended domain, observed responses engage the relevant processes, the scoring structure fits the claimed construct, relations with other measures and criteria support the interpretation, and consequences bear on the proposed use. No holdout design answers all of those questions. Nor are the projective links interchangeable: generalization within a stated evaluation universe, extrapolation to a broader task domain, transport across contexts, systems, or populations, and temporal prediction require different evidence.
 
 System transport requires one further term. Here, \term{lineage} denotes an operational dependency group defined by declared provenance, training, distillation, shared components, or data dependence rather than by a family label alone. Outputs from closely related versions don't supply the same evidence as independent lineages. Lineage is often only partly observable: training-data overlap, distillation, and shared components are frequently proprietary, so an assumed independence between systems may itself be an undeclared assumption.
 
@@ -299,25 +299,9 @@ A binary \(1-\text{correctness}\) loss is inadequate when consequences differ ac
 
 The finite-set formulas weight observed benchmark items equally; they don't by themselves define an action-level risk distribution. A decision-facing tail instead needs a probability distribution over the cases the decision concerns. The evaluator has to specify whose cases, which conditions, and what losses define the population being ordered.
 
-For a deployment-facing target, let \(J\sim P_T\) index a joint draw over every varying facet in scope, including system, task or episode, domain, perturbation family and realization, operator, affected-population stratum, and time. Let \(R\) collect response, scorer, and downstream-outcome randomness conditional on \(J\), let \(S_{JcR}\) be the realized score under condition \(c\), and let \(\ell^{(T)}_{JR}\in[0,1]\) be realized target loss. Define \(\delta_J=\operatorname{E}_R(S_{JpR}-S_{J0R}\mid J)\), \(D_J=-\delta_J\), and \(\mu^{(T)}_J=\operatorname{E}_R(\ell^{(T)}_{JR}\mid J)\).
+For a deployment-facing target, the tail is taken over a joint draw across every varying facet in scope~-- system, task or episode, domain, perturbation, operator, affected-population stratum, and time~-- through an expected-shortfall functional that orders probability mass rather than similar-looking benchmark items. Appendix~\ref{app:deployment_tails} gives the draw, the functional, and the resulting deployment-facing change and absolute-loss tails, and shows why the realized-loss tail generally differs from the tail of conditional case risks.
 
-With \(Q_{V,T}\) the quantile function of \(V\), which gives the cutoff at cumulative probability \(u\) under the indicated target distribution, define
-\[
-\operatorname{ES}^{+}_{q,T}(V)
-=\frac{1}{q}\int_{1-q}^{1}Q_{V,T}(u)\,\mathrm du.
-\]
-The deployment-facing change tail and absolute-loss tails are
-\[
-\operatorname{WTD}_{q,T}=\operatorname{ES}^{+}_{q,T}(D_J),
-\qquad
-\wtl^{\mathrm{case}}_{q,T}=\operatorname{ES}^{+}_{q,T}(\mu^{(T)}_J),
-\qquad
-\wtl^{\mathrm{real}}_{q,T}=\operatorname{ES}^{+}_{q,T}(\ell^{(T)}_{JR}).
-\]
-
-The expected-shortfall functional orders probability mass rather than merely similar-looking benchmark items. When the distribution is discrete and the cutoff falls within a probability mass, the tail calculation includes only enough of that mass to reach the chosen fraction.
-
-The realized-loss measure integrates both \(P_T(J)\) and the conditional distribution of \(R\), so it generally differs from the tail of conditional case risks. A decision has to name which tail it constrains and whether the rule applies jointly, by stratum, to the maximum conditional tail, or through separate limits that gains elsewhere can't offset. If repeated exposure matters, let \(J\) index a person--horizon or task trajectory and report cumulative exposure separately.
+A decision has to name which of those tails it constrains and whether the rule applies jointly, by stratum, to the maximum conditional tail, or through separate limits that gains elsewhere can't offset. If repeated exposure matters, the draw is indexed by a person--horizon or task trajectory and cumulative exposure is reported separately.
 
 \subsection{Estimation, Selection, and Multiplicity}\label{ssec:uncertainty}
 
@@ -514,6 +498,32 @@ Goodman's riddle shows why fit to source observations can't, by itself, determin
 A CHC taxonomy may organize benchmark content, but claims that AI scores exhibit its narrower factor structure, remain comparable across systems, support external prediction, or provide evidence of AGI require separate support. Measurement interpretations need a defensible account of the evidential bases they implicate; predictions need target-matched external tests; and causal explanations need process evidence and tests against rivals. Decisions also require defensible values, alternatives, institutional authority, and continuing scrutiny of consequences.
 
 Developers should characterize source evaluations and expose unsupported facets; deployers should complete local warrants, monitor whether the target conditions continue to obtain, and monitor consequences in use. What the law firm has to warrant is its own release argument; the developer's multidomain scores and the generality claim attached to them aren't that argument, and no accumulation of them becomes it. Open-ended AGI claims require more than accumulated coverage. Warrant may combine bounded empirical links with substantive or formal rationale for extending them, but successful links don't automatically compose into unrestricted generality. A warranted inference from an aggregate rests on a declared, revisable argument whose evidence is matched to the scope of each claim.
+
+\clearpage
+
+\appendix
+
+\section{Deployment-facing tail definitions}\label{app:deployment_tails}
+
+Section~\ref{ssec:target_risk} replaces the equally weighted finite-set tails with tails over the population a decision concerns. This appendix states that construction.
+
+For a deployment-facing target \(T\), let \(J\sim P_T\) index a joint draw over every varying facet in scope, including system, task or episode, domain, perturbation family and realization, operator, affected-population stratum, and time. Let \(R\) collect response, scorer, and downstream-outcome randomness conditional on \(J\), let \(S_{JcR}\) be the realized score under condition \(c\), and let \(\ell^{(T)}_{JR}\in[0,1]\) be realized target loss. Define \(\delta_J=\operatorname{E}_R(S_{JpR}-S_{J0R}\mid J)\), \(D_J=-\delta_J\), and \(\mu^{(T)}_J=\operatorname{E}_R(\ell^{(T)}_{JR}\mid J)\).
+
+With \(Q_{V,T}\) the quantile function of \(V\), which gives the cutoff at cumulative probability \(u\) under the indicated target distribution, define
+\[
+\operatorname{ES}^{+}_{q,T}(V)
+=\frac{1}{q}\int_{1-q}^{1}Q_{V,T}(u)\,\mathrm du.
+\]
+The deployment-facing change tail and absolute-loss tails are
+\[
+\operatorname{WTD}_{q,T}=\operatorname{ES}^{+}_{q,T}(D_J),
+\qquad
+\wtl^{\mathrm{case}}_{q,T}=\operatorname{ES}^{+}_{q,T}(\mu^{(T)}_J),
+\qquad
+\wtl^{\mathrm{real}}_{q,T}=\operatorname{ES}^{+}_{q,T}(\ell^{(T)}_{JR}).
+\]
+
+The expected-shortfall functional orders probability mass rather than merely similar-looking benchmark items. When the distribution is discrete and the cutoff falls within a probability mass, the tail calculation includes only enough of that mass to reach the chosen fraction. The realized-loss measure integrates both \(P_T(J)\) and the conditional distribution of \(R\), so it generally differs from the tail of conditional case risks \(\mu^{(T)}_J\).
 
 \clearpage
 
