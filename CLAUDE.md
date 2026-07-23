@@ -12,7 +12,7 @@ The framework distinguishes the projective claim, its evidence-relative warrant,
 
 **Title:** *From Aggregate Scores to Warranted Inference in AGI Evaluation*
 
-**Preprint:** [arXiv:2510.15236](https://doi.org/10.48550/arXiv.2510.15236) (historical October 2025 version)
+**Preprint:** arXiv:2510.15236 (the October 2025 v1, *From Checklists to Clusters: A Homeostatic Account of AGI Evaluation*) was **withdrawn 2026-07-23** with a retraction reason; its homeostatic-cluster thesis and two proposed measures are disavowed. It is the historical starting point only. The current paper will be posted as a new arXiv submission (see `submission/arxiv-posting-plan.md`).
 
 **Target:** *Minds and Machines*
 

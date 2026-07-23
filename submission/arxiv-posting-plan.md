@@ -1,5 +1,11 @@
 # arXiv posting plan
-<!-- SUMMARY: Post the rewrite as a new arXiv submission with a supersession note; back-annotate 2510.15236 to point forward · status: ready, not yet posted · updated: 2026-07-22 -->
+<!-- SUMMARY: v1 (2510.15236) withdrawn 2026-07-23; remaining action is to post the current paper as a new arXiv submission · status: v1 withdrawn, new submission pending · updated: 2026-07-23 -->
+
+**Status (2026-07-23):** arXiv:2510.15236 (v1) has been **withdrawn** with a retraction
+reason describing the homeostatic-cluster thesis and its two proposed measures as
+unsound. This went further than the supersession note this plan originally described.
+What remains is to post the current paper as a new submission; the §2 replacement-comment
+step below is now moot, since v1 is withdrawn rather than replaced.
 
 **Decision:** post as a **new submission** with a note stating the relationship, and let
 moderation reclassify or reject it as a replacement if they prefer that. Moderators make
@@ -33,13 +39,17 @@ exists. Without it, v1 stays live and citable as a position that has been abando
 
 ## 3. Sequence
 
-1. Post the new submission with the comment in §1.
-2. Wait for the identifier to be assigned and announced.
-3. Replace 2510.15236 with the comment in §2, filling in the new identifier.
+1. ~~Withdraw 2510.15236.~~ **Done 2026-07-23**, with a retraction reason (stronger than
+   the supersession note originally planned).
+2. Post the current paper as a new submission with the comment in §1.
+3. Once the new identifier exists, optionally add it to v1's withdrawal comment so a
+   reader of the withdrawn v1 can find the successor.
 4. Update the DOI recorded in `CLAUDE.md`, `STATUS.md`, and `PORTFOLIO.md` to the new
-   item, keeping 2510.15236 named as the withdrawn predecessor.
-5. Record the supersession in the *Minds and Machines* cover letter and in the venue
-   decision record.
+   item, keeping 2510.15236 named as the withdrawn predecessor. (`CLAUDE.md` and
+   `STATUS.md` updated 2026-07-23 to mark v1 withdrawn; `PORTFOLIO.md` still pending, at
+   the portfolio level.)
+5. Record the withdrawal and the new posting in the *Minds and Machines* cover letter and
+   in the venue decision record.
 
 ## 4. If moderation asks for a replacement instead
 
